@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RoleMgn">
+	<select id="selectRoleList" parameterType="java.util.HashMap" resultType="roleInfoVo">
+		  <if test="readcount  != null and readcount !=''">
+			  SELECT T2.*
+			  FROM
+			  (SELECT row_number() over(order by ROLE_SQ) AS NUM,
+			  T1.*
+			  FROM(
+			  </if>
+						  SELECT ROLE_SQ,
+								 ROLE_ID,
+								 ROLE_NM,
+								 DESCRIPTION,
+								 USE_YN
+							FROM TB_FR_ROLE_INFO
+							WHERE 1=1
+						<if test="srchRoleId != null and srchRoleId != ''">
+						  AND UPPER(ROLE_ID) LIKE CONCAT(CONCAT('%', UPPER(#{srchRoleId})),'%') ESCAPE '\'
+						</if>
+						<if test="srchRoleNm != null and srchRoleNm !=''">
+						  AND UPPER(ROLE_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchRoleNm})),'%') ESCAPE '\'
+						</if>
+						ORDER BY ROLE_SQ
+			 <if test="readcount  != null and readcount !=''">
+			<![CDATA[
+			    ) T1
+			  )T2
+			  WHERE NUM >  #{readindex} AND NUM <= #{readcount} + #{readindex}
+			   ]]>
+			  </if>
+	</select>
+	
+	<select id="selectRoleListCount" resultType="int">
+         SELECT  COUNT(*)
+		   FROM TB_FR_ROLE_INFO
+		  WHERE 1=1
+			<if test="srchRoleId != null and srchRoleId != ''">
+			    AND UPPER(ROLE_ID) LIKE CONCAT(CONCAT('%', UPPER(#{srchRoleId})),'%') ESCAPE '\'
+			</if>
+			<if test="srchRoleNm != null and srchRoleNm !=''">
+			    AND UPPER(ROLE_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchRoleNm})),'%') ESCAPE '\'
+			</if>
+
+	</select>
+	
+	<select id="selectRoleByRoleSq" resultType="roleInfoVo">
+          SELECT ROLE_SQ,
+				 ROLE_ID,
+				 ROLE_NM,
+				 DESCRIPTION,
+				 USE_YN
+			FROM TB_FR_ROLE_INFO
+		   WHERE ROLE_SQ = #{roleSq, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectWorkgroupByRoleSq" resultType="workgroupInfoVo">
+          SELECT INFO.WORKGROUP_SQ,
+				 INFO.WORKGROUP_ID,
+				 INFO.WORKGROUP_NM,
+				 INFO.DESCRIPTION
+			FROM TB_FR_WORKGROUP_INFO INFO,
+			     TB_FR_WORKGROUP_ROLE_MAP MAP
+		   WHERE 1=1
+			 AND MAP.ROLE_SQ = #{roleSq}
+			 AND INFO.WORKGROUP_SQ = MAP.WORKGROUP_SQ
+	</select>
+	
+	<select id="selectUserByRoleSq" resultType="userInfoVo">
+          SELECT INFO.USER_SQ, 
+			  	 INFO.USER_ID, 
+			  	 INFO.USER_NM, 
+			  	 INFO.EMAIL
+			FROM TB_FR_USER_INFO INFO,
+				 TB_FR_USER_ROLE_MAP MAP
+		   WHERE 1=1
+			 AND MAP.ROLE_SQ = #{roleSq}
+			 AND INFO.USER_SQ = MAP.USER_SQ
+	</select>
+	
+	
+	
+	<select id="selectRoleCheck" resultType="int">
+         SELECT  COUNT(*)
+		   FROM TB_FR_ROLE_INFO
+		  WHERE 1=1
+			AND ROLE_ID = #{roleId}
+			<if test="roleSq != null and roleSq != ''">
+			AND ROLE_SQ != #{roleSq}
+			</if>
+	</select>
+	
+	<select id="selectRoleCheckBySeq" resultType="int">
+         SELECT  COUNT(*)
+		   FROM TB_FR_ROLE_INFO
+		  WHERE 1=1
+			AND ROLE_SQ = #{roleSq}
+	</select>
+
+	<insert id="insertRole" parameterType="roleInfoVo">
+		INSERT INTO
+		TB_FR_ROLE_INFO
+		(
+			ROLE_SQ,
+			ROLE_ID,
+			ROLE_NM,
+			DESCRIPTION,
+			USE_YN,
+			CREATE_DT,
+			CREATE_USR_ID,
+			UPDATE_DT,
+			UPDATE_USR_ID
+		)
+		VALUES (
+			#{roleSq, jdbcType=VARCHAR},
+			#{roleId, jdbcType=VARCHAR},
+			#{roleNm, jdbcType=VARCHAR},
+			#{description, jdbcType=VARCHAR},
+			'Y',
+			systimestamp ,
+			#{createUsrId, jdbcType=VARCHAR},
+			systimestamp ,
+			#{updateUsrId, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateRole" parameterType="roleInfoVo">
+		UPDATE TB_FR_ROLE_INFO SET
+		<if test="roleId != null and roleId !=''">
+			   ROLE_ID =#{roleId, jdbcType=VARCHAR},
+		</if>
+		<if test="roleNm != null and roleNm !=''">
+			   ROLE_NM =#{roleNm, jdbcType=VARCHAR} ,
+		</if>
+		<if test="description != null and description !=''">
+			   DESCRIPTION = #{description, jdbcType=VARCHAR},
+		</if>
+		<if test="updateUsrId != null and updateUsrId !=''">
+			   UPDATE_USR_ID = #{updateUsrId, jdbcType=VARCHAR},
+		</if>
+		<if test="useYn != null and useYn !=''">
+			   USE_YN = #{useYn, jdbcType=VARCHAR},
+		</if>
+		       UPDATE_DT = systimestamp 
+		 WHERE ROLE_SQ = #{roleSq, jdbcType=VARCHAR}
+	</update>
+
+	<delete id="deleteRole" parameterType="roleInfoVo">
+		DELETE
+		  FROM TB_FR_ROLE_INFO
+		 WHERE ROLE_SQ = #{roleSq}
+	</delete>
+
+
+
+	<select id="selectWorkgroupList" parameterType="java.util.HashMap"
+		resultType="workgroupInfoVo">
+		<if test="readcount  != null and readcount !=''">
+			  SELECT T2.*
+			  FROM
+			  (SELECT row_number() over(order by WORKGROUP_SQ) AS NUM,
+			  T1.*
+			  FROM(
+			  </if>
+  						SELECT INFO.WORKGROUP_SQ,
+							   INFO.WORKGROUP_ID, 
+							   INFO.WORKGROUP_NM,
+							   INFO.DESCRIPTION
+						  FROM TB_FR_WORKGROUP_INFO INFO
+						 WHERE 1=1
+						   AND INFO.USE_YN = 'Y'
+						<if test="srchWorkgroupId != null and srchWorkgroupId != ''">
+						   AND UPPER(WORKGROUP_ID) LIKE CONCAT(CONCAT('%', UPPER(#{srchWorkgroupId})), '%') ESCAPE '\'
+						</if>
+						<if test="srchWorkgroupNm != null and srchWorkgroupNm !=''">
+						   AND UPPER(WORKGROUP_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchWorkgroupNm})), '%') ESCAPE '\'
+						</if>
+						   AND INFO.WORKGROUP_SQ NOT IN (SELECT WORKGROUP_SQ 
+						   								   FROM TB_FR_WORKGROUP_ROLE_MAP MAP
+						   								  WHERE MAP.ROLE_SQ = #{roleSq})
+					 	 ORDER BY INFO.WORKGROUP_SQ
+			 <if test="readcount  != null and readcount !=''">
+			<![CDATA[
+			    ) T1
+			  )T2
+			  WHERE NUM >  #{readindex} AND NUM <= #{readcount} + #{readindex}
+			   ]]>
+			  </if>
+	</select>
+	
+	<select id="selectWorkgroupListCount" resultType="int">
+        SELECT COUNT(*)
+		  FROM TB_FR_WORKGROUP_INFO INFO
+		 WHERE 1=1
+		   AND INFO.USE_YN = 'Y'
+		<if test="srchWorkgroupId != null and srchWorkgroupId != ''">
+		   AND UPPER(WORKGROUP_ID) LIKE CONCAT(CONCAT('%', UPPER(#{srchWorkgroupId})), '%') ESCAPE '\'
+		</if>
+		<if test="srchWorkgroupNm != null and srchWorkgroupNm !=''">
+		   AND UPPER(WORKGROUP_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchWorkgroupNm})), '%') ESCAPE '\'
+		</if>
+		   AND INFO.WORKGROUP_SQ NOT IN (SELECT WORKGROUP_SQ FROM
+			   TB_FR_WORKGROUP_ROLE_MAP MAP WHERE MAP.ROLE_SQ = #{roleSq})
+
+	</select>
+
+	<select id="selectRoleWorkgroupList" parameterType="java.util.HashMap" resultType="workgroupInfoVo">
+	    <if test="readcount  != null and readcount !=''">
+			  SELECT T2.*
+			  FROM
+			  (SELECT row_number() over(order by WORKGROUP_SQ) AS NUM,
+			  T1.*
+			  FROM(
+			
+			  </if>
+						SELECT INFO.WORKGROUP_SQ,
+							   INFO.WORKGROUP_ID,
+							   INFO.WORKGROUP_NM,
+							   INFO.DESCRIPTION
+						  FROM TB_FR_WORKGROUP_INFO INFO,
+						       TB_FR_WORKGROUP_ROLE_MAP MAP
+						 WHERE 1=1
+						   AND MAP.ROLE_SQ = #{roleSq}
+						   AND INFO.WORKGROUP_SQ = MAP.WORKGROUP_SQ
+						   AND INFO.USE_YN = 'Y'
+			 <if test="readcount  != null and readcount !=''">
+			<![CDATA[
+			    ) T1
+			  )T2
+			  WHERE NUM >  #{readindex} AND NUM <= #{readcount} + #{readindex}
+			   ]]>
+			  </if>
+					   
+	</select>
+	
+	<select id="selectRoleWorkgroupListCount" resultType="int">
+        SELECT COUNT(*)
+		  FROM TB_FR_WORKGROUP_INFO INFO,
+		       TB_FR_WORKGROUP_ROLE_MAP MAP
+		 WHERE 1=1
+		   AND MAP.ROLE_SQ = #{roleSq}
+		   AND INFO.WORKGROUP_SQ = MAP.WORKGROUP_SQ
+	</select>
+
+	<insert id="insertWorkgroupRole" parameterType="java.util.HashMap">
+		INSERT INTO	
+			   TB_FR_WORKGROUP_ROLE_MAP
+			   (
+			   WORKGROUP_SQ,
+			   ROLE_SQ,
+			   CREATE_DT,
+			   CREATE_USR_ID,
+			   UPDATE_DT,
+			   UPDATE_USR_ID
+			   )
+		VALUES
+		       (
+			   #{workgroupSq, jdbcType=VARCHAR},
+			   #{roleSq, jdbcType=VARCHAR},
+			   systimestamp ,
+			   #{createUsrId, jdbcType=VARCHAR},
+			   systimestamp ,
+			   #{updateUsrId, jdbcType=VARCHAR}
+			  )
+	</insert>
+
+	<delete id="deleteRoleWorkgroupList" parameterType="java.lang.String">
+		DELETE
+		  FROM TB_FR_WORKGROUP_ROLE_MAP
+		 WHERE ROLE_SQ = #{roleSq, jdbcType=VARCHAR}
+		   AND WORKGROUP_SQ = #{workgroupSq, jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteAllRoleWorkgroupList" parameterType="roleInfoVo">
+		DELETE
+		  FROM TB_FR_WORKGROUP_ROLE_MAP
+		 WHERE ROLE_SQ = #{roleSq, jdbcType=VARCHAR}
+	</delete>
+
+
+
+	<select id="selectRoleUserList" parameterType="java.util.HashMap" resultType="userInfoVo">
+		<if test="readcount  != null and readcount !=''">
+  SELECT T2.*
+  FROM
+  (SELECT row_number() over(order by USER_SQ) AS NUM,
+  T1.*
+  FROM(
+
+  </if>
+						SELECT INFO.USER_SQ, 
+						  	   INFO.USER_ID, 
+						  	   INFO.USER_NM, 
+						  	   INFO.EMAIL,
+						  	   DEPTINFO.DEPT_NM, 
+						  	   CODE_NM GRD_NM
+						  FROM TB_FR_USER_INFO INFO,
+							   TB_FR_USER_ROLE_MAP MAP,
+							   TB_FR_DEPT_INFO DEPTINFO, 
+							   TB_FR_DEPT_USER_MAP DUMAP,	
+							   TB_FR_CODE_INFO CODE	
+						WHERE 1=1
+						AND MAP.ROLE_SQ = #{roleSq}
+						AND INFO.USER_SQ = MAP.USER_SQ
+						AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+						AND DUMAP.USER_SQ = INFO.USER_SQ
+						AND INFO.GRD_CD = CODE.CODE_SQ
+						AND INFO.STATUS_CD = 'STS_010100'
+		<if test="readcount  != null and readcount !=''">
+			<![CDATA[
+			    ) T1
+			  )T2
+			  WHERE NUM >  #{readindex} AND NUM <= #{readcount} + #{readindex}
+			   ]]>
+			  </if>
+					
+	</select>
+	
+	<select id="selectRoleUserListCount" resultType="int">
+        SELECT COUNT(*)
+		  FROM TB_FR_USER_INFO INFO,
+			   TB_FR_USER_ROLE_MAP MAP,
+			   TB_FR_DEPT_INFO DEPTINFO, 
+			   TB_FR_DEPT_USER_MAP DUMAP,	
+			   TB_FR_CODE_INFO CODE	
+		 WHERE 1=1
+		   AND MAP.ROLE_SQ = #{roleSq}
+		   AND INFO.USER_SQ = MAP.USER_SQ
+		   AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+		   AND DUMAP.USER_SQ = INFO.USER_SQ
+		   AND INFO.GRD_CD = CODE.CODE_SQ
+		   AND INFO.STATUS_CD = 'STS_010100'
+	</select>
+
+	<insert id="insertUserRole" parameterType="java.util.HashMap">
+		INSERT INTO TB_FR_USER_ROLE_MAP
+					(USER_SQ,
+					ROLE_SQ,
+					DESCRIPTION,
+					CREATE_DT,
+					CREATE_USR_ID,
+					UPDATE_DT,
+					UPDATE_USR_ID)
+			   VALUES
+			   	    (
+					#{userSq, jdbcType=VARCHAR},
+					#{roleSq, jdbcType=VARCHAR},
+					#{description, jdbcType=VARCHAR},
+					systimestamp ,
+					#{createUsrId, jdbcType=VARCHAR},
+					systimestamp ,
+					#{updateUsrId, jdbcType=VARCHAR}
+					)
+	</insert>
+
+	<delete id="deleteRoleUser" parameterType="roleInfoVo">
+		DELETE
+		FROM TB_FR_USER_ROLE_MAP
+		WHERE ROLE_SQ = #{roleSq, jdbcType=VARCHAR}
+		  AND USER_SQ = #{userSq, jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteAllRoleUser" parameterType="java.lang.String">
+		DELETE
+		FROM TB_FR_USER_ROLE_MAP
+		WHERE ROLE_SQ = #{roleSq, jdbcType=VARCHAR}
+	</delete>
+
+	<select id="selectUserList" parameterType="java.util.HashMap"
+		resultType="userInfoVo">
+		 <if test="readcount  != null and readcount !=''">
+			  SELECT T2.*
+			  FROM
+			  (SELECT row_number() over(order by USER_SQ) AS NUM,
+			  T1.*
+			  FROM(
+			  </if>
+						SELECT INFO.USER_SQ, 
+						  	   INFO.USER_ID, 
+						  	   INFO.USER_NM, 
+						  	   INFO.EMAIL,
+						  	   DEPTINFO.DEPT_NM, 
+						  	   CODE_NM GRD_NM
+						  FROM TB_FR_USER_INFO INFO,
+							   TB_FR_DEPT_INFO DEPTINFO, 
+							   TB_FR_DEPT_USER_MAP DUMAP,	
+							   TB_FR_CODE_INFO CODE			
+						 WHERE 1=1
+						<if test="srchUserId != null and srchUserId != ''">
+						   AND UPPER(USER_ID) LIKE CONCAT(CONCAT('%', UPPER(#{srchUserId})), '%') ESCAPE '\'
+						</if>
+						<if test="srchUserNm != null and srchUserNm !=''">
+						   AND UPPER(USER_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchUserNm})), '%') ESCAPE '\'
+						</if>
+						<if test="srchDeptNm != null and srchDeptNm !=''">
+						   AND UPPER(DEPT_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchDeptNm})), '%') ESCAPE '\'
+						</if>
+						   AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+						   AND DUMAP.USER_SQ = INFO.USER_SQ
+						   AND INFO.GRD_CD = CODE.CODE_SQ
+						   AND INFO.STATUS_CD = 'STS_010100'
+						   AND INFO.USER_SQ NOT IN (SELECT USER_SQ 
+							   					      FROM TB_FR_USER_ROLE_MAP MAP
+												     WHERE MAP.ROLE_SQ = #{roleSq}
+												    )
+						 ORDER BY INFO.USER_SQ
+		<if test="readcount  != null and readcount !=''">
+			<![CDATA[
+			    ) T1
+			  )T2
+			  WHERE NUM >  #{readindex} AND NUM <= #{readcount} + #{readindex}
+			   ]]>
+			  </if>
+	</select>
+	
+	<select id="selectUserListCount" resultType="int">
+        SELECT COUNT(*)
+		  FROM TB_FR_USER_INFO INFO,
+			   TB_FR_DEPT_INFO DEPTINFO, 
+			   TB_FR_DEPT_USER_MAP DUMAP,	
+			   TB_FR_CODE_INFO CODE			
+		WHERE 1=1
+		<if test="srchUserId != null and srchUserId != ''">
+			AND UPPER(USER_ID) LIKE CONCAT(CONCAT('%', UPPER(#{srchUserId})), '%') ESCAPE '\'
+		</if>
+		<if test="srchUserNm != null and srchUserNm !=''">
+			AND UPPER(USER_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchUserNm})), '%') ESCAPE '\'
+		</if>
+		<if test="srchDeptNm != null and srchDeptNm !=''">
+		   AND UPPER(DEPT_NM) LIKE CONCAT(CONCAT('%', UPPER(#{srchDeptNm})), '%') ESCAPE '\'
+		</if>
+		AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+		AND DUMAP.USER_SQ = INFO.USER_SQ
+		AND INFO.GRD_CD = CODE.CODE_SQ
+		AND INFO.STATUS_CD = 'STS_010100'
+		AND INFO.USER_SQ NOT IN (SELECT USER_SQ 
+								   FROM TB_FR_USER_ROLE_MAP MAP
+								  WHERE MAP.ROLE_SQ = #{roleSq}
+								 )
+	</select>
+	
+	<select id="getMaxIdSeq" resultType="string">
+	 	SELECT NVL(MAX(SUBSTR(ROLE_SQ , 5, 10)), '1') AS SEQ FROM TB_FR_ROLE_INFO
+	</select>
+	
+	<select id="selectAllRoleUser" parameterType="roleInfoVo" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_USER_ROLE_MAP
+		WHERE ROLE_SQ = #{roleSq}
+	</select>
+	
+	<select id="selectAllRoleWorkgroupList" parameterType="roleInfoVo" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_WORKGROUP_ROLE_MAP
+		WHERE ROLE_SQ = #{roleSq}
+	</select>
+
+</mapper>

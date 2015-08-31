@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AccessMgn">
+
+	<select id="selectAccessUrlList" resultType="AccessInfoVo">
+		SELECT PAGE_URL 
+		FROM TB_FR_MENU_PAGE_INFO
+	</select>
+
+	<select id="selectAccessUrlListFromMenuInfo" resultType="AccessInfoVo">
+		SELECT MENU_URL "pageUrl"
+		FROM TB_FR_MENU_INFO
+		WHERE TRIM(MENU_URL) IS NOT NULL
+	</select>
+
+	<select id="selectAccessUrlWorkgroupList" parameterType="AccessInfoVo"  resultType="AccessInfoVo">
+		SELECT B.PAGE_URL, A.WORKGROUP_SQ 
+		FROM TB_FR_MENU_AUTH_MAP A INNER JOIN TB_FR_MENU_PAGE_INFO B
+			ON A.MENU_SQ = B.MENU_SQ 
+			AND ((B.READ_YN = 1 AND B.UPDATE_YN = 0 AND B.EXECUTE_YN = 0 AND A.READ_YN = B.READ_YN) OR
+				(B.READ_YN = 0 AND B.UPDATE_YN = 1 AND B.EXECUTE_YN = 0 AND A.UPDATE_YN = B.UPDATE_YN) OR
+				(B.READ_YN = 0 AND B.UPDATE_YN = 0 AND B.EXECUTE_YN = 1 AND A.EXECUTE_YN = B.EXECUTE_YN))
+		WHERE 1=1
+		<if test="pageUrl != null ">
+			AND B.PAGE_URL = #{pageUrl}
+		</if>
+	</select>
+
+	<select id="selectAccessUrlWorkgroupListFromMenuInfo" parameterType="AccessInfoVo"  resultType="AccessInfoVo">
+		SELECT B.MENU_URL "pageUrl", A.WORKGROUP_SQ 
+		FROM TB_FR_MENU_AUTH_MAP A INNER JOIN TB_FR_MENU_INFO B
+			ON A.MENU_SQ = B.MENU_SQ 
+			AND A.READ_YN = 1
+		WHERE 1=1
+		<if test="pageUrl != null ">
+			AND B.MENU_URL = #{pageUrl}
+		</if>
+	</select>
+
+
+</mapper>

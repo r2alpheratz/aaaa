@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LanguageMgn">
+
+	<select id="selectLanguageList" parameterType="hashmap" resultType="languageInfoVo">
+		SELECT LANGUAGE_SQ, LANGUAGE_ID, LANGUAGE_NM, USE_YN, ORDER_NO, CREATE_DT, CREATE_USR_ID
+		  FROM TB_FR_LANGUAGE_INFO
+		 WHERE 1=1
+		<if test="languageSq != null and languageSq != ''">
+		   AND LANGUAGE_SQ = #{languageSq}
+		</if>
+		<if test="languageId != null and languageId != ''">
+		   AND LANGUAGE_ID = #{languageId}
+		</if>
+		<if test="useYn != null and useYn != ''">
+		   AND USE_YN = #{useYn}
+		</if>
+		 ORDER BY ORDER_NO ASC
+	</select>
+</mapper>

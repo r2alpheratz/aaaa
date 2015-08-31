@@ -1,0 +1,10 @@
+INSERT INTO TB_FR_DEPT_USER_MAP
+(DEPT_SQ, USER_SQ, DESCRIPTION, CREATE_USR_ID, CREATE_DT, UPDATE_USR_ID, UPDATE_DT)
+VALUES ('DEP0000003', 'USR_000001', '','superadmin', systimestamp, 'superadmin',  systimestamp);
+
+INSERT INTO TB_FR_DEPT_USER_MAP
+(DEPT_SQ, USER_SQ, DESCRIPTION, CREATE_USR_ID, CREATE_DT, UPDATE_USR_ID, UPDATE_DT)
+VALUES ('DEP0000003', 'USR_000002', '', 'superadmin', systimestamp, 'superadmin',  systimestamp);
+
+
+

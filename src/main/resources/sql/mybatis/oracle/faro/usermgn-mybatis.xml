@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserMgn">
+
+	<select id="selectUserInfoList" parameterType="hashmap" resultType="userInfoVo">
+		SELECT T2.*
+  		FROM
+  			(SELECT row_number() over(order by T1.USER_SQ) AS NUM,
+  			T1.*
+  			FROM(
+						SELECT USERINFO.USER_SQ,
+						  	   USERINFO.USER_ID,
+						  	   USERINFO.USER_NM,
+						  	   USERINFO.PASSWORD,
+						  	   USERINFO.EMAIL,
+						  	   USERINFO.PW_FAIL_CNT,
+						  	   USERINFO.PHONE_NUMBER,
+				  		  	   TO_CHAR(USERINFO.RECENT_LOGIN_DT, 'yyyy/MM/dd hh:MI:ss') RECENT_LOGIN_DT,
+					     	   USERINFO.RECENT_LOGIN_IP,
+				  		  	   USERINFO.GRD_CD,
+				  		  	   USERINFO.STATUS_CD,
+				  		  	   DEPTINFO.DEPT_NM,
+				  		  	   GRD_CODE.CODE_NM GRD_NM,
+				  		  	   STS_CODE.CODE_NM STATUS_NM
+						   FROM TB_FR_USER_INFO USERINFO
+						  LEFT OUTER JOIN TB_FR_DEPT_USER_MAP DUMAP
+						    ON USERINFO.USER_SQ= DUMAP.USER_SQ
+						  LEFT OUTER JOIN TB_FR_DEPT_INFO DEPTINFO
+						    ON DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+						  LEFT OUTER JOIN TB_FR_CODE_INFO GRD_CODE
+						    ON USERINFO.GRD_CD = GRD_CODE.CODE_SQ
+						  LEFT OUTER JOIN TB_FR_CODE_INFO STS_CODE
+							ON USERINFO.STATUS_CD = STS_CODE.CODE_SQ
+						  WHERE 1=1
+						<if test="userSq != null ">
+						   AND USERINFO.USER_SQ = #{userSq}
+						</if>
+
+						<if test="srchUserId != null and  srchUserId != '' ">
+						   AND UPPER(USERINFO.USER_ID) LIKE '%'||UPPER(#{srchUserId})||'%' ESCAPE '\'
+						</if>
+						<if test="srchUserNm != null and  srchUserNm != ''">
+						   AND UPPER(USERINFO.USER_NM) LIKE '%'||UPPER(#{srchUserNm})||'%' ESCAPE '\'
+						</if>
+						<if test="srchStatusCd != null and  srchStatusCd != ''">
+						   AND USERINFO.STATUS_CD = #{srchStatusCd}
+						</if>
+						 ORDER BY USERINFO.USER_SQ
+		<![CDATA[
+    		) T1
+  		)T2
+  		WHERE NUM >  #{readindex} AND NUM <= #{readcount}
+   		]]>
+	</select>
+
+	<select id="selectUserInfoListCount" resultType="int">
+        SELECT  COUNT(*)
+		   FROM TB_FR_USER_INFO USERINFO
+		  LEFT OUTER JOIN TB_FR_DEPT_USER_MAP DUMAP
+		    ON USERINFO.USER_SQ= DUMAP.USER_SQ
+		  LEFT OUTER JOIN TB_FR_DEPT_INFO DEPTINFO
+		    ON DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+		  LEFT OUTER JOIN TB_FR_CODE_INFO GRD_CODE
+		    ON USERINFO.GRD_CD = GRD_CODE.CODE_SQ
+		  LEFT OUTER JOIN TB_FR_CODE_INFO STS_CODE
+			ON USERINFO.STATUS_CD = STS_CODE.CODE_SQ
+		  WHERE 1=1
+		<if test="userSq != null ">
+		   AND USERINFO.USER_SQ = #{userSq}
+		</if>
+
+		<if test="srchUserId != null and  srchUserId != '' ">
+		   AND UPPER(USERINFO.USER_ID) LIKE '%'||UPPER(#{srchUserId})||'%' ESCAPE '\'
+		</if>
+		<if test="srchUserNm != null and  srchUserNm != ''">
+		   AND UPPER(USERINFO.USER_NM) LIKE '%'||UPPER(#{srchUserNm})||'%' ESCAPE '\'
+		</if>
+		<if test="srchStatusCd != null and  srchStatusCd != ''">
+		   AND USERINFO.STATUS_CD = #{srchStatusCd}
+		</if>
+	</select>
+
+	<select id="selectUserAllInfo" parameterType="userInfoVo"
+		resultType="userInfoVo">
+		SELECT
+		  USER_SQ, USER_ID, USER_NM, PASSWORD, EMAIL, PW_FAIL_CNT, PHONE_NUMBER,
+  		  TO_CHAR(RECENT_LOGIN_DT, 'yyyy/MM/dd hh:MI:ss') recentLoginDt, RECENT_LOGIN_IP, GRD_CD, STATUS_CD, TO_CHAR(CREATE_DT, 'yyyy/MM/dd hh:MI:ss') createDt,
+  		  CREATE_USR_ID, TO_CHAR(UPDATE_DT, 'yyyy/MM/dd hh:MI:ss') updateDt, UPDATE_USR_ID
+		FROM TB_FR_USER_INFO
+		WHERE 1=1
+			AND USER_SQ = #{userSq}
+	</select>
+
+	<select id="selectUserInfo" parameterType="userInfoVo"
+		resultType="userInfoVo">
+		SELECT
+		  USERINFO.USER_SQ, USERINFO.USER_ID, USERINFO.USER_NM, USERINFO.EMAIL, USERINFO.PHONE_NUMBER,
+  		  USERINFO.GRD_CD, USERINFO.STATUS_CD, DUMAP.DEPT_SQ
+		FROM TB_FR_USER_INFO USERINFO,
+			 TB_FR_DEPT_USER_MAP DUMAP
+		WHERE 1=1
+			AND USERINFO.USER_SQ = #{userSq, jdbcType=VARCHAR}
+			AND DUMAP.USER_SQ = USERINFO.USER_SQ
+	</select>
+
+	<update id="updateUserInfo" parameterType="userInfoVo">
+		UPDATE TB_FR_USER_INFO
+		SET
+		<if test="userSq != null and userSq !=''">
+			USER_SQ = #{userSq} ,
+		</if>
+		<if test="userId != null and userId !=''">
+			USER_ID = #{userId} ,
+		</if>
+		<if test="userNm != null and userNm !=''">
+			USER_NM = #{userNm} ,
+		</if>
+
+		<if test="changePassword != null and changePassword !=''">
+			PASSWORD = #{changePassword} ,
+			PW_CHANGE_DT = SYSTIMESTAMP ,
+		</if>
+		<if test="email != null and email !=''">
+			EMAIL = #{email} ,
+		</if>
+		<if test="pwFailCnt != null">
+			PW_FAIL_CNT = #{pwFailCnt} ,
+		</if>
+		<if test="phoneNumber != null and phoneNumber !=''">
+			PHONE_NUMBER = #{phoneNumber} ,
+		</if>
+		<if test="recentLoginDt != null and recentLoginDt !=''">
+			RECENT_LOGIN_DT = PARSEDATETIME(#{recentLoginDt}, 'yyyy/MM/dd hh:mm:ss') ,
+		</if>
+		<if test="recentLoginIp != null and recentLoginIp !=''">
+			RECENT_LOGIN_IP = #{recentLoginIp} ,
+		</if>
+		<if test="grdCd != null and grdCd !=''">
+			GRD_CD = #{grdCd} ,
+		</if>
+		<if test="statusCd != null and statusCd !=''">
+			STATUS_CD = #{statusCd} ,
+		</if>
+		UPDATE_DT = SYSTIMESTAMP ,
+		UPDATE_USR_ID = #{updateUsrId}
+		WHERE USER_SQ = #{userSq}
+	</update>
+
+	<update id="updateDeptUserMap" parameterType="userInfoVo">
+		UPDATE TB_FR_DEPT_USER_MAP
+   		   SET DEPT_SQ = #{deptSq},
+   		   	   UPDATE_DT = SYSTIMESTAMP ,
+			   UPDATE_USR_ID = #{updateUsrId}
+		 WHERE USER_SQ = #{userSq}
+	</update>
+
+	<delete id="deleteUserInfo" parameterType="userInfoVo">
+		DELETE TB_FR_USER_INFO
+		WHERE USER_SQ = #{userSq}
+	</delete>
+
+	<delete id="deleteUserRoleMap" parameterType="userInfoVo">
+		DELETE TB_FR_USER_ROLE_MAP
+		 WHERE USER_SQ = #{userSq}
+	</delete>
+
+	<delete id="deleteWorkgroupUserMap" parameterType="userInfoVo">
+		DELETE TB_FR_WORKGROUP_USER_MAP
+		 WHERE USER_SQ = #{userSq}
+	</delete>
+
+	<delete id="deleteDeptUserMap" parameterType="userInfoVo">
+		DELETE TB_FR_DEPT_USER_MAP
+		 WHERE USER_SQ = #{userSq}
+	</delete>
+
+	<insert id="insertUserInfo" parameterType="userInfoVo">
+		INSERT INTO TB_FR_USER_INFO
+		(USER_SQ, USER_ID, USER_NM, PASSWORD, EMAIL, PW_FAIL_CNT, PHONE_NUMBER, GRD_CD, STATUS_CD, CREATE_DT, CREATE_USR_ID, UPDATE_DT, UPDATE_USR_ID)
+		VALUES
+		(#{userSq}, #{userId}, #{userNm}, #{password, jdbcType=VARCHAR}, #{email, jdbcType=VARCHAR}, #{pwFailCnt, jdbcType=VARCHAR}, #{phoneNumber, jdbcType=VARCHAR}, #{grdCd, jdbcType=VARCHAR}, #{statusCd}, SYSTIMESTAMP, #{createUsrId}, SYSTIMESTAMP, #{updateUsrId})
+	</insert>
+
+	<insert id="insertDeptUserMap" parameterType="userInfoVo">
+		INSERT INTO TB_FR_DEPT_USER_MAP
+		(USER_SQ, DEPT_SQ, CREATE_DT, CREATE_USR_ID, UPDATE_DT, UPDATE_USR_ID)
+		VALUES
+		(#{userSq}, #{deptSq}, SYSTIMESTAMP, #{createUsrId}, SYSTIMESTAMP, #{updateUsrId})
+	</insert>
+
+	<select id="getUserCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) CNT FROM TB_FR_USER_INFO
+	</select>
+
+	<select id="getMaxIdSeq" resultType="string">
+	  	select MAX (SUBSTR(USER_SQ, 5, 10)) AS SEQ from TB_FR_USER_INFO
+	</select>
+
+	<select id="selectStatusList" parameterType="hashmap" resultType="codeInfoVo">
+		SELECT CODE_SQ, CODE_NM, CODE_DESCRIPTION
+     	  FROM TB_FR_CODE_INFO
+		 WHERE 1=1
+		   AND PARENT_CODE_SQ = 'STS_010000'
+		 ORDER BY CODE_SQ
+	</select>
+
+	<select id="selectGrdList" parameterType="hashmap" resultType="codeInfoVo">
+		SELECT CODE_SQ, CODE_NM, CODE_DESCRIPTION
+     	  FROM TB_FR_CODE_INFO
+		 WHERE 1=1
+		   AND CODE_SQ LIKE 'GRD%'
+		 ORDER BY CODE_SQ
+	</select>
+
+	<select id="selectDeptList" parameterType="hashmap" resultType="userInfoVo">
+		SELECT DEPT_SQ, DEPT_NM, DESCRIPTION
+     	  FROM TB_FR_DEPT_INFO
+		 WHERE 1=1
+		 ORDER BY DEPT_SQ
+	</select>
+
+			<select id="selectDeptInfo" parameterType="userInfoVo" resultType="userInfoVo">
+		SELECT DEPT_SQ, DEPT_NM, DESCRIPTION
+     	  FROM TB_FR_DEPT_INFO
+		 WHERE 1=1
+		<if test="deptSq != null and deptSq !=''">
+		AND	DEPT_SQ = #{deptSq}
+		</if>
+		<if test="deptNm != null and deptNm !=''">
+		AND	DEPT_NM = #{deptNm}
+		</if>
+	</select>
+
+
+	<select id="checkExistByUserId" parameterType="userInfoVo" resultType="int">
+		SELECT COUNT(USER_ID)
+     	  FROM TB_FR_USER_INFO
+		 WHERE 1=1
+		   AND USER_ID = #{userId}
+	</select>
+
+	<select id="selectUserInfoByUserId" parameterType="userInfoVo"
+		resultType="userInfoVo">
+		SELECT
+		  USERINFO.USER_SQ, USERINFO.USER_ID, USERINFO.USER_NM, USERINFO.EMAIL, USERINFO.PHONE_NUMBER, USERINFO.PASSWORD,
+  		  USERINFO.GRD_CD, USERINFO.STATUS_CD, DUMAP.DEPT_SQ, TO_CHAR(USERINFO.PW_CHANGE_DT, 'YYYYMMDD') AS PW_CHANGE_DT
+		FROM TB_FR_USER_INFO USERINFO,
+			 TB_FR_DEPT_USER_MAP DUMAP
+		WHERE 1=1
+			AND USERINFO.USER_ID = #{userId}
+			AND DUMAP.USER_SQ = USERINFO.USER_SQ
+	</select>
+	<select id="checkUserPassword" parameterType="userInfoVo" resultType="int">
+		SELECT COUNT(*)
+		  FROM TB_FR_USER_INFO
+		 WHERE 1=1
+		   AND USER_SQ = #{userSq}
+		   AND PASSWORD = #{password}
+	</select>
+</mapper>

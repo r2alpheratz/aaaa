@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/jdbc
+		http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		  http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+		<property name="driverClass" value="org.h2.Driver" />
+		<property name="jdbcUrl" value="jdbc:h2:~/holidayCalendar/h2" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="logStatementsEnabled" value="true" />
+	</bean>
+
+	<util:properties id="props" location="classpath:/properties/h2.datasource.properties"> </util:properties>
+
+	<!-- TODO : DB Migration 염두해서 폴더 구조로 변경 -->
+	<util:list id="databaseScriptsList" value-type="org.springframework.core.io.Resource">
+		<value>#{props['datasource.ddl.path']}/TB_FR_CODE_INFO.sql</value>
+		<value>#{props['datasource.initdata.path']}/TB_FR_CODE_INFO_INITDATA.sql</value>
+	</util:list>
+
+	<bean id="dataSourceInitializer" class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="databasePopulator">
+			<bean class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+				<property name="scripts" ref="databaseScriptsList"></property>
+				<property name="sqlScriptEncoding" value="UTF-8"></property>
+			</bean>
+		</property>
+	</bean>
+
+
+</beans>

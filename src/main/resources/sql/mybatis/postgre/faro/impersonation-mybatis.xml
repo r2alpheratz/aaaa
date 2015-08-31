@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Impersonation">
+	<select id="getUserByUsername" parameterType="String" resultType="faroUserDetails">
+		SELECT A.USER_SQ, A.USER_ID, A.PASSWORD, A.USER_NM, A.PW_FAIL_CNT, A.STATUS_CD
+				  FROM TB_FR_USER_INFO A
+            WHERE A.USER_ID = #{userId}
+	</select>
+	<select id="getRoleByUsersq" parameterType="String" resultType="faroUserSessionRole">
+		SELECT C.ROLE_SQ, C.ROLE_ID, C.ROLE_NM
+	       FROM TB_FR_USER_ROLE_MAP B,
+	       TB_FR_ROLE_INFO C
+        WHERE B.USER_SQ = #{userSq} AND B.ROLE_SQ = C.ROLE_SQ
+	</select>
+	<select id="getWorkGroupByRolesq" parameterType="String" resultType="faroUserSessionWorkgroup">
+		SELECT C.WORKGROUP_SQ, C.WORKGROUP_ID, C.WORKGROUP_NM
+	       FROM TB_FR_WORKGROUP_ROLE_MAP B,
+	       TB_FR_WORKGROUP_INFO C
+        WHERE B.ROLE_SQ = #{roleSq} AND B.WORKGROUP_SQ = C.WORKGROUP_SQ
+	</select>
+
+	<select id="getWorkGroupByUsersq" parameterType="String" resultType="faroUserSessionWorkgroup">
+		SELECT C.WORKGROUP_SQ, C.WORKGROUP_ID, C.WORKGROUP_NM
+	       FROM TB_FR_WORKGROUP_USER_MAP B,
+	       TB_FR_WORKGROUP_INFO C
+        WHERE B.USER_SQ = #{userSq} AND B.WORKGROUP_SQ = C.WORKGROUP_SQ
+	</select>
+	<select id="selectWorkgroupUserList" parameterType="String" resultType="userInfoVo">
+		SELECT *
+		FROM TB_FR_WORKGROUP_USER_MAP
+		WHERE USER_SQ = #{userSq}
+	</select>
+	<select id="selectUserRoleList" parameterType="String" resultType="userInfoVo">
+		SELECT *
+		FROM TB_FR_USER_ROLE_MAP
+		WHERE USER_SQ = #{userSq}
+	</select>
+</mapper>

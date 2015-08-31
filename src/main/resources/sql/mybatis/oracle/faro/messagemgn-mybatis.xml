@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MessageMgn">
+
+
+	<select id="selectMessageInfoList" parameterType="java.util.HashMap"
+		resultType="messageInfoVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY MESSAGE_KEY) AS NUM, T1.*FROM (
+
+		<if test="country == null or country == ''">
+			SELECT MESSAGE_KEY,
+			LARGE_CATEGORY,
+			MEDIUM_CATEGORY,
+			SMALL_CATEGORY,
+			MESSAGE_VALUE,
+			CREATE_USR_ID,
+			CREATE_DT
+			FROM TB_FR_MESSAGE_INFO
+			WHERE 1=1
+			<if test="srchMessageKey != null and  srchMessageKey != '' ">
+				AND UPPER(MESSAGE_KEY) LIKE '%'||UPPER(#{srchMessageKey})||'%' ESCAPE '\'
+			</if>
+			<if test="srchMessageValue != null and  srchMessageValue != ''">
+				AND UPPER(MESSAGE_VALUE) LIKE '%'||UPPER(#{srchMessageValue})||'%' ESCAPE '\'
+			</if>
+			<if test="srchLargeCategoryCd != null and  srchLargeCategoryCd != ''">
+				AND LARGE_CATEGORY = #{srchLargeCategoryCd}
+			</if>
+			<if test="srchMediumCategoryCd != null and  srchMediumCategoryCd != ''">
+				AND MEDIUM_CATEGORY = #{srchMediumCategoryCd}
+			</if>
+			<if test="srchSmallCategoryCd != null and  srchSmallCategoryCd != ''">
+				AND SMALL_CATEGORY = #{srchSmallCategoryCd}
+			</if>
+			ORDER BY MESSAGE_KEY
+		</if>
+
+		<if test="country != null and country != ''">
+			SELECT INFO.MESSAGE_KEY,
+			INFO.LARGE_CATEGORY,
+			INFO.MEDIUM_CATEGORY,
+			INFO.SMALL_CATEGORY,
+			MULTI.MESSAGE_VALUE,
+			MULTI.CREATE_USR_ID,
+			MULTI.CREATE_DT
+			FROM TB_FR_MESSAGE_INFO INFO,
+			TB_FR_MULTI_MESSAGE_INFO MULTI
+			WHERE 1=1
+			AND INFO.MESSAGE_KEY = MULTI.MESSAGE_KEY
+			AND MULTI.COUNTRY_CD = #{country}
+			<if test="srchMessageKey != null and  srchMessageKey != '' ">
+				AND UPPER(INFO.MESSAGE_KEY) LIKE '%'||UPPER(#{srchMessageKey})||'%' ESCAPE '\'
+			</if>
+			<if test="srchMessageValue != null and  srchMessageValue != ''">
+				AND UPPER(INFO.MESSAGE_VALUE) LIKE '%'||UPPER(#{srchMessageValue})||'%' ESCAPE '\'
+			</if>
+			<if test="srchLargeCategoryCd != null and  srchLargeCategoryCd != ''">
+				AND INFO.LARGE_CATEGORY = #{srchLargeCategoryCd}
+			</if>
+			<if test="srchMediumCategoryCd != null and  srchMediumCategoryCd != ''">
+				AND INFO.MEDIUM_CATEGORY = #{srchMediumCategoryCd}
+			</if>
+			<if test="srchSmallCategoryCd != null and  srchSmallCategoryCd != ''">
+				AND INFO.SMALL_CATEGORY = #{srchSmallCategoryCd}
+			</if>
+			ORDER BY INFO.MESSAGE_KEY
+		</if>
+
+		<![CDATA[
+			) T1) T2 WHERE NUM <= #{readcount} AND NUM > #{readindex}
+		]]>
+
+	</select>
+
+	<select id="selectMessage" parameterType="java.util.HashMap"
+		resultType="messageInfoVo">
+		SELECT MESSAGE_KEY, MESSAGE_VALUE
+		FROM TB_FR_MESSAGE_INFO
+		where 1=1
+		<if test="largeCategory != null and largeCategory != ''">
+			AND LARGE_CATEGORY = #{largeCategory} or LARGE_CATEGORY = 'COM' or
+			LARGE_CATEGORY = 'UI'
+		</if>
+
+	</select>
+
+	<select id="searchMultiLangMessage" parameterType="java.util.HashMap"
+		resultType="messageInfoVo">
+		SELECT MESSAGE_KEY, MESSAGE_VALUE, COUNTRY_CD
+		FROM
+		TB_FR_MULTI_MESSAGE_INFO
+		where 1=1
+		<if test="country != null and country != ''">
+			AND COUNTRY_CD = #{country}
+		</if>
+		<if test="messageKey != null and messageKey != ''">
+			AND MESSAGE_KEY = #{messageKey}
+		</if>
+
+	</select>
+
+
+	<select id="selectMessageListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_MESSAGE_INFO
+		WHERE 1=1
+		<if test="srchMessageKey != null and  srchMessageKey != '' ">
+			AND UPPER(TB_FR_MESSAGE_INFO.MESSAGE_KEY) LIKE '%'||UPPER(#{srchMessageKey})||'%' ESCAPE '\'
+		</if>
+		<if test="srchMessageValue != null and  srchMessageValue != ''">
+			AND UPPER(TB_FR_MESSAGE_INFO.MESSAGE_VALUE) LIKE '%'||UPPER(#{srchMessageValue})||'%' ESCAPE '\'		
+		</if>
+		<if test="srchLargeCategoryCd != null and  srchLargeCategoryCd != ''">
+			AND LARGE_CATEGORY = #{srchLargeCategoryCd}
+		</if>
+		<if test="srchMediumCategoryCd != null and  srchMediumCategoryCd != ''">
+			AND MEDIUM_CATEGORY = #{srchMediumCategoryCd}
+		</if>
+		<if test="srchSmallCategoryCd != null and  srchSmallCategoryCd != ''">
+			AND SMALL_CATEGORY = #{srchSmallCategoryCd}
+		</if>
+
+	</select>
+
+	<select id="selectMessageCheck" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_MESSAGE_INFO
+		WHERE 1=1
+		AND MESSAGE_KEY = #{messageKey}
+	</select>
+
+
+	<select id="selectMessageByMessageKey" resultType="messageInfoVo">
+		SELECT INFO.MESSAGE_KEY,
+		INFO.LARGE_CATEGORY,
+		INFO.MEDIUM_CATEGORY,
+		INFO.SMALL_CATEGORY,
+		INFO.MESSAGE_VALUE,
+		INFO.CREATE_USR_ID,
+		INFO.CREATE_DT
+		FROM TB_FR_MESSAGE_INFO INFO
+		WHERE INFO.MESSAGE_KEY = #{messageKey}
+	</select>
+
+	<select id="selectMessageCheckByKey" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_MESSAGE_INFO
+		WHERE 1=1
+		AND MESSAGE_KEY = #{messageKey}
+	</select>
+
+	<insert id="insertMessage" parameterType="messageInfoVo">
+		INSERT INTO
+		TB_FR_MESSAGE_INFO
+		(
+			MESSAGE_KEY,
+			LARGE_CATEGORY,
+			MEDIUM_CATEGORY,
+			SMALL_CATEGORY,
+			MESSAGE_VALUE,
+			CREATE_DT,
+			CREATE_USR_ID,
+			UPDATE_DT,
+			UPDATE_USR_ID
+		)
+		VALUES (
+			#{messageKey},
+			#{largeCategory},
+			#{mediumCategory},
+			#{smallCategory},
+			#{messageValue},
+			SYSTIMESTAMP,
+			#{createUsrId},
+			SYSTIMESTAMP,
+			#{updateUsrId}
+		)
+	</insert>
+
+	<insert id="insertMultiMessage" parameterType="java.util.HashMap">
+		INSERT INTO
+		TB_FR_MULTI_MESSAGE_INFO
+		(
+			MESSAGE_KEY,
+			COUNTRY_CD,
+			MESSAGE_VALUE,
+			CREATE_DT,
+			CREATE_USR_ID,
+			UPDATE_DT,
+			UPDATE_USR_ID
+		)
+		VALUES (
+			#{messageKey},
+			#{countryCd},
+			#{messageValue},
+			SYSTIMESTAMP,
+			#{createUsrId},
+			SYSTIMESTAMP,
+			#{updateUsrId}
+		)
+	</insert>
+
+	<update id="updateMessageInfo" parameterType="messageInfoVo">
+		UPDATE TB_FR_MESSAGE_INFO SET
+		<if test="messageValue != null and messageValue !=''">
+			MESSAGE_VALUE =#{messageValue},
+		</if>
+		<if test="largeCategory != null and largeCategory !=''">
+			LARGE_CATEGORY =#{largeCategory},
+		</if>
+		<if test="mediumCategory != null and mediumCategory !=''">
+			MEDIUM_CATEGORY =#{mediumCategory},
+		</if>
+		<if test="smallCategory != null and smallCategory !=''">
+			SMALL_CATEGORY =#{smallCategory},
+		</if>
+		UPDATE_DT = SYSTIMESTAMP
+		WHERE MESSAGE_KEY =#{messageKey}
+	</update>
+
+	<update id="updateMultiMessageInfo" parameterType="messageInfoVo">
+		UPDATE TB_FR_MULTI_MESSAGE_INFO SET
+		<if test="messageValue != null and messageValue !=''">
+			MESSAGE_VALUE = #{messageValue},
+		</if>
+		UPDATE_DT = SYSTIMESTAMP
+		WHERE MESSAGE_KEY = #{messageKey}
+			AND COUNTRY_CD = #{countryCd}
+	</update>
+
+	<delete id="deleteMessageInfo" parameterType="messageInfoVo">
+		DELETE
+		TB_FR_MESSAGE_INFO
+		WHERE MESSAGE_KEY = #{messageKey}
+	</delete>
+
+	<delete id="deleteMultiMessageInfo" parameterType="messageInfoVo">
+		DELETE
+		TB_FR_MULTI_MESSAGE_INFO
+		WHERE MESSAGE_KEY = #{messageKey}
+	</delete>
+</mapper>

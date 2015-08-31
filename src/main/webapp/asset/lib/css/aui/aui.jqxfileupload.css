@@ -1,0 +1,378 @@
+
+/*File upload Area*/
+.aui-fileuploader-area {
+    border: none;
+    overflow: hidden;
+}
+
+/*Title Area*/
+.aui-fileuploader-title-area {
+    height: 40px;
+    background-color: #37c8ec;
+    font-size: 30px;
+    font-family: calibri;
+    font-weight: bold;
+    color: #ffffff;
+    padding-left:14px;
+}
+
+/*Control Area*/
+.aui-fileuploader-control-area {
+}
+
+/*Control Area: Progress Area*/
+.aui-fileuploader-progress-area {
+}
+/*Control Area: Progress Area: Info Area*/
+.aui-fileuploader-progressinfo {
+
+}
+/*Control Area: Progress Area: Info Text*/
+.aui-fileuploader-progressinfo-text{
+}
+/*Control Area: Progress Area: Info Text: total size text*/
+.aui-fileuploader-progressinfo-totalsize-text {
+    margin: 0 0 0 2px;
+}
+/*Control Area: Progress Area: total size number*/
+.aui-fileuploader-progressinfo-totalsize {
+    margin: 0 2px 0 0;
+}
+/*Control Area: Progress Area: uploaded file count*/
+.aui-fileuploader-progressinfo-uploadedfilecount {
+    margin-right: 4px;
+}
+/*Control Area: Progress Area: total count number*/
+.aui-fileuploader-progressinfo-totalcount {
+    margin-right: 4px;
+}
+/*Control Area: Progress Area: total count text*/
+.aui-fileuploader-progressinfo-totalcount-text {
+}
+/*Control Area: Progress Area: ProgressBar*/
+.aui-fileuploader-progressbar {
+    min-width: 100px;
+    height: 11px !important;
+    margin-top : 4px;
+    border: 1px solid #d0d0d0 !important;
+    border-radius: 3px !important;
+    background: #fff !important;
+}
+/*Control Area: Button Area*/
+.aui-fileuploader-button-area {  
+    margin-left: 10px;  
+}
+
+.aui-fileuploader-button-area button{
+   height: 22px;
+   line-height: 22px;
+   display: inline-block;
+   padding: 0 5px;
+   font-weight: bold;
+   color: #000;
+   border: 1px solid #d0d0d0;
+   background-color: #f8f8f8;
+   border-radius: 4px;
+   cursor: pointer;
+   margin-left:2px;
+}
+
+
+.aui-fileuploader-button-area button:hover{
+  color: #fff;
+  border: 1px solid #86b431;
+  background-color: #93c92f;
+  cursor: pointer;
+}
+
+.aui-fileuploader-button-area button:disabled{
+    height: 22px;
+    line-height: 22px;
+    display: inline-block;
+    background-color: #f8f8f8;
+    padding: 0 5px;
+    font-weight: bold;
+    color: #ccc;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    cursor: default;
+}
+
+
+
+
+/*Control Area: Button Area: Button Text*/
+.aui-fileuploader-control-button-text {
+    margin: 0 2px 0 2px;
+}
+/*Control Area: Button Area: Button Icon*/
+.aui-fileuploader-control-img-16 {
+    cursor: pointer;
+	background-size: 12px 12px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+/*Control Area: Button Area: Add Button*/
+.aui-fileuploader-control-addbtn {
+    margin-left: 3px;
+}
+/*Control Area: Button Area: Add Button Icon*/
+.aui-fileuploader-control-addimg {
+    /*background-image: url(images/fu-add_file.png);*/
+}
+/*Control Area: Button Area: Add Button Text*/
+.aui-fileuploader-control-addtxt {
+    margin-left: -15px;
+}
+
+.aui-fileuploader-control-uploadbtn {
+    margin-left: 3px;
+}
+
+.aui-fileuploader-control-uploadimg {
+    /*background-image: url(images/fu-upload_all.png);*/
+}
+
+.aui-fileuploader-control-uploadtxt {
+    margin-left: -15px;
+}
+
+.aui-fileuploader-control-resetbtn {
+    margin-left: 3px;
+}
+
+.aui-fileuploader-control-resetimg {
+    /*background-image: url(images/fu-full-trash.png);*/
+}
+
+.aui-fileuploader-control-resettxt {
+    margin-left: -15px;
+}
+
+.aui-fileuploader-control-cancelbtn {
+    margin-left: 3px;
+}
+
+.aui-fileuploader-control-cancelimg {
+    /*background-image: url(images/fu-stop.png);*/
+}
+
+.aui-fileuploader-control-canceltxt {
+    margin-left: -15px;
+}
+
+.aui-fileuploader-list-area {
+}
+
+.aui-fileuploader-item-area {
+    padding: 10px;
+    margin-top: 5px;
+    background: #ededed;
+}
+
+.aui-fileuploader-item-area:hover {
+    background-color: #D0E7E3;
+}
+
+.aui-fileuploader-item-area:active {
+    background-color: #fff5dd;
+}
+
+.aui-fileuploader-item-area-dragline-top {
+    border-top: 1px dashed limegreen;
+}
+
+.aui-fileuploader-item-area-dragline-bottom {
+    border-bottom: 1px dashed limegreen;
+}
+
+.aui-fileuploader-item-area-fileexticon-20 {
+    margin: 4px 3px 0 0;
+    display: none;
+}
+
+.aui-fileuploader-item-area-fileexticon-20-excel {
+    background-image: url(images/fu-excel_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-file {
+    background-image: url(images/fu-file_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-html {
+    background-image: url(images/fu-html_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-mov {
+    background-image: url(images/fu-movie_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-pic {
+    background-image: url(images/fu-pic_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-ppt {
+    background-image: url(images/fu-ppt_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-word {
+    background-image: url(images/fu-word_icon_20.png);
+}
+
+.aui-fileuploader-item-area-fileexticon-20-zip {
+    background-image: url(images/fu-zip_icon_20.png);
+}
+
+.aui-fileuploader-item-area-filename {
+    width: 355px;
+    min-width: 50px;
+}
+
+.aui-fileuploader-item-area-fileprogress {
+    min-width: 50px;    
+    margin-top: 10px;
+    height : 6px !important;
+    border: 1px solid #d0d0d0 !important;
+    border-radius: 3px !important;
+    background: #fff !important;
+}
+
+.aui-fileuploader-item-area-filesize {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 100px;
+    text-align: right;
+}
+
+.aui-fileuploader-item-area-filesize-uploadedsize {
+}
+
+.aui-fileuploader-item-area-filesize-originalsize {
+}
+
+.aui-fileuploader-item-area-filebuttonarea {
+}
+.aui-fileuploader-item-button-text {
+    margin: 2px 2px 0 2px;
+}
+.aui-fileuploader-item-img-16 {
+}
+.aui-fileuploader-item-startbtn {    
+    margin: 6px 2px 0 2px;
+    border: 0px;
+    width: 16px;
+    height: 16px;
+    color: #333;
+    text-decoration: none;
+    background-image: url(images/file_stop.png);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+/*.aui-fileuploader-item-startbtn:hover {*/
+    /*background-color: #2fddac;*/
+/*}*/
+/*.aui-fileuploader-item-startbtn:active {*/
+    /*background-color: #05fabc;*/
+/*}*/
+.aui-fileuploader-item-startimg-16 {
+    background-image: url(images/fu-start-icon-16.png);
+}
+.aui-fileuploader-item-starttxt {
+}
+
+button.aui-fileuploader-item-cancelbtn {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: 0px;
+    width: 16px;
+    height: 16px;
+    text-decoration: none;
+    background-image: url(images/file_stop.png);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+
+button.aui-fileuploader-item-cancelbtn:disabled {
+    
+    cursor:default;
+}
+.aui-fileuploader-item-cancelbtn>span{
+    display:none;
+}
+/*.aui-fileuploader-item-cancelbtn:hover {*/
+    /*background-color: #2fddac;*/
+/*}*/
+/*.aui-fileuploader-item-cancelbtn:active {*/
+    /*background-color: #05fabc;*/
+/*}*/
+.aui-fileuploader-item-cancelimg-16 {
+    background-image: url(images/fu-cancel-icon-16.png);
+}
+.aui-fileuploader-item-canceltxt {
+}
+
+.aui-fileuploader-item-area-filestatusarea {
+    width: 0px;
+}
+.aui-fileuploader-item-area-filestatusarea-text {
+}
+.aui-fileuploader-item-area-filestatusarea-icon {
+    margin: 5px 5px 0 5px;
+}
+.aui-fileuploader-item-area-filestatusarea-readyicon {
+    background-image: url(images/fu-added_icon.png);
+}
+
+.aui-fileuploader-item-area-filestatusarea-readytext {
+}
+
+.aui-fileuploader-item-area-filestatusarea-uplodingicon {
+    background-image: url(images/fu-upload-status-icon-16.png);
+}
+
+.aui-fileuploader-item-area-filestatusarea-uploadingtext {
+}
+
+.aui-fileuploader-item-area-filestatusarea-completedicon {
+    background-image: url(images/fu-complete-status-icon-16.png);
+}
+
+.aui-fileuploader-item-area-filestatusarea-completedtext {
+}
+
+.aui-fileuploader-item-area-filestatusarea-canceledicon {
+    background-image: url(images/fu-cancel-status-icon-16.png);
+}
+
+.aui-fileuploader-item-area-filestatusarea-canceledtext {
+}
+
+/* Global Area */
+/* Progress Bar Color*/
+.jqx-progressbar-value.jqx-fill-state-pressed {
+    background: #06aaea;
+    background: -moz-linear-gradient(left, #016fea 0%, #07bcea 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#016fea), color-stop(100%,#07bcea));
+    background: -webkit-linear-gradient(left, #016fea 0%, #07bcea 100%);
+    background: -o-linear-gradient(left, #016fea 0%, #07bcea 100%);
+    background: -ms-linear-gradient(left, #016fea 0%, #07bcea 100%);
+    background: linear-gradient(to right, #016fea 0%, #07bcea 100%);
+}
+/* Loading Icon for IE */
+.aui-fileuploader-loading-icon {
+    background-image: url(images/fu-loader.gif);
+    height: 20px;
+    width: 220px;
+}
+/* Loading Icon Background */
+.container-upload-overlay {
+    background-color: rgb( 255, 255, 255);
+    opacity: 0.5;
+    filter: alpha(opacity = 50); /* IE7 & 8 */
+    width: 100%;
+    height: 100%;
+}

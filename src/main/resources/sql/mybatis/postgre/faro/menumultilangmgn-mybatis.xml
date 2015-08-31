@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MenuMultiLangMgn">
+
+
+		<select id="selectMenuMultiLangInfo" parameterType="menuMultiLangInfoVo"	resultType="menuMultiLangInfoVo">
+		SELECT  MENU_SQ, MESSAGE_VALUE, COUNTRY_CD
+		FROM TB_FR_MENU_MULTI_LANG_INFO
+		WHERE 1=1
+			<if test="menuSq != null and menuSq !=''">
+			AND MENU_SQ = #{menuSq}
+		</if>
+		<if test="countryCd != null and countryCd !=''">
+			AND COUNTRY_CD = #{countryCd}
+		</if>
+		</select>
+
+
+ <update id="updateMenuMultiLangInfo"  parameterType="menuMultiLangInfoVo" >
+    UPDATE TB_FR_MENU_MULTI_LANG_INFO
+         SET
+         <if test="messageValue != null and messageValue !=''">
+            	MESSAGE_VALUE =  #{messageValue} ,
+           </if>
+          	   UPDATE_USR_ID =  #{updateUsrId},
+                UPDATE_DT =   NOW()
+              WHERE MENU_SQ = #{menuSq}
+              	<if test="countryCd != null and countryCd !=''">
+			AND COUNTRY_CD = #{countryCd}
+		</if>
+
+</update>
+
+<insert id="insertMenuMultiLangInfo" parameterType="menuMultiLangInfoVo">
+  INSERT INTO TB_FR_MENU_MULTI_LANG_INFO
+    ( MENU_SQ, MESSAGE_VALUE, COUNTRY_CD, CREATE_USR_ID, CREATE_DT)
+VALUES (#{menuSq},  #{messageValue}, #{countryCd},  #{createUsrId}, NOW() )
+</insert>
+
+<delete id="deleteMenuMultiLangInfo" parameterType="menuMultiLangInfoVo">
+	DELETE
+		FROM TB_FR_MENU_MULTI_LANG_INFO
+		WHERE MENU_SQ = #{menuSq}
+
+</delete>
+
+</mapper>

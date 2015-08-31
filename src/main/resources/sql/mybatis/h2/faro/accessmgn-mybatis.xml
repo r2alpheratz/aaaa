@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TB_HC_HOLIDAY_INFO">
+	
+<!-- 	<select id="selectholiday" resultType="String"> -->
+<!-- 		SELECT NAME -->
+<!-- 		FROM HOLIDAY -->
+		
+<!-- 	</select> -->
+	
+	<select id="selectMessageInfoList" parameterType="java.util.HashMap"
+		resultType="holidayInfoVo">
+		SELECT * FROM (SELECT ROWNUM() AS RNUM, ROW.* FROM (
+		SELECT COUNTRY_CD,
+		HOLIDAY_SQ,
+		HOLIDAY_ST_DT,
+		HOLIDAY_END_DT,
+		HOLIDAY_NM,
+		HOLIDAY_YN,
+		HOLIDAY_DESCRIPTION,
+		CREATE_DT,
+		USE_YN,
+		CREATE_USR_ID,
+		UPDATE_DT,
+		UPDATE_USR_ID
+		FROM TB_HC_HOLIDAY_INFO
+		<![CDATA[
+					   ) ROW
+				 WHERE ROWNUM() <=  #{readcount}
+			   )
+		 WHERE RNUM > #{readindex}
+		]]>
+	</select>
+
+	<select id="selectMessageListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_HC_HOLIDAY_INFO
+	</select>
+</mapper>

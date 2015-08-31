@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="WorkgroupMgn">
+	<select id="selectWorkgroupList" parameterType="java.util.HashMap"
+		resultType="workgroupInfoVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY WORKGROUP_SQ) AS NUM, T1.* FROM (
+			SELECT WORKGROUP_SQ, WORKGROUP_ID, WORKGROUP_NM, DESCRIPTION, USE_YN
+			FROM TB_FR_WORKGROUP_INFO
+     		WHERE 1=1
+     		<if test="workgroupSq != null and workgroupSq != ''">
+				AND WORKGROUP_SQ = #{workgroupSq}
+			</if>
+			<if test="srchWorkgroupId != null and srchWorkgroupId != ''">
+				AND UPPER(WORKGROUP_ID) LIKE '%' + UPPER(#{srchWorkgroupId}) + '%' ESCAPE '\'
+			</if>
+			<if test="srchWorkgroupNm != null and srchWorkgroupNm !=''">
+				AND UPPER(WORKGROUP_NM) LIKE '%' + UPPER(#{srchWorkgroupNm}) + '%' ESCAPE '\'
+			</if>
+		<![CDATA[
+			) T1) T2 WHERE NUM <= #{readcount}+#{readindex} AND NUM > #{readindex}
+		]]>
+	</select>
+
+	<select id="selectWorkgroupListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_WORKGROUP_INFO
+		WHERE 1=1
+		<if test="srchWorkgroupId != null and srchWorkgroupId != ''">
+			AND UPPER(WORKGROUP_ID) LIKE '%' + UPPER(#{srchWorkgroupId}) + '%' ESCAPE '\'
+		</if>
+		<if test="srchWorkgroupNm != null and srchWorkgroupNm !=''">
+			AND UPPER(WORKGROUP_NM) LIKE '%' + UPPER(#{srchWorkgroupNm}) + '%' ESCAPE '\'
+		</if>
+	</select>
+
+	<select id="selectWorkgroupCheck" resultType="int">
+         SELECT  COUNT(*)
+		  FROM TB_FR_WORKGROUP_INFO
+		  WHERE 1=1
+			AND WORKGROUP_ID = #{workgroupId}
+			<if test="workgroupSq != null and workgroupSq != ''">
+			AND WORKGROUP_SQ != #{workgroupSq}
+			</if>
+	</select>
+
+	<insert id="insertWorkgroup" parameterType="workgroupInfoVo">
+		INSERT INTO
+		TB_FR_WORKGROUP_INFO
+		(
+		WORKGROUP_SQ,
+		WORKGROUP_ID,
+		WORKGROUP_NM,
+		DESCRIPTION,
+		USE_YN,
+		CREATE_DT,
+		CREATE_USR_ID,
+		UPDATE_DT,
+		UPDATE_USR_ID
+		)
+		VALUES (
+		#{workgroupSq},
+		#{workgroupId},
+		#{workgroupNm},
+		#{description},
+		#{useYn},
+		GETDATE(),
+		#{createUsrId},
+		GETDATE(),
+		#{updateUsrId}
+		)
+	</insert>
+
+	<update id="updateWorkgroup" parameterType="workgroupInfoVo">
+		UPDATE TB_FR_WORKGROUP_INFO SET
+		<if test="workgroupId != null and workgroupId !=''">
+			WORKGROUP_ID =#{workgroupId},
+		</if>
+		<if test="workgroupNm != null and workgroupNm !=''">
+			WORKGROUP_NM =#{workgroupNm} ,
+		</if>
+		<if test="description != null and description !=''">
+			DESCRIPTION = #{description},
+		</if>
+		<if test="useYn != null and useYn !=''">
+			USE_YN = #{useYn},
+		</if>
+		<if test="updateUsrId != null and updateUsrId !=''">
+			UPDATE_USR_ID = #{updateUsrId},
+		</if>
+		UPDATE_DT = GETDATE()
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</update>
+
+	<update id="updateWorkgroupMenu" parameterType="java.util.HashMap">
+		UPDATE TB_FR_MENU_AUTH_MAP SET
+		<if test="readYn != null">
+			READ_YN =#{readYn} ,
+		</if>
+		<if test="updateYn != null">
+			UPDATE_YN =#{updateYn} ,
+		</if>
+		<if test="executeYn != null">
+			EXECUTE_YN =#{executeYn} ,
+		</if>
+		<if test="updateUsrId != null and updateUsrId !=''">
+			UPDATE_USR_ID = #{updateUsrId},
+		</if>
+		UPDATE_DT = GETDATE()
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+		AND MENU_SQ = #{menuSq}
+	</update>
+
+
+	<delete id="deleteWorkgroup" parameterType="workgroupInfoVo">
+		DELETE
+		FROM TB_FR_WORKGROUP_INFO
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</delete>
+
+	<select id="getMaxIdSeq" resultType="string">
+		SELECT ISNULL(MAX(SUBSTRING(WORKGROUP_SQ , 5, 10)), '1') AS SEQ FROM TB_FR_WORKGROUP_INFO
+	</select>
+
+	<select id="selectWorkgroupMenuList" parameterType="java.util.HashMap" resultType="menuAuthMapVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY WORKGROUP_SQ, MENU_SQ) AS NUM, T1.* FROM (
+			SELECT INFO.*, MAP.READ_YN, MAP.UPDATE_YN, MAP.EXECUTE_YN, MAP.WORKGROUP_SQ
+			FROM TB_FR_MENU_INFO INFO,
+				 TB_FR_MENU_AUTH_MAP MAP
+			WHERE MAP.WORKGROUP_SQ = #{workgroupSq}
+			  AND INFO.MENU_SQ = MAP.MENU_SQ
+			  AND INFO.USE_YN = 'Y'
+			  AND LEN( RTRIM(INFO.MENU_URL) ) > 0 
+		<![CDATA[
+			) T1) T2 WHERE NUM <=  #{readcount}+#{readindex} AND NUM > #{readindex}
+		]]>
+	</select>
+	<select id="selectWorkgroupUserList" parameterType="java.util.HashMap" resultType="workgroupUserMapVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY WORKGROUP_SQ, USER_SQ) AS NUM, T1.* FROM (
+			SELECT INFO.*, DEPTINFO.DEPT_NM, CODE_NM GRD_NM, MAP.WORKGROUP_SQ
+			FROM TB_FR_USER_INFO INFO,
+				 TB_FR_WORKGROUP_USER_MAP MAP,
+				 TB_FR_DEPT_INFO DEPTINFO,
+				 TB_FR_DEPT_USER_MAP DUMAP,
+				 TB_FR_CODE_INFO CODE
+			WHERE MAP.WORKGROUP_SQ = #{workgroupSq}
+			AND INFO.STATUS_CD = 'STS_010100'
+			AND INFO.USER_SQ = MAP.USER_SQ
+			AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+			AND DUMAP.USER_SQ = INFO.USER_SQ
+			AND INFO.GRD_CD = CODE.CODE_SQ
+		<![CDATA[
+			) T1) T2 WHERE NUM <=  #{readcount}+#{readindex} AND NUM > #{readindex}
+		]]>
+	</select>
+
+	<select id="selectWorkgroupMenu" parameterType="java.util.HashMap" resultType="menuAuthMapVo">
+		SELECT A.*, B.MENU_LEVEL_NO
+		FROM TB_FR_MENU_AUTH_MAP A, TB_FR_MENU_INFO B 
+		WHERE A.MENU_SQ = B.MENU_SQ
+		  <if test="workgroupSq != null and workgroupSq != ''">
+			AND A.WORKGROUP_SQ = #{workgroupSq}
+		  </if>
+		  <if test="menuSq != null and menuSq != ''">
+		  	AND A.MENU_SQ = #{menuSq}
+		  </if>
+	</select>
+
+	<select id="selectWorkgroupRoleList" parameterType="java.util.HashMap"
+		resultType="workgroupRoleMapVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY WORKGROUP_SQ, ROLE_SQ) AS NUM, T1.* FROM (
+			SELECT INFO.*, MAP.WORKGROUP_SQ
+			FROM TB_FR_WORKGROUP_ROLE_MAP MAP,
+				 TB_FR_ROLE_INFO INFO
+			WHERE MAP.WORKGROUP_SQ = #{workgroupSq}
+			  AND INFO.USE_YN = 'Y'
+			  AND INFO.ROLE_SQ = MAP.ROLE_SQ
+		<![CDATA[
+			) T1) T2 WHERE NUM <=  #{readcount}+#{readindex} AND NUM > #{readindex}
+		]]>
+	</select>
+
+	<select id="selectUserList" parameterType="java.util.HashMap" resultType="userInfoVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY USER_SQ) AS NUM, T1.* FROM (
+			SELECT INFO.*, DEPTINFO.DEPT_NM, CODE_NM GRD_NM
+			FROM TB_FR_USER_INFO INFO,
+				 TB_FR_DEPT_INFO DEPTINFO,
+				 TB_FR_DEPT_USER_MAP DUMAP,
+				 TB_FR_CODE_INFO CODE
+			WHERE INFO.USER_SQ NOT IN (SELECT USER_SQ FROM TB_FR_WORKGROUP_USER_MAP MAP WHERE MAP.WORKGROUP_SQ = #{workgroupSq})
+			AND INFO.STATUS_CD = 'STS_010100'
+			AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+			AND DUMAP.USER_SQ = INFO.USER_SQ
+			AND INFO.GRD_CD = CODE.CODE_SQ
+			<if test="srchUserId != null and srchUserId != ''">
+				AND UPPER(USER_ID) LIKE '%' + UPPER(#{srchUserId}) + '%' ESCAPE '\'
+			</if>
+			<if test="srchUserNm != null and srchUserNm !=''">
+				AND UPPER(USER_NM) LIKE '%' + UPPER(#{srchUserNm}) + '%' ESCAPE '\'
+			</if>
+			<if test="srchDeptNm != null and srchDeptNm !=''">
+			   AND UPPER(DEPT_NM) LIKE '%' + UPPER(#{srchDeptNm}) + '%' ESCAPE '\'
+			</if>
+		<![CDATA[
+			) T1) T2 WHERE NUM <  #{readcount} + #{readindex} AND NUM > #{readindex}
+		]]>
+	</select>
+
+	<select id="selectWorkgroup" resultType="workgroupInfoVo">
+		SELECT *
+		FROM
+		TB_FR_WORKGROUP_INFO ABCDEFG
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</select>
+	<delete id="deleteWorkgroupUser" parameterType="java.util.HashMap">
+		DELETE FROM
+		TB_FR_WORKGROUP_USER_MAP
+		WHERE USER_SQ = #{userSq}
+		<if test="workgroupSq != null and workgroupSq != ''">
+			AND WORKGROUP_SQ = #{workgroupSq}
+		</if>
+	</delete>
+	<delete id="deleteWorkgroupMenu" parameterType="java.util.HashMap">
+		DELETE FROM TB_FR_MENU_AUTH_MAP
+		WHERE MENU_SQ = #{menuSq}
+		<if test="workgroupSq != null and workgroupSq != ''">
+			AND WORKGROUP_SQ = #{workgroupSq}
+		</if>
+	</delete>
+	<delete id="deleteWorkgroupRoleList" parameterType="java.util.HashMap">
+		DELETE FROM
+		TB_FR_WORKGROUP_ROLE_MAP
+		WHERE ROLE_SQ = #{roleSq}
+		<if test="workgroupSq != null and workgroupSq != ''">
+			AND WORKGROUP_SQ = #{workgroupSq}
+		</if>
+	</delete>
+
+	<insert id="insertWorkgroupRoleList" parameterType="java.util.HashMap">
+		INSERT INTO
+		TB_FR_WORKGROUP_ROLE_MAP
+		(WORKGROUP_SQ,
+		ROLE_SQ,
+		CREATE_DT,
+		CREATE_USR_ID,
+		UPDATE_DT,
+		UPDATE_USR_ID)
+		VALUES
+		(
+		#{workgroupSq},
+		#{roleSq},
+		GETDATE(),
+		#{createUsrId},
+		GETDATE(),
+		#{updateUsrId}
+		)
+	</insert>
+
+	<insert id="insertWorkgroupUser" parameterType="java.util.HashMap">
+		INSERT INTO
+		TB_FR_WORKGROUP_USER_MAP
+		(WORKGROUP_SQ,
+		USER_SQ,
+		CREATE_DT,
+		CREATE_USR_ID,
+		UPDATE_DT,
+		UPDATE_USR_ID)
+		VALUES
+		(
+		#{workgroupSq},
+		#{userSq},
+		GETDATE(),
+		#{createUsrId},
+		GETDATE(),
+		#{updateUsrId}
+		)
+	</insert>
+
+	<insert id="insertWorkgroupMenu" parameterType="java.util.HashMap">
+		INSERT INTO
+		TB_FR_MENU_AUTH_MAP
+		(WORKGROUP_SQ,
+		MENU_SQ,
+		READ_YN,
+		UPDATE_YN,
+		EXECUTE_YN,
+		CREATE_DT,
+		CREATE_USR_ID,
+		UPDATE_DT,
+		UPDATE_USR_ID)
+		VALUES
+		(
+		#{workgroupSq},
+		#{menuSq},
+		1,
+		0,
+		0,
+		GETDATE(),
+		#{createUsrId},
+		GETDATE(),
+		#{updateUsrId}
+		)
+	</insert>
+
+	<delete id="deleteWorkgroupUserList" parameterType="java.lang.String">
+		DELETE
+		FROM TB_FR_WORKGROUP_USER_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</delete>
+
+	<delete id="deleteWorkgroupMenuList" parameterType="java.lang.String">
+		DELETE
+		FROM TB_FR_MENU_AUTH_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</delete>
+
+	<select id="selectRoleList" parameterType="java.util.HashMap"
+		resultType="roleInfoVo">
+		SELECT T2.* FROM (SELECT ROW_NUMBER() OVER(ORDER BY ROLE_SQ) AS NUM, T1.* FROM (
+			SELECT INFO.*
+		    FROM TB_FR_ROLE_INFO INFO
+		    WHERE INFO.ROLE_SQ NOT IN (SELECT ROLE_SQ
+		    	  					   FROM TB_FR_WORKGROUP_ROLE_MAP
+		    	  					   WHERE WORKGROUP_SQ = #{workgroupSq} )
+			AND INFO.USE_YN = 'Y'
+			<if test="srchRoleId != null and srchRoleId != ''">
+				AND UPPER(INFO.ROLE_ID) LIKE '%' + UPPER(#{srchRoleId}) + '%' ESCAPE '\'
+			</if>
+			<if test="srchRoleNm != null and srchRoleNm !=''">
+				AND UPPER(INFO.ROLE_NM) LIKE '%' + UPPER(#{srchRoleNm}) + '%' ESCAPE '\'
+			</if>
+		<![CDATA[
+			) T1) T2 WHERE NUM <= #{readcount}+#{readindex} AND NUM > #{readindex}
+		]]>
+	</select>
+
+	<select id="selectWorkgroupIdByRole" resultType="string">
+		SELECT  distinct  A.WORKGROUP_SQ
+		FROM 	TB_FR_WORKGROUP_ROLE_MAP A
+ 	    WHERE 	A.ROLE_SQ IN
+		<foreach item="roleSq" index="index" collection="roleSqs" open="(" separator="," close=")">
+			#{roleSq}
+   	    </foreach>
+	</select>
+
+	<delete id="deleteAllWorkgroupUser" parameterType="java.lang.String">
+		DELETE
+		FROM
+		TB_FR_WORKGROUP_USER_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</delete>
+
+	<delete id="deleteAllWorkgroupRole" parameterType="java.lang.String">
+		DELETE
+		FROM
+		TB_FR_WORKGROUP_ROLE_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</delete>
+
+	<delete id="deleteAllWorkgroupMenu" parameterType="java.lang.String">
+		DELETE
+		FROM
+		TB_FR_MENU_AUTH_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</delete>
+	<select id="selectWorkgroupUserListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_USER_INFO INFO,
+			 TB_FR_WORKGROUP_USER_MAP MAP
+		WHERE MAP.WORKGROUP_SQ = #{workgroupSq}
+		  AND INFO.USER_SQ = MAP.USER_SQ
+		  AND INFO.STATUS_CD = 'STS_010100'
+	</select>
+
+
+	<select id="selectWorkgroupByUser" resultType="string">
+		SELECT A.WORKGROUP_SQ
+		FROM TB_FR_WORKGROUP_USER_MAP A,   TB_FR_USER_INFO B
+		WHERE B.USER_ID =  #{userSq} AND  A.USER_SQ = B.USER_SQ
+	</select>
+
+
+	<select id="selectWorkgroupMenuListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_MENU_INFO INFO,
+			 TB_FR_MENU_AUTH_MAP MAP
+		WHERE MAP.WORKGROUP_SQ = #{workgroupSq}
+		  AND INFO.MENU_SQ = MAP.MENU_SQ
+		  AND INFO.USE_YN = 'Y'
+		  AND LEN( RTRIM(INFO.MENU_URL) ) > 0 
+	</select>
+	<select id="selectWorkgroupRoleListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_WORKGROUP_ROLE_MAP MAP,
+			 TB_FR_ROLE_INFO INFO
+		WHERE MAP.WORKGROUP_SQ = #{workgroupSq}
+		  AND INFO.ROLE_SQ = MAP.ROLE_SQ
+		  AND INFO.USE_YN = 'Y'
+	</select>
+	<select id="selectUserListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_USER_INFO INFO,
+			 TB_FR_DEPT_INFO DEPTINFO,
+			 TB_FR_DEPT_USER_MAP DUMAP,
+			 TB_FR_CODE_INFO CODE
+		WHERE INFO.USER_SQ NOT IN (SELECT USER_SQ FROM TB_FR_WORKGROUP_USER_MAP MAP WHERE MAP.WORKGROUP_SQ = #{workgroupSq})
+		AND INFO.STATUS_CD = 'STS_010100'
+		AND DEPTINFO.DEPT_SQ = DUMAP.DEPT_SQ
+		AND DUMAP.USER_SQ = INFO.USER_SQ
+		AND INFO.GRD_CD = CODE.CODE_SQ
+		<if test="srchUserId != null and srchUserId != ''">
+			AND UPPER(USER_ID) LIKE '%' + UPPER(#{srchUserId}) + '%' ESCAPE '\'
+		</if>
+		<if test="srchUserNm != null and srchUserNm !=''">
+			AND UPPER(USER_NM) LIKE '%' + UPPER(#{srchUserNm}) + '%' ESCAPE '\'
+		</if>
+		<if test="srchDeptNm != null and srchDeptNm !=''">
+		   AND UPPER(DEPT_NM) LIKE '%' + UPPER(#{srchDeptId}) + '%' ESCAPE '\'
+		</if>
+	</select>
+	<select id="selectRoleListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_ROLE_INFO
+		WHERE ROLE_SQ NOT IN (SELECT ROLE_SQ FROM TB_FR_WORKGROUP_ROLE_MAP WHERE WORKGROUP_SQ = #{workgroupSq} )
+		  AND USE_YN = 'Y'
+		  <if test="srchRoleId != null and srchRoleId != ''">
+			AND UPPER(ROLE_ID) LIKE '%' + UPPER(#{srchRoleId}) + '%' ESCAPE '\'
+		  </if>
+		  <if test="srchRoleNm != null and srchRoleNm !=''">
+			AND UPPER(ROLE_NM) LIKE '%' + UPPER(#{srchRoleNm}) + '%' ESCAPE '\'
+		  </if>
+	</select>
+	<select id="selectChildMenuSqByParentMenuSq" parameterType="java.util.HashMap" resultType="string">
+		SELECT A.MENU_SQ
+		FROM TB_FR_MENU_AUTH_MAP A, TB_FR_MENU_INFO B
+		WHERE A.MENU_SQ = B.MENU_SQ
+		  AND A.WORKGROUP_SQ = #{workgroupSq}
+		  AND B.PARENT_MENU_SQ = #{parentMenuSq}
+	</select>
+	<select id="selectAllWorkgroupUser" parameterType="workgroupInfoVo" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_WORKGROUP_USER_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</select>
+	<select id="selectAllWorkgroupRoleList" parameterType="workgroupInfoVo" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_FR_WORKGROUP_ROLE_MAP
+		WHERE WORKGROUP_SQ = #{workgroupSq}
+	</select>
+</mapper>
