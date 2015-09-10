@@ -1,6 +1,0 @@
-
-/*
-INSERT INTO TB_FR_SYS_LOG
-()
-VALUES ( );
-*/
