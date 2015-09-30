@@ -1,0 +1,265 @@
+이상열차 관리 화면(YFAA003_M01) 쿼리 목록-팝업 포함
+
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectListAbvCaus
+method : selectListAbvCaus(이상원인목록 조회)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectListAbvCaus*/
+		        ABV_TRN_SRT_CD 			AS ABV_TRN_SRT_CD,		/* 이상열차분류코드 	*/
+		        ABV_TRN_SRT_DSC_CONT 	AS ABV_TRN_SRT_DSC_CONT /* 이상열차분류설명내용 	*/
+		  FROM TB_YYFC016	/* 이상분류코드TBL */
+		ORDER BY ABV_TRN_SRT_CD
+]]>
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectListAbvTrn
+method : selectListAbvTrn(이상열차목록 조회)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectListAbvTrn*/
+		   		RUN_DT AS RUN_DT,                             /* 운행 일자       		*/
+		   		LPAD(LTRIM(TRN_NO,'0'), 5, ' ') AS TRN_NO,    /* 열차번호        		*/
+		   		TRN_NO AS O_TRN_NO,                           /* 원본 열차번호   	*/
+		   		ABV_TRN_SRT_CD ,                              /* 이상열차분류코드  	*/
+		   		ABV_OCUR_CAUS_CONT  ,                         /* 이상발생원인내용  	*/
+		   		REG_USR_ID,                                   /* 등록사용자ID    	*/
+		   		REG_DTTM,                                     /* 등록일시               	*/
+		   		CHG_USR_ID,                                   /* 변경사용자ID    	*/
+		   		CHG_DTTM                                      /* 변경일시        		*/
+		   FROM TB_YYFD015        							  /* 이상열차내역TBL	*/
+		  WHERE ABV_TRN_SRT_CD 	= #ABV_TRN_SRT_CD#
+		    AND RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+		    AND (#TRN_NO# IS NULL OR TRN_NO	= LPAD(#TRN_NO#, 5, '0'))
+		ORDER BY  RUN_DT, TRN_NO, ABV_TRN_SRT_CD
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.insertAbvCaus
+method : insertAbvCaus(이상원인 등록)
+
+<![CDATA[
+		INSERT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.insertAbvCaus */
+		  INTO TB_YYFC016 (
+	       ABV_TRN_SRT_CD,          /* 이상열차분류코드 */
+	       ABV_TRN_SRT_DSC_CONT,    /* 이상열차분류설명내용 */
+		   REG_USR_ID,              /* 등록사용자ID */
+		   REG_DTTM,                /* 등록일시 */
+		   CHG_USR_ID,              /* 변경사용자ID */
+		   CHG_DTTM                 /* 변경일시 */
+			)
+        VALUES
+        (
+           #ABV_TRN_SRT_CD#,
+           #ABV_TRN_SRT_DSC_CONT#,
+           #USER_ID#,
+           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+           #USER_ID#,
+           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        )
+]]>
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.insertAbvCaus
+method : insertAbvCaus(이상원인 등록)
+
+<![CDATA[
+		INSERT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.insertAbvCaus */
+		  INTO TB_YYFC016 (
+	       ABV_TRN_SRT_CD,          /* 이상열차분류코드 */
+	       ABV_TRN_SRT_DSC_CONT,    /* 이상열차분류설명내용 */
+		   REG_USR_ID,              /* 등록사용자ID */
+		   REG_DTTM,                /* 등록일시 */
+		   CHG_USR_ID,              /* 변경사용자ID */
+		   CHG_DTTM                 /* 변경일시 */
+			)
+        VALUES
+        (
+           #ABV_TRN_SRT_CD#,
+           #ABV_TRN_SRT_DSC_CONT#,
+           #USER_ID#,
+           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+           #USER_ID#,
+           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        )
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.updateAbvCaus
+method : updateAbvCaus(이상원인 수정)
+
+<![CDATA[
+		UPDATE /*+ com.korail.yz.yf.aa.YFAA003QMDAO.updateAbvCaus */
+		       TB_YYFC016     /* 이상분류코드TBL */
+		   SET 
+		       ABV_TRN_SRT_DSC_CONT = #ABV_TRN_SRT_DSC_CONT#,   			/* 이상열차분류설명내용 */
+		       CHG_USR_ID           = #USER_ID#,		        			/* 변경사용자ID */
+		       CHG_DTTM             = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')	/* 변경일시 */
+		 WHERE ABV_TRN_SRT_CD       = #ABV_TRN_SRT_CD#          			/* 이상열차분류코드 */
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.deleteAbvCaus
+method : deleteAbvCaus(이상원인 삭제)
+
+<![CDATA[
+		DELETE /*+ com.korail.yz.yf.aa.YFAA003QMDAO.deleteAbvCaus */
+		  FROM TB_YYFC016	/* 이상분류코드TBL */
+		 WHERE ABV_TRN_SRT_CD = #ABV_TRN_SRT_CD# /* 이상열차분류코드 */
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.insertAbvTrn
+method : insertAbvTrn(이상열차 등록)
+
+<![CDATA[
+		INSERT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.insertAbvTrn */
+		  INTO TB_YYFD015 ( /*이상열차내역*/
+		   RUN_DT, 					/* 운행일자(PK) 			*/
+		   TRN_NO, 					/* 열차번호(PK) 			*/
+		   ABV_TRN_SRT_CD,			/* 이상열차분류코드(PK/FK) */	
+		   ABV_OCUR_CAUS_CONT,		/* 이상발생원인내용		*/       
+		   REG_USR_ID,              /* 등록사용자ID 			*/
+		   REG_DTTM,                /* 등록일시 				*/
+		   CHG_USR_ID,              /* 변경사용자ID 			*/
+		   CHG_DTTM                 /* 변경일시 				*/
+			)
+        VALUES
+        (
+           #RUN_DT#,
+           LPAD(#TRN_NO#, 5, '0'),
+           #ABV_TRN_SRT_CD#,
+           #ABV_OCUR_CAUS_CONT#,
+           #USER_ID#,
+           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+           #USER_ID#,
+           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        )
+]]>
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.updateAbvTrn
+method : updateAbvTrn(이상열차 수정)
+
+<![CDATA[
+		UPDATE /*+ com.korail.yz.yf.aa.YFAA003QMDAO.updateAbvTrn */
+		       TB_YYFD015     /* 이상열차내역TBL */
+		   SET 
+		       ABV_OCUR_CAUS_CONT	= #ABV_OCUR_CAUS_CONT#,					/* 이상발생원인내용 	*/
+		       CHG_USR_ID           = #USER_ID#,		    				/* 변경사용자ID 		*/
+		       CHG_DTTM             = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),	/* 변경일시 			*/
+		 WHERE RUN_DT       	= #RUN_DT# 			/* 운행일자 			*/
+		   AND TRN_NO			= #TRN_NO#			/* 열차번호 			*/
+		   AND ABV_TRN_SRT_CD 	= #ABV_TRN_SRT_CD#	/* 이상열차분류코드 	*/
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.deleteAbvTrn
+method : deleteAbvTrn(이상열차 삭제)
+
+<![CDATA[
+		DELETE /*+ com.korail.yz.yf.aa.YFAA003QMDAO.deleteAbvTrn */
+		  FROM TB_YYFD015							/* 이상열차내역TBL */
+		 WHERE RUN_DT = #RUN_DT# 					/* 운행일자 */
+		   AND TRN_NO = #TRN_NO# 					/* 열차번호 */
+		   AND ABV_TRN_SRT_CD = #ABV_TRN_SRT_CD# 	/* 이상열차분류코드 */
+]]>
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectAbvCausCount
+method : selectAbvCausCount(이상원인 건수조회)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectAbvCausCount*/
+		       COUNT(*) 			AS QRY_CNT /*이상원인 건수*/
+		  FROM TB_YYFC016	/* 이상분류코드TBL */
+		 WHERE ABV_TRN_SRT_CD = #ABV_TRN_SRT_CD#	/* 이상열차분류코드 	*/
+]]>
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectAbvTrnCount
+method : selectAbvTrnCount(이상열차 건수조회)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectAbvCausCount*/
+		       COUNT(*) 			AS QRY_CNT /*이상원인 건수*/
+		  FROM TB_YYFD015	/* 이상열차내역TBL	*/
+		 WHERE ABV_TRN_SRT_CD 	= #ABV_TRN_SRT_CD#	/* 이상열차분류코드 	*/
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectAbvTrnAbrdPrnb
+method : selectAbvTrnAbrdPrnb(이상열차 승차인원수 조회)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectAbvTrnAbrdPrnb */
+				RUN_DT			AS RUN_DT,		/* 운행일자		*/
+				TRN_NO			AS ABV_TRN_NO,	/* 이상열차번호	*/
+				SUM(ABRD_PRNB) 	AS ABRD_PRNB 	/* 승차인원수		*/
+		 FROM TB_YYDS507							/* 열차별승차인원집계TBL */
+		WHERE RUN_DT = #RUN_DT#
+		  AND TRN_NO = LPAD(#TRN_NO#, 5, '0')
+		GROUP BY RUN_DT, TRN_NO
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectCompTrnAbrdPrnb
+method : selectCompTrnAbrdPrnb(비교열차 승차인원수 조회)
+
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectCompTrnAbrdPrnb */
+				TRN_NO 					AS COMP_TGT_TRN_NO,		/* 비교대상열차번호 */
+				ROUND(AVG(ABRD_PRNB)) 	AS ABRD_PRNB			/* 승차인원수 */
+		  FROM (
+				SELECT  RUN_DT			AS RUN_DT, 				/* 운행일자 	*/
+						TRN_NO			AS TRN_NO,				/* 열차번호 	*/ 
+						SUM(ABRD_PRNB) 	AS ABRD_PRNB			/* 승차인원수 	*/
+				  FROM TB_YYDS507								/* 열차별승차인원집계TBL */
+				 WHERE RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT# 
+				   AND TRN_NO = LPAD(#COMP_TGT_TRN_NO#, 5, '0')
+				 GROUP BY RUN_DT, TRN_NO )
+		GROUP BY TRN_NO
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectCompTrnAbrdPrnbPrDt
+method : selectCompTrnAbrdPrnbPrDt(비교열차 승차인원수 조회 일자별)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectCompTrnAbrdPrnbPrDt */
+				RUN_DT			AS RUN_DT, 				/* 운행일자 				*/
+				TRN_NO			AS COMP_TGT_TRN_NO,		/* 비교대상열차번호 		*/ 
+				SUM(ABRD_PRNB) 	AS ABRD_PRNB			/* 승차인원수 				*/
+		  FROM TB_YYDS507								/* 열차별승차인원집계TBL 	*/
+		 WHERE RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT# 
+		   AND TRN_NO = LPAD(#COMP_TGT_TRN_NO#, 5, '0')
+		 GROUP BY RUN_DT, TRN_NO
+]]>
+
+
+----------------------------------------------------------
+SQL ID : com.korail.yz.yf.aa.YFAA003QMDAO.selectListNmlTrn
+method : selectListNmlTrn(정상열차목록 조회)
+
+<![CDATA[
+		SELECT /*+ com.korail.yz.yf.aa.YFAA003QMDAO.selectListNmlTrn */
+			   DISTINCT LPAD(LTRIM(TRN_NO, 0), 5, ' ') AS TRN_NO
+		  FROM TB_YYDK301 /* 열차기본TBL */
+		 WHERE RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+		   AND TRN_NO NOT IN ( SELECT TRN_NO FROM TB_YYFD015 /* 이상열차내역TBL */
+								WHERE RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT# 
+								  AND ABV_TRN_SRT_CD = #ABV_TRN_SRT_CD# )
+		   AND (#TRN_NO# IS NULL OR TRN_NO = LPAD( #TRN_NO#, 5, '0') )
+	     ORDER BY TRN_NO
+]]>
+
+
+----------------------------------------------------------

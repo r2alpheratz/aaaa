@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="열차별 상세처리결과조회" directory="/BIZ/YZ/YS/AA/" screenid="YSAA001_P02" width="980" height="560" on_load="eventfunc:screen_on_load()" on_size="eventfunc:screen_on_size(window_width, window_height)" on_submitcomplete="eventfunc:screen_on_submitcomplete(mapid, result, recv_userheader, recv_code, recv_msg)"/>
+		<xlinkdataset id="dsCond" desc="검색조건" columns="JOB_DT:&quot;작업일자&quot;::&quot;&quot;;RUN_DT:&quot;운행일자&quot;::&quot;&quot;;TRN_NO:&quot;열차번호&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsList" desc="검색결과" columns="YMGT_JOB_ID:&quot;수익관리작업ID&quot;::&quot;&quot;;SEQ:&quot;순번&quot;::&quot;&quot;;RUN_DT:&quot;운행일자&quot;::&quot;&quot;;TRN_NO:&quot;열차번호&quot;::&quot;&quot;;FCST_PRS_STT_CD:&quot;예측진행상태코드 NULL일 경우 &apos;미실행&apos;&quot;::&quot;&quot;;OTMZ_PRS_STT_CD:&quot;최적화진행상태코드 NULL일 경우 &apos;미실행&apos;&quot;::&quot;&quot;;RSV_SALE_TNSM_STT_CD:&quot;예발전송상태코드 NULL일 경우 &apos;미전송&apos;&quot;::&quot;&quot;;ALC_PRS_STT_CD:&quot;수익관리할당처리상태코드 NULL일 경우 1&quot;::&quot;&quot;;RSV_SALE_REFL_STT_CD:&quot;예발반영상태코드 NULL일 경우 &apos;미반영&apos;&quot;::&quot;&quot;;JOB_DTTM:&quot;&quot;::&quot;&quot;;JOB_CLS_DTTM:&quot;작업종료일시&quot;::&quot;&quot;"/>
+		<xlinktranmap id="/yz/ys/aa/selectListDtlPrsCnqe.do" url="/yz/ys/aa/selectListDtlPrsCnqe.do" comment="수익관리대상열차 열차별 상세처리결과조회">
+			<xtds id="dsCond" in_op="ALL" out_op="" info="JOB_DT:1:;RUN_DT:1:;TRN_NO:1:"/>
+			<xtds id="dsList" in_op="" out_op="UPDATE" info="YMGT_JOB_ID::1;SEQ::1;RUN_DT::1;TRN_NO::1;FCST_PRS_STT_CD::1;OTMZ_PRS_STT_CD::1;RSV_SALE_TNSM_STT_CD::1;ALC_PRS_STT_CD::1;RSV_SALE_REFL_STT_CD::1;JOB_DTTM::1;JOB_CLS_DTTM::1"/>
+		</xlinktranmap>
+		<tab_order order_option="0" order_info="160,17808,910,1440"/>
+		<pushbutton style="btnConfirm" control_id="1440" name="btnClose" description="닫기버튼" x="914" y="528" width="66" border_color="00B1B1B1" text="닫기" on_mouseup="eventfunc:btnClose_on_mouseup(objInst)" version="1.1"/>
+		<hangul_field style="GridRow_Conunt" control_id="17808" name="fldQRY_CNT" autosize="0" x="792" y="60" width="184" border_color="00B1B1B1" border_color_focus="00C7861A" meta_maxlength="" text_margin="" hidden="1" mousehover_forecolor="00FF0000" default_value="총 0건" tabstop="0"/>
+		<panel style="Seach" control_id="160" x="0" y="0" width="980" height="57">
+			<tab_order order_option="0" order_info="17826,17830,17823,17824,17827,17831"/>
+			<text style="SeachLabel" control_id="17822" autosize="1" x="420" y="15" width="56" text="열차번호" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<normal_field control_id="17823" name="fldTRN_NO" description="열차번호내용" autosize="0" x="476" y="15" width="80" height="25" font="돋움,9,0,0,0" border_color="00B1B1B1" border_color_focus="00C7861A" link_data="dsCond:TRN_NO" max_length="500" meta_maxlength="500" pattern="ZZZZ9" text_margin="10,10,1,1" enable="0" mousehover_forecolor="00FF0000"/>
+			<pushbutton style="btninSeach" control_id="17824" x="534" y="19" enable="0" version="1.1"/>
+			<text style="SeachLabel" control_id="17825" autosize="0" x="0" y="15" width="88" text="작업일자" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" text_margin="3,0,0,0" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<numericex_field style="Default_no" control_id="17826" name="fldJOB_DT" description="작업일자" autosize="0" x="66" y="15" width="99" border_color_focus="00C7861A" link_data="dsCond:JOB_DT" max_length="8" meta_maxlength="8" pattern="9999.99.99" allow_minus="0" horz_align="2" text_margin="10,30,1,1" enable="0" mousehover_forecolor="00FF0000"/>
+			<pushbutton style="btninCalendar" control_id="17827" name="btnJobCalendar" x="143" y="20" enable="0" version="1.1"/>
+			<text style="TxtReadonly" control_id="17828" name="txtJobDay" description="작업일자요일" autosize="0" x="169" y="15" width="30" height="25" fore_color="00B1B1B1" back_color="00F5F5F5" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<text style="SeachLabel" control_id="17829" autosize="0" x="210" y="15" width="88" text="운행일자" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" text_margin="3,0,0,0" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<numericex_field style="Default_no" control_id="17830" name="fldRUN_DT" description="운행일자" autosize="0" x="276" y="15" width="99" border_color_focus="00C7861A" link_data="dsCond:RUN_DT" max_length="8" meta_maxlength="8" pattern="9999.99.99" allow_minus="0" horz_align="2" text_margin="10,30,1,1" enable="0" mousehover_forecolor="00FF0000"/>
+			<pushbutton style="btninCalendar" control_id="17831" name="btnCalendar" x="353" y="20" enable="0" version="1.1"/>
+			<text style="TxtReadonly" control_id="17832" name="txtDay" description="운행일자요일" autosize="0" x="380" y="15" width="30" height="25" fore_color="00B1B1B1" back_color="00F5F5F5" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		</panel>
+		<grid style="GridRed" control_id="910" name="grdList" description="열차별상세처리결과조회그리드" x="0" y="83" width="980" height="425" header_vertcount="0" link_data="dsList" samplerows="25" version="1.2">
+			<column>
+				<header title="수익관리작업ID" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="YMGT_JOB_ID" description="수익관리작업ID" width="140" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsList:YMGT_JOB_ID" combobox_buttonsize="15" combobox_buttonimage="" max_length="30" meta_maxlength="30" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="순번" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data width="31" forecolor="00444444" backcolor="00F8F8F8" link_data="dsList:SEQ" combobox_buttonsize="15" combobox_buttonimage="" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="수요예측&#x0D;&#x0A;처리상태" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FCST_PRS_STT_CD" description="예측처리상태코드" width="85" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsList:FCST_PRS_STT_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="2" meta_maxlength="2" picklist="/CODE/FCST_PRS_STT_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="최적화&#x0D;&#x0A;처리상태" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="OTMZ_PRS_STT_CD" description="최적화처리상태코드" width="100" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsList:OTMZ_PRS_STT_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="2" meta_maxlength="2" picklist="/CODE/OTMZ_PRS_STT_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="예약발매&#x0D;&#x0A;전송상태" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RSV_SALE_TNSM_STT_CD" description="예약발매전송상태코드" width="70" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsList:RSV_SALE_TNSM_STT_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="2" meta_maxlength="2" picklist="/CODE/RSV_SALE_TNSM_STT_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="수익관리&#x0D;&#x0A;할당처리상태" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="ALC_PRS_STT_CD" description="할당처리상태코드" width="100" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsList:ALC_PRS_STT_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist="/CODE/ALC_PRS_STT_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="예약발매&#x0D;&#x0A;적용처리상태" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RSV_SALE_REFL_STT_CD" description="예약발매반영상태코드" width="195" forecolor="00444444" backcolor="00F8F8F8" input_type="2" link_data="dsList:RSV_SALE_REFL_STT_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="2" meta_maxlength="2" picklist="/CODE/RSV_SALE_REFL_STT_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="작업시작일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_DTTM" description="작업일시" width="120" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsList:JOB_DTTM" combobox_buttonsize="15" combobox_buttonimage="" max_length="14" meta_maxlength="14" pattern="ZZZZ.ZZ.ZZ ZZ:ZZ:ZZ" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="작업종료일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_CLS_DTTM" description="작업종료일시" width="120" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsList:JOB_CLS_DTTM" combobox_buttonsize="15" combobox_buttonimage="" max_length="14" meta_maxlength="14" pattern="ZZZZ.ZZ.ZZ ZZ:ZZ:ZZ" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<headermegeinfo info=""/>
+		</grid>
+	</map>
+</map_list>

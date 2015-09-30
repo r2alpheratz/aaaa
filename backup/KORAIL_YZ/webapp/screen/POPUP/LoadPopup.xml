@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="팝업 화면 호출" directory="/POPUP/" screenid="LoadPopup"/>
+		<tab_order order_option="0" order_info="9,0,11"/>
+		<text control_id="7" x="12" y="6" width="132" height="20" fore_color="00383838" font="돋움,9,0,0,0" text="팝업 화면으로 전달할 값" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<text control_id="10" x="12" y="42" width="156" height="20" fore_color="00383838" font="돋움,9,0,0,0" text="팝업 화면으로부터 전달된 값" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<hangul_field control_id="11" name="fldDataFromPopup" autosize="0" x="186" y="42" width="213" height="20" fore_color="00383838" font="돋움,9,0,0,0" border_color="00BBAAA0" border_color_focus="00366DC5" mousehover_forecolor="00FF0000"/>
+		<hangul_field control_id="9" name="fldDataToPopup" autosize="0" x="186" y="6" width="213" height="20" fore_color="00383838" font="돋움,9,0,0,0" border_color="00BBAAA0" border_color_focus="00366DC5" mousehover_forecolor="00FF0000"/>
+		<pushbutton control_id="0" name="btnLoadPopup" x="414" y="6" width="54" height="20" text="팝업" on_mouseup="eventfunc:btnLoadPopup_on_mouseup(objInst)" version="1.1"/>
+	</map>
+</map_list>

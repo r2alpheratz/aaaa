@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="열차별 예측실적 승차인원 조회" directory="/BIZ/YZ/YS/AA/" screenid="YSAA002_P01" width="1024" height="640" on_load="eventfunc:screen_on_load()" on_size="eventfunc:screen_on_size(window_width, window_height)" on_submitcomplete="eventfunc:screen_on_submitcomplete(mapid, result, recv_userheader, recv_code, recv_msg)"/>
+		<xlinkdataset id="dsDptArvStgpList" desc="출발-도착역그룹" columns="DPT_ARV_STGP_CD:&quot;출발-도착역그룹코드&quot;:10:&quot;&quot;;DPT_ARV_STGP_CD_NM:&quot;출발-도착역그룹코드명&quot;:201:&quot;&quot;"/>
+		<xlinkdataset id="dsCond" desc="조회조건" columns="RUN_DT:&quot;운행일자&quot;::&quot;&quot;;TRN_NO:&quot;열차번호&quot;::&quot;&quot;;STGP_DEGR:&quot;역그룹차수&quot;::&quot;&quot;;DPT_STGP_CD:&quot;출발역그룹코드&quot;::&quot;&quot;;ARV_STGP_CD:&quot;도착역그룹코드&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsObjCond" desc="오브젝트조건" columns="YMGT_CG_PS:&quot;수익관리담당자&quot;::&quot;&quot;;MRNT:&quot;주운행선&quot;::&quot;&quot;;ROUT:&quot;노선&quot;::&quot;&quot;;DPT_ARV_STGP:&quot;출발-도착역그룹코드조회&quot;::&quot;&quot;;NON_NML_TRN_FLG:&quot;단기보정여부(비정상열차여부)&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsNonNmlTrnFlg" desc="비정상열차여부(단기보정여부)" columns="NON_NML_TRN_FLG:&quot;비정상열차여부&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsList" desc="검색결과" columns="DPT_BF_DT_NUM:&quot;출발전일수&quot;::&quot;&quot;;LGTM_FCST_PRNB:&quot;01.장기예측승차인원수&quot;::&quot;&quot;;LAST_FCST_PRNB:&quot;02.최종예측승차인원수&quot;::&quot;&quot;;RSV_SALE_ACVM_PRNB:&quot;03.예약발매실적인원수&quot;::&quot;&quot;"/>
+		<xlinktranmap id="/yz/yb/co/selectListObject.do" url="/yz/yb/co/selectListObject.do" comment="조회조것셋팅">
+			<xtds id="dsDptArvStgpList" in_op="" out_op="UPDATE" info="DPT_ARV_STGP_CD::1;DPT_ARV_STGP_CD_NM::1"/>
+			<xtds id="dsCond" in_op="ALL" out_op="" info="RUN_DT:1:;TRN_NO:1:;STGP_DEGR:1:;DPT_STGP_CD:1:;ARV_STGP_CD:1:"/>
+			<xtds id="dsObjCond" in_op="ALL" out_op="" info="YMGT_CG_PS:1:;MRNT:1:;ROUT:1:;DPT_ARV_STGP:1:;NON_NML_TRN_FLG:1:"/>
+			<xtds id="dsNonNmlTrnFlg" in_op="" out_op="UPDATE" info="NON_NML_TRN_FLG::1"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/ys/aa/selectListTrnPrFcstAcvmAbrdPrnb.do" url="/yz/ys/aa/selectListTrnPrFcstAcvmAbrdPrnb.do" comment="열차별예측실적승차인원조회">
+			<xtds id="dsDptArvStgpList" in_op="" out_op="" info="DPT_ARV_STGP_CD::;DPT_ARV_STGP_CD_NM::"/>
+			<xtds id="dsCond" in_op="ALL" out_op="" info="RUN_DT:1:;TRN_NO:1:;STGP_DEGR:1:;DPT_STGP_CD:1:;ARV_STGP_CD:1:"/>
+			<xtds id="dsObjCond" in_op="" out_op="" info="YMGT_CG_PS::;MRNT::;ROUT::;DPT_ARV_STGP::;NON_NML_TRN_FLG::"/>
+			<xtds id="dsNonNmlTrnFlg" in_op="" out_op="" info="NON_NML_TRN_FLG::"/>
+			<xtds id="dsList" in_op="" out_op="UPDATE" info="DPT_BF_DT_NUM::1;LGTM_FCST_PRNB::1;LAST_FCST_PRNB::1;RSV_SALE_ACVM_PRNB::1"/>
+		</xlinktranmap>
+		<tab_order order_option="0" order_info="160,161,900,17816,1100"/>
+		<pushbutton style="btnConfirm" control_id="1100" name="btnClose" x="948" y="612" width="76" border_color="00B1B1B1" text="닫기" on_mouseup="eventfunc:btnClose_on_mouseup(objinst)" version="1.1"/>
+		<panel style="Seach" control_id="160" x="0" y="0" width="865" height="92">
+			<tab_order order_option="0" order_info="17614,3015,350,17625,17615,17814,17815,500,550,600"/>
+			<text style="SeachLabel" control_id="340" autosize="1" x="414" y="15" width="107" text="출발-도착 역그룹" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<combobox style="Default_com" control_id="350" name="cboDPT_ARV_STGP_CD" description="출발-도착역그룹" autosize="0" picklist_linkdata="dsDptArvStgpList:DPT_ARV_STGP_CD:DPT_ARV_STGP_CD_NM:" x="533" y="15" width="148" border_color_focus="00C7861A" button_backcolor="00FFFFFF" max_length="10" meta_maxlength="5" editable="0" combobox_data="del=&apos;:&apos; pos=&apos;0&apos; style=&apos;1&apos; content=&apos;" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<text style="SeachLabel" control_id="390" autosize="1" x="15" y="50" width="43" text="출발역" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<text style="SeachLabel" control_id="440" autosize="1" x="234" y="50" width="43" text="도착역" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<text style="SeachLabel" control_id="490" autosize="1" x="415" y="50" width="56" text="출발시각" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<hangul_field style="default_han" control_id="500" name="fldDPT_TM" description="출발시각" autosize="0" x="478" y="50" width="65" font="돋움,9,0,0,0" border_color_focus="00C7861A" max_length="10" meta_maxlength="6" horz_align="2" input_type="2" mousehover_forecolor="00FF0000"/>
+			<text style="SeachLabel" control_id="540" autosize="1" x="553" y="50" width="56" text="도착시각" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<hangul_field style="default_han" control_id="550" name="fldARV_TM" description="도착시각" autosize="0" x="616" y="50" width="65" font="돋움,9,0,0,0" border_color_focus="00C7861A" max_length="10" meta_maxlength="6" horz_align="2" input_type="2" mousehover_forecolor="00FF0000"/>
+			<text style="SeachLabel" control_id="590" autosize="1" x="697" y="50" width="82" text="단기보정여부" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<hangul_field style="default_han" control_id="600" name="fldNON_NML_TRN_FLG" description="단기보정여부(비정상열차여부)" autosize="0" x="781" y="50" width="60" font="돋움,9,0,0,0" border_color_focus="00C7861A" link_data="dsNonNmlTrnFlg:NON_NML_TRN_FLG" max_length="1" meta_maxlength="1" horz_align="2" input_type="2" mousehover_forecolor="00FF0000"/>
+			<text style="SeachLabel" control_id="17613" autosize="0" x="12" y="15" width="88" text="운행일자" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" text_margin="3,0,0,0" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<numericex_field style="Default_no" control_id="17614" name="fldRUN_DT" description="운행일자" autosize="0" x="74" y="15" width="100" border_color_focus="00C7861A" link_data="dsCond:RUN_DT" max_length="8" meta_maxlength="8" pattern="9999.99.99" allow_minus="0" horz_align="2" text_margin="10,30,1,1" input_type="2" mousehover_forecolor="00FF0000"/>
+			<pushbutton style="btninCalendar" control_id="17615" name="btnCalendar" x="152" y="20" enable="0" version="1.1"/>
+			<text style="TxtReadonly" control_id="17616" name="txtDay" description="운행일자요일" autosize="0" x="179" y="15" width="30" height="25" fore_color="00B1B1B1" back_color="00F8F8F8" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<text style="SeachLabel" control_id="17617" autosize="1" x="233" y="15" width="56" text="열차번호" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<normal_field style="CodePopup" control_id="3015" name="fldTRN_NO" description="열차번호내용" x="291" y="15" width="100" border_color="00B1B1B1" link_data="dsCond:TRN_NO" max_length="500" meta_maxlength="500" pattern="ZZZZ9" horz_align="2" input_type="2" mousehover_forecolor="00FF0000"/>
+			<pushbutton style="btninSeach" control_id="17625" x="367" y="19" enable="0" version="1.1"/>
+			<hangul_field style="default_han" control_id="17814" name="fldORG_RS_STN_CD_NM" description="시발예발역코드명" autosize="0" x="73" y="50" width="100" font="돋움,9,0,0,0" border_color_focus="00C7861A" max_length="66" meta_maxlength="100" horz_align="2" input_type="2" mousehover_forecolor="00FF0000"/>
+			<hangul_field style="default_han" control_id="17815" name="fldTMN_RS_STN_CD_NM" description="종착예발역코드명" autosize="0" x="291" y="50" width="100" font="돋움,9,0,0,0" border_color_focus="00C7861A" max_length="66" meta_maxlength="100" horz_align="2" input_type="2" mousehover_forecolor="00FF0000"/>
+		</panel>
+		<panel style="Seach" control_id="161" name="pnlSearch" x="864" y="0" width="160" height="92">
+			<pushbutton style="btnSearch" control_id="162" name="btnSearch" x="24" y="31" border_color="00B1B1B1" on_mouseup="eventfunc:btnSearch_on_mouseup(objInst)" version="1.1"/>
+		</panel>
+		<text control_id="772" autosize="1" x="0" y="618" width="228" height="20" fore_color="000000FF" font="돋움,9,0,0,0" text="※ 최종예측인원 : 가장 최근의 최종예측값" border_color="00B4B4B4" mousehover="1" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+		<panel control_id="900" x="0" y="107" width="1024" height="490" border="0" border_color="00B0B0B0">
+			<tab_order order_option="0" order_info="911"/>
+			<text style="TableLabel" control_id="910" autosize="0" x="0" y="0" width="1024" height="26" back_color="00DDDDDD" text="열차별 예측-실적 승차인원 차트" horz_align="1" text_margin="0,0,0,0" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<panel control_id="911" name="pnlChart" description="차트영역패널" x="0" y="25" width="1024" height="465" panel_width="100" border_color="00B1B1B1" tabstop="0">
+				<activex control_id="17808" name="oReport" x="0" y="0" width="1022" height="463" classid="{FC035099-833E-4AB1-BF48-37D08F5E553C}" hidden="1" version="2.0"/>
+			</panel>
+		</panel>
+		<grid style="GridRed" control_id="17816" name="grdList" x="678" y="162" width="336" height="240" header_vertcount="0" link_data="dsList" hidden="1" version="1.2">
+			<column>
+				<header title="출발전일수" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="DPT_BF_DT_NUM" description="출발이전일자수" width="66" forecolor="00444444" backcolor="00F8F8F8" link_data="dsList:DPT_BF_DT_NUM" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="4" meta_maxlength="4" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="장기예측인원" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="LGTM_FCST_PRNB" description="장기예측인원" width="85" forecolor="00444444" backcolor="00F8F8F8" link_data="dsList:LGTM_FCST_PRNB" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="최종예측인원" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="LAST_FCST_PRNB" description="최종예측인원" width="83" forecolor="00444444" backcolor="00F8F8F8" link_data="dsList:LAST_FCST_PRNB" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="예약발매실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RSV_SALE_ACVM_PRNB" description="예약발매실적" forecolor="00444444" backcolor="00F8F8F8" link_data="dsList:RSV_SALE_ACVM_PRNB" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<headermegeinfo info=""/>
+		</grid>
+	</map>
+</map_list>

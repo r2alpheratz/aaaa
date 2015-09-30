@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="수익관리대상열차 일별분석" directory="/BIZ/YZ/YS/AA/" screenid="YSAA002_M01" width="1210" height="650" on_load="eventfunc:screen_on_load()" on_size="eventfunc:screen_on_size(window_width, window_height)" on_submitcomplete="eventfunc:screen_on_submitcomplete(mapid, result, recv_userheader, recv_code, recv_msg)"/>
+		<xlinkdataset id="dsTrnClsfCd" desc="열차종별코드" columns="TRN_CLSF_CD:&quot;열차종별코드&quot;:2:&quot;&#x0A;00&#x0A;07&#x0A;01&#x0A;&quot;;TRN_CLSF_CD_NM:&quot;열차종별코드명&quot;::&quot;전체&#x0A;KTX&#x0A;KTX-산천&#x0A;새마을&#x0A;&quot;"/>
+		<xlinkdataset id="dsYmgtCgPsList" desc="수익관리담당자목록" columns="TRVL_USR_ID:&quot;여객사용자ID&quot;:6:&quot;&quot;;TRVL_USR_NM:&quot;여객사용자명&quot;:60:&quot;&quot;"/>
+		<xlinkdataset id="dsMrntList" desc="주운행선" columns="MRNT_CD:&quot;주운행선코드&quot;:2:&quot;&quot;;MRNT_NM:&quot;주운행선명&quot;:30:&quot;&quot;"/>
+		<xlinkdataset id="dsRoutList" desc="노선" columns="ROUT_CD:&quot;노선코드&quot;:4:&quot;&quot;;ROUT_NM:&quot;노선명&quot;:30:&quot;&quot;"/>
+		<xlinkdataset id="dsCondJobDt" desc="검색조건(작업일자별)" columns="JOB_DT:&quot;작업일자&quot;::&quot;&quot;;STLB_TRN_CLSF_CD:&quot;열차종별코드&quot;::&quot;&quot;;RUN_TRM_ST_DT:&quot;운행기간시작일자&quot;::&quot;&quot;;RUN_TRM_CLS_DT:&quot;운행기간종료일자&quot;::&quot;&quot;;MRNT_CD:&quot;주운행선코드&quot;::&quot;&quot;;ROUT_CD:&quot;노선코드&quot;::&quot;&quot;;UP_DN_DV_CD:&quot;상하행구분코드&quot;::&quot;&quot;;RISK_IDX:&quot;위험지수&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsCondRunDt" desc="검색조건(운행일자별)" columns="STLB_TRN_CLSF_CD:&quot;열차종별코드&quot;::&quot;&quot;;RUN_DT:&quot;운행일자&quot;::&quot;&quot;;MRNT_CD:&quot;주운행선코드&quot;::&quot;&quot;;ROUT_CD:&quot;노선코드&quot;::&quot;&quot;;UP_DN_DV_CD:&quot;상하행구분코드&quot;::&quot;&quot;;TRN_NO:&quot;열차번호&quot;::&quot;&quot;;RISK_IDX:&quot;위험지수&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsObjCond" desc="오브젝트조건" columns="YMGT_CG_PS:&quot;수익관리담당자&quot;::&quot;&quot;;MRNT:&quot;주운행선&quot;::&quot;&#x0A;&quot;;ROUT:&quot;노선&quot;::&quot;&#x0A;&quot;"/>
+		<xlinkdataset id="dsListJobDt" desc="작업일자별조회" columns="YMGT_JOB_ID:&quot;수익관리작업ID&quot;::&quot;&quot;;RUN_DT:&quot;운행일자&quot;::&quot;&quot;;TRN_NO_VAL:&quot;열차번호원본&quot;::&quot;&quot;;TRN_NO:&quot;열차번호&quot;::&quot;&quot;;STLB_TRN_CLSF_CD:&quot;열차종별코드&quot;::&quot;&quot;;SHTM_EXCS_RSV_ALLW_FLG:&quot;초과예약적용여부&quot;::&quot;&quot;;RUN_DV_CD:&quot;운행구분코드&quot;::&quot;&quot;;YMS_APL_FLG:&quot;YMS적용여부&quot;::&quot;&quot;;TRN_ANAL_DV_CD:&quot;열차분석구분코드&quot;::&quot;&quot;;FCST_DMD:&quot;예측수요&quot;::&quot;&quot;;REAL_SALE:&quot;예약발매실적&quot;::&quot;&quot;;JOB_DTTM:&quot;작업시작일시&quot;::&quot;&quot;;JOB_CLS_DTTM:&quot;작업종료일시&quot;::&quot;&quot;;DPT_TM_VAL:&quot;출발시각 원본 &quot;::&quot;&quot;;SALE_GROUP1:&quot;1구역 4주실적&quot;::&quot;&quot;;SALE_GROUP2:&quot;2구역 4주실적 &quot;::&quot;&quot;;FSCT_DMD_GROUP1:&quot;1구역 예측&quot;::&quot;&quot;;FSCT_DMD_GROUP2:&quot;2구역 예측&quot;::&quot;&quot;;AVG_ABRD_RT:&quot;4주실적승차율&quot;::&quot;&quot;;FCST_ABRD_RT:&quot;예측승차율&quot;::&quot;&quot;;RISK:&quot;위험지수&quot;::&quot;&quot;;RUN_INFO:&quot;운행구간&quot;::&quot;&quot;;ORG_RS_STN_CD:&quot;시발예발역코드&quot;::&quot;&quot;;TMN_RS_STN_CD:&quot;종착예발역코드&quot;::&quot;&quot;;ORG_RS_STN_CD_NM:&quot;시발예발역코드명&quot;::&quot;&quot;;TMN_RS_STN_CD_NM:&quot;종착예발역코드명&quot;::&quot;&quot;;DPT_TM_PRAM:&quot;출발시각(파라미터-시분초)&quot;::&quot;&quot;;ARV_TM_PRAM:&quot;도착시각(파라미터-시분초)&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsListRunDt" desc="운행일자별조회" columns="YMGT_JOB_ID:&quot;수익관리작업ID&quot;::&quot;&quot;;JOB_DT:&quot;작업일자&quot;::&quot;&quot;;RUN_DT:&quot;운행일자&quot;::&quot;&quot;;TRN_NO:&quot;열차번호&quot;::&quot;&quot;;TRN_NO_VAL:&quot;열차번호원본&quot;::&quot;&quot;;STLB_TRN_CLSF_CD:&quot;열차종별코드&quot;::&quot;&quot;;SHTM_EXCS_RSV_ALLW_FLG:&quot;단기초과예약허용여부&quot;::&quot;&quot;;RUN_DV_CD:&quot;운행구분코드&quot;::&quot;&quot;;YMS_APL_FLG:&quot;YMS적용여부&quot;::&quot;&quot;;RUN_INFO:&quot;운행구간&quot;::&quot;&quot;;TRN_ANAL_DV_CD:&quot;열차분석구분코드&quot;::&quot;&quot;;JOB_DTTM:&quot;작업시작일시&quot;::&quot;&quot;;JOB_CLS_DTTM:&quot;작업종료일시&quot;::&quot;&quot;;DPT_TM_VAL:&quot;출발시각원본&quot;::&quot;&quot;;FCST_DMD:&quot;예측수요&quot;::&quot;&quot;;REAL_SALE:&quot;예약발매실적&quot;::&quot;&quot;;SALE_GROUP1:&quot;1구역 4주실적&quot;::&quot;&quot;;SALE_GROUP2 :&quot;2구역 4주실적&quot;::&quot;&quot;;FSCT_DMD_GROUP1:&quot;1구역 예측&quot;::&quot;&quot;;FSCT_DMD_GROUP2:&quot;2구역 예측&quot;::&quot;&quot;;AVG_ABRD_RT:&quot;4주실적승차율&quot;::&quot;&quot;;FCST_ABRD_RT:&quot;예측승차율&quot;::&quot;&quot;;RISK:&quot;위험지수&quot;::&quot;&quot;;ORG_RS_STN_CD:&quot;시발예발역코드&quot;::&quot;&quot;;TMN_RS_STN_CD:&quot;종착예발역코드&quot;::&quot;&quot;;ORG_RS_STN_CD_NM:&quot;시발예발역코드명&quot;::&quot;&quot;;TMN_RS_STN_CD_NM:&quot;종착예발역코드명&quot;::&quot;&quot;;DPT_TM_PRAM:&quot;출발시각(파라미터-시분초)&quot;::&quot;&quot;;ARV_TM_PRAM:&quot;도착시각(파라미터-시분초)&quot;::&quot;&quot;"/>
+		<xlinktranmap id="/yz/yb/co/selectListObject.do" url="/yz/yb/co/selectListObject.do" comment="공통오브젝트조회(담당자, 주운행선/노선전체조회)">
+			<xtds id="dsTrnClsfCd" in_op="" out_op="" info="TRN_CLSF_CD::;TRN_CLSF_CD_NM::"/>
+			<xtds id="dsYmgtCgPsList" in_op="" out_op="DELETE" info="TRVL_USR_ID::1;TRVL_USR_NM::1"/>
+			<xtds id="dsMrntList" in_op="" out_op="DELETE" info="MRNT_CD::1;MRNT_NM::1"/>
+			<xtds id="dsRoutList" in_op="" out_op="DELETE" info="ROUT_CD::1;ROUT_NM::1"/>
+			<xtds id="dsCondJobDt" in_op="" out_op="" info="JOB_DT::;STLB_TRN_CLSF_CD::;RUN_TRM_ST_DT::;RUN_TRM_CLS_DT::;MRNT_CD::;ROUT_CD::;UP_DN_DV_CD::;RISK_IDX::"/>
+			<xtds id="dsObjCond" in_op="ALL" out_op="" info="YMGT_CG_PS:1:;MRNT:1:0;ROUT:1:0"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/ys/aa/selectListYmgtTgtTrnDdprAnalJobDt.do" url="/yz/ys/aa/selectListYmgtTgtTrnDdprAnalJobDt.do" comment="수익관리대상열차일별분석작업일자별조회">
+			<xtds id="dsTrnClsfCd" in_op="" out_op="" info="TRN_CLSF_CD::;TRN_CLSF_CD_NM::"/>
+			<xtds id="dsYmgtCgPsList" in_op="" out_op="" info="TRVL_USR_ID::;TRVL_USR_NM::"/>
+			<xtds id="dsMrntList" in_op="" out_op="" info="MRNT_CD::;MRNT_NM::"/>
+			<xtds id="dsRoutList" in_op="" out_op="" info="ROUT_CD::;ROUT_NM::"/>
+			<xtds id="dsCondJobDt" in_op="ALL" out_op="" info="JOB_DT:1:;STLB_TRN_CLSF_CD:1:;RUN_TRM_ST_DT:1:;RUN_TRM_CLS_DT:1:;MRNT_CD:1:;ROUT_CD:1:;UP_DN_DV_CD:1:;RISK_IDX:1:"/>
+			<xtds id="dsCondRunDt" in_op="" out_op="" info="STLB_TRN_CLSF_CD::;RUN_DT::;MRNT_CD::;ROUT_CD::;UP_DN_DV_CD::;TRN_NO::;RISK_IDX::"/>
+			<xtds id="dsObjCond" in_op="" out_op="" info="YMGT_CG_PS::;MRNT::;ROUT::"/>
+			<xtds id="dsListJobDt" in_op="" out_op="UPDATE" info="YMGT_JOB_ID::1;RUN_DT::1;TRN_NO_VAL::1;TRN_NO::1;STLB_TRN_CLSF_CD::1;SHTM_EXCS_RSV_ALLW_FLG::1;RUN_DV_CD::1;YMS_APL_FLG::1;TRN_ANAL_DV_CD::1;FCST_DMD::1;REAL_SALE::1;JOB_DTTM::1;JOB_CLS_DTTM::1;DPT_TM_VAL::1;SALE_GROUP1::1;SALE_GROUP2::1;FSCT_DMD_GROUP1::1;FSCT_DMD_GROUP2::1;AVG_ABRD_RT::1;FCST_ABRD_RT::1;RISK::1;RUN_INFO::1;ORG_RS_STN_CD::1;TMN_RS_STN_CD::1;ORG_RS_STN_CD_NM::1;TMN_RS_STN_CD_NM::1;DPT_TM_PRAM::1;ARV_TM_PRAM::1"/>
+			<xtds id="dsListRunDt" in_op="" out_op="" info="YMGT_JOB_ID::;JOB_DT::;RUN_DT::;TRN_NO::;TRN_NO_VAL::;STLB_TRN_CLSF_CD::;SHTM_EXCS_RSV_ALLW_FLG::;RUN_DV_CD::;YMS_APL_FLG::;RUN_INFO::;TRN_ANAL_DV_CD::;JOB_DTTM::;JOB_CLS_DTTM::;DPT_TM_VAL::;FCST_DMD::;REAL_SALE::;SALE_GROUP1::;SALE_GROUP2 ::;FSCT_DMD_GROUP1::;FSCT_DMD_GROUP2::;AVG_ABRD_RT::;FCST_ABRD_RT::;RISK::;ORG_RS_STN_CD::;TMN_RS_STN_CD::;ORG_RS_STN_CD_NM::;TMN_RS_STN_CD_NM::;DPT_TM_PRAM::;ARV_TM_PRAM::"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/ys/aa/selectListYmgtTgtTrnDdprAnalRunDt.do" url="/yz/ys/aa/selectListYmgtTgtTrnDdprAnalRunDt.do" comment="수익관리대상열차일별분석운행일자별조회">
+			<xtds id="dsTrnClsfCd" in_op="" out_op="" info="TRN_CLSF_CD::;TRN_CLSF_CD_NM::"/>
+			<xtds id="dsYmgtCgPsList" in_op="" out_op="" info="TRVL_USR_ID::;TRVL_USR_NM::"/>
+			<xtds id="dsMrntList" in_op="" out_op="" info="MRNT_CD::;MRNT_NM::"/>
+			<xtds id="dsRoutList" in_op="" out_op="" info="ROUT_CD::;ROUT_NM::"/>
+			<xtds id="dsCondJobDt" in_op="" out_op="" info="JOB_DT::;STLB_TRN_CLSF_CD::;RUN_TRM_ST_DT::;RUN_TRM_CLS_DT::;MRNT_CD::;ROUT_CD::;UP_DN_DV_CD::;RISK_IDX::"/>
+			<xtds id="dsCondRunDt" in_op="ALL" out_op="" info="STLB_TRN_CLSF_CD:1:;RUN_DT:1:;MRNT_CD:1:;ROUT_CD:1:;UP_DN_DV_CD:1:;TRN_NO:1:;RISK_IDX:1:"/>
+			<xtds id="dsObjCond" in_op="" out_op="" info="YMGT_CG_PS::;MRNT::;ROUT::"/>
+			<xtds id="dsListJobDt" in_op="" out_op="" info="YMGT_JOB_ID::;RUN_DT::;TRN_NO_VAL::;TRN_NO::;STLB_TRN_CLSF_CD::;SHTM_EXCS_RSV_ALLW_FLG::;RUN_DV_CD::;YMS_APL_FLG::;TRN_ANAL_DV_CD::;FCST_DMD::;REAL_SALE::;JOB_DTTM::;JOB_CLS_DTTM::;DPT_TM_VAL::;SALE_GROUP1::;SALE_GROUP2::;FSCT_DMD_GROUP1::;FSCT_DMD_GROUP2::;AVG_ABRD_RT::;FCST_ABRD_RT::;RISK::;RUN_INFO::;ORG_RS_STN_CD::;TMN_RS_STN_CD::;ORG_RS_STN_CD_NM::;TMN_RS_STN_CD_NM::;DPT_TM_PRAM::;ARV_TM_PRAM::"/>
+			<xtds id="dsListRunDt" in_op="" out_op="UPDATE" info="YMGT_JOB_ID::1;JOB_DT::1;RUN_DT::1;TRN_NO::1;TRN_NO_VAL::1;STLB_TRN_CLSF_CD::1;SHTM_EXCS_RSV_ALLW_FLG::1;RUN_DV_CD::1;YMS_APL_FLG::1;RUN_INFO::1;TRN_ANAL_DV_CD::1;JOB_DTTM::1;JOB_CLS_DTTM::1;DPT_TM_VAL::1;FCST_DMD::1;REAL_SALE::1;SALE_GROUP1::1;SALE_GROUP2 ::1;FSCT_DMD_GROUP1::1;FSCT_DMD_GROUP2::1;AVG_ABRD_RT::1;FCST_ABRD_RT::1;RISK::1;ORG_RS_STN_CD::1;TMN_RS_STN_CD::1;ORG_RS_STN_CD_NM::1;TMN_RS_STN_CD_NM::1;DPT_TM_PRAM::1;ARV_TM_PRAM::1"/>
+		</xlinktranmap>
+		<tab_order order_option="0" order_info="355,303,366,312,373,374,17808,17810,17805,910,4290,4250,4270,17606,4230"/>
+		<grid style="GridRed" control_id="910" name="grdListJobDt" description="작업일자별조회그리드" x="0" y="150" width="1210" height="428" header_horzcount="2" header_vertcount="0" linenumber_show="1" link_data="dsListJobDt" samplerows="25" mergetext_followscroll="1" version="1.2">
+			<column>
+				<header title="수익관리작업ID" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="수익관리작업ID" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="YMGT_JOB_ID" description="수익관리작업ID" width="140" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:YMGT_JOB_ID" combobox_buttonsize="15" combobox_buttonimage="" max_length="30" meta_maxlength="30" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="운행일자" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="운행일자" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RUN_DT" description="운행일자" width="70" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:RUN_DT" combobox_buttonsize="15" combobox_buttonimage="" max_length="8" meta_maxlength="8" pattern="ZZZZ.ZZ.ZZ" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="운행구분" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="운행구분" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RUN_DV_CD" description="운행구분코드" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsListJobDt:RUN_DV_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist="/CODE/RUN_DV_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="열차&#x0D;&#x0A;번호" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="열차&#x0D;&#x0A;번호" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="TRN_NO" description="열차번호" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:TRN_NO" combobox_buttonsize="15" combobox_buttonimage="" max_length="5" meta_maxlength="5" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="열차&#x0D;&#x0A;분석상태" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="열차&#x0D;&#x0A;분석상태" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="TRN_ANAL_DV_CD" description="열차분석구분코드" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsListJobDt:TRN_ANAL_DV_CD" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="2" meta_maxlength="2" picklist="/CODE/TRN_ANAL_DV_CD" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="YMS&#x0D;&#x0A;적용" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="YMS&#x0D;&#x0A;적용" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="YMS_APL_FLG" description="YMS적용여부" width="40" forecolor="000000FF" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:YMS_APL_FLG" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="운행구간" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="운행구간" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RUN_INFO" description="운행구간" width="150" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:RUN_INFO" combobox_buttonsize="15" combobox_buttonimage="" max_length="100" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="위험&#x0D;&#x0A;지수" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="위험&#x0D;&#x0A;지수" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RISK" description="위험지수" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListJobDt:RISK" combobox_buttonsize="15" combobox_buttonimage="" max_length="10" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="4주실적&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="4주실적&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="AVG_ABRD_RT" description="4주실적승차율" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" input_type="2" link_data="dsListJobDt:AVG_ABRD_RT" combobox_buttonsize="15" combobox_buttonimage="" max_length="8" meta_maxlength="8" places="3" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="예측&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FCST_ABRD_RT" description="예측승차율" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListJobDt:FCST_ABRD_RT" combobox_buttonsize="15" combobox_buttonimage="" max_length="8" meta_maxlength="8" picklist="/CODE/RSV_SALE_TNSM_STT_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="1구역" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="4주실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="SALE_GROUP1" description="1구역 4주실적" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" data_type="0" link_data="dsListJobDt:SALE_GROUP1" combobox_buttonsize="15" combobox_buttonimage="" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="1구역" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FSCT_DMD_GROUP1" description="1구역 예측 " width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListJobDt:FSCT_DMD_GROUP1" combobox_buttonsize="15" combobox_buttonimage="" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="2구역" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="4주실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="SALE_GROUP2" description="2구역4주실적" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListJobDt:SALE_GROUP2" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="2구역" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FSCT_DMD_GROUP2" description="2구역 예측" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListJobDt:FSCT_DMD_GROUP2" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="예측수요" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측수요" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FCST_DMD" description="예측수요" width="55" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" data_type="2" link_data="dsListJobDt:FCST_DMD" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="10" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="예약발매&#x0D;&#x0A;실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예약발매&#x0D;&#x0A;실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="REAL_SALE" description="예약발매실적" width="55" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" data_type="2" link_data="dsListJobDt:REAL_SALE" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="10" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="작업시작일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="작업시작일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_DTTM" description="작업일시" width="120" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:JOB_DTTM" combobox_buttonsize="15" combobox_buttonimage="" max_length="14" meta_maxlength="14" pattern="ZZZZ.ZZ.ZZ ZZ:ZZ:ZZ" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="작업종료일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="작업종료일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_CLS_DTTM" description="작업종료일시" width="120" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListJobDt:JOB_CLS_DTTM" combobox_buttonsize="15" combobox_buttonimage="" max_length="14" meta_maxlength="14" pattern="ZZZZ.ZZ.ZZ ZZ:ZZ:ZZ" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<headermegeinfo info="0,0,1,0:0,1,1,1:0,2,1,2:0,3,1,3:0,5,1,5:0,6,1,6:0,7,1,7:0,8,1,8:0,9,1,9:0,10,0,11:0,12,0,13:0,14,1,14:0,15,1,15:0,16,1,16:0,17,1,17:0,4,1,4:"/>
+		</grid>
+		<grid style="GridRed" control_id="17810" name="grdListRunDt" description="운행일자별조회그리드" x="0" y="115" width="1210" height="463" header_horzcount="2" header_vertcount="0" linenumber_show="1" link_data="dsListRunDt" samplerows="25" mergetext_followscroll="1" hidden="1" version="1.2">
+			<column>
+				<header title="수익관리작업ID" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="수익관리작업ID" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="YMGT_JOB_ID" description="수익관리작업ID" width="140" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:YMGT_JOB_ID" combobox_buttonsize="15" combobox_buttonimage="" max_length="30" meta_maxlength="30" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="열차&#x0D;&#x0A;번호" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="열차&#x0D;&#x0A;번호" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="TRN_NO" description="열차번호" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:TRN_NO" combobox_buttonsize="15" combobox_buttonimage="" max_length="5" meta_maxlength="5" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="운행구분" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="운행구분" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RUN_DV_CD" description="운행구분코드" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsListRunDt:RUN_DV_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist="/CODE/RUN_DV_CD" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="YMS&#x0D;&#x0A;적용" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="YMS&#x0D;&#x0A;적용" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="YMS_APL_FLG" description="YMS적용여부" width="40" forecolor="000000FF" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:YMS_APL_FLG" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="운행구간" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="운행구간" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RUN_INFO" description="운행구간" width="150" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:RUN_INFO" combobox_buttonsize="15" combobox_buttonimage="" max_length="100" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="작업일자" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="작업일자" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_DT" description="작업일자" width="70" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:JOB_DT" combobox_buttonsize="15" combobox_buttonimage="" meta_maxlength="" pattern="ZZZZ.ZZ.ZZ" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="열차&#x0D;&#x0A;분석상태" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="열차&#x0D;&#x0A;분석상태" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="TRN_ANAL_DV_CD" description="열차분석구분코드" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" input_type="2" link_data="dsListRunDt:TRN_ANAL_DV_CD" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="2" meta_maxlength="2" picklist="/CODE/TRN_ANAL_DV_CD" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="위험&#x0D;&#x0A;지수" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="위험&#x0D;&#x0A;지수" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RISK" description="위험지수" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListRunDt:RISK" combobox_buttonsize="15" combobox_buttonimage="" max_length="10" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="4주실적&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="4주실적&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="AVG_ABRD_RT" description="4주실적승차율" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" input_type="2" link_data="dsListRunDt:AVG_ABRD_RT" combobox_buttonsize="15" combobox_buttonimage="" max_length="8" meta_maxlength="8" places="3" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="예측&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측&#x0D;&#x0A;승차율" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FCST_ABRD_RT" description="예측승차율" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListRunDt:FCST_ABRD_RT" combobox_buttonsize="15" combobox_buttonimage="" max_length="8" meta_maxlength="8" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="1구간" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="4주실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="SALE_GROUP1" description="1구역 4주실적" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" data_type="0" link_data="dsListRunDt:SALE_GROUP1" combobox_buttonsize="15" combobox_buttonimage="" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="1구간" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FSCT_DMD_GROUP1" description="1구역 예측 " width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListRunDt:FSCT_DMD_GROUP1" combobox_buttonsize="15" combobox_buttonimage="" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="2구간" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="4주실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="SALE_GROUP2" description="2구역 4주실적" width="50" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListRunDt:SALE_GROUP2 " combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="2구간" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FSCT_DMD_GROUP2" description="2구역 예측" width="47" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" link_data="dsListRunDt:FSCT_DMD_GROUP2" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="예측수요" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예측수요" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="FCST_DMD" description="예측수요" width="55" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" data_type="2" link_data="dsListRunDt:FCST_DMD" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="10" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="예약발매&#x0D;&#x0A;실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="예약발매&#x0D;&#x0A;실적" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="REAL_SALE" description="예약발매실적" width="55" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="2" data_type="2" link_data="dsListRunDt:REAL_SALE" combobox_buttonsize="16" combobox_buttonimage="/IMG/common/search_selectbox.png" max_length="10" meta_maxlength="" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="작업시작일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="작업시작일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_DTTM" description="작업일시" width="120" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:JOB_DTTM" combobox_buttonsize="15" combobox_buttonimage="" max_length="14" meta_maxlength="14" pattern="ZZZZ.ZZ.ZZ ZZ:ZZ:ZZ" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header title="작업종료일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="작업종료일시" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="JOB_CLS_DTTM" description="작업종료일시" width="120" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsListRunDt:JOB_CLS_DTTM" combobox_buttonsize="15" combobox_buttonimage="" max_length="14" meta_maxlength="14" pattern="ZZZZ.ZZ.ZZ ZZ:ZZ:ZZ" cellmerge="1" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<headermegeinfo info="0,0,1,0:0,1,1,1:0,2,1,2:0,3,1,3:0,4,1,4:0,5,1,5:0,7,1,7:0,8,1,8:0,9,1,9:0,10,0,11:0,12,0,13:0,14,1,14:0,15,1,15:0,16,1,16:0,17,1,17:0,6,1,6:"/>
+		</grid>
+		<panel style="Seach" control_id="355" name="pnlSearchJobDt" description="작업일자별조회패널" x="0" y="0" width="1037" height="127">
+			<tab_order order_option="0" order_info="193,324,322,280,17588,194,323,17627,17629,17608,501"/>
+			<combobox style="Default_com" control_id="17629" name="cboROUT2" description="노선" autosize="0" picklist_linkdata="dsRoutList:ROUT_CD:ROUT_NM:" x="417" y="84" width="136" border_color_focus="00C7861A" button_hidden="1" button_backcolor="00F0F0F0" button_size="17" link_data="dsCondJobDt:ROUT_CD" max_length="30" meta_maxlength="1" enable="0" editable="0" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<caption control_id="388" x="483" y="0" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="15" border_color="00B1B1B1" hidden="1"/>
+			<caption control_id="389" x="483" y="113" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="15" border_color="00B1B1B1" hidden="1"/>
+			<caption control_id="390" x="483" y="39" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="10" border_color="00B1B1B1" hidden="1"/>
+			<text style="SeachLabel" control_id="399" autosize="0" x="245" y="84" width="93" text="주운행선/노선" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<caption control_id="401" x="483" y="74" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="10" border_color="00B1B1B1" hidden="1"/>
+			<caption control_id="402" x="1007" y="55" width="18" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="127" border_color="00B1B1B1" hidden="1"/>
+			<text style="Req_item" control_id="800" autosize="0" x="233" y="48" width="88" height="31" back_color="00DDDDDD" font="돋움,9,1,0,0" text="운행기간" border="1" border_color="00DDDDDD" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" version="1.1"/>
+			<normal_field style="Calendar_input" control_id="324" name="fldRUN_TRM_ST_DT" description="운행기간시작일자" x="304" y="50" width="79" link_data="dsCondJobDt:RUN_TRM_ST_DT" meta_maxlength="8" text_margin="5,5,1,1" mousehover_forecolor="00FF0000" on_focusout="eventfunc:fldDate_on_focusout(objinst)"/>
+			<text style="TxtReadonly" control_id="17603" name="txtFromDay" description="운행기간요일From" autosize="0" x="386" y="50" width="30" height="25" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<caption control_id="325" x="424" y="51" width="9" height="25" font="돋움,9,0,0,0" text="~" border_color="00B1B1B1"/>
+			<normal_field style="Calendar_input" control_id="322" name="fldRUN_TRM_CLS_DT" description="운행기간종료일자" x="439" y="50" width="99" link_data="dsCondJobDt:RUN_TRM_CLS_DT" meta_maxlength="8" mousehover_forecolor="00FF0000" on_focusout="eventfunc:fldDate_on_focusout(objinst)"/>
+			<pushbutton style="btninCalendar" control_id="323" name="btnPeriodCalendar" x="515" y="56" width="20" on_mouseup="eventfunc:btnPeriodCalendar_on_mouseup(objInst)" version="1.1"/>
+			<text style="TxtReadonly" control_id="17604" name="txtToDay" description="운행기간요일To" autosize="0" x="542" y="50" width="30" height="25" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<text style="Req_item" control_id="17596" autosize="0" x="15" y="50" width="88" height="25" fore_color="00333333" back_color="00DDDDDD" font="돋움,9,1,0,0" text="작업일자" border="1" border_color="00DDDDDD" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" version="1.1"/>
+			<numericex_field style="Default_no" control_id="193" name="fldJOB_DT" description="작업일자" autosize="0" x="86" y="50" width="99" border_color_focus="00C7861A" link_data="dsCondJobDt:JOB_DT" max_length="8" meta_maxlength="8" pattern="9999.99.99" allow_minus="0" horz_align="2" text_margin="10,30,1,1" mousehover_forecolor="00FF0000" on_focusout="eventfunc:fldDate_on_focusout(objinst)"/>
+			<pushbutton style="btninCalendar" control_id="194" name="btnJobCalendar" x="163" y="55" on_mouseup="eventfunc:btnJobCalendar_on_mouseup(objinst)" version="1.1"/>
+			<text style="TxtReadonly" control_id="17601" name="txtJobDay" description="작업일자요일" autosize="0" x="188" y="50" width="30" height="25" fore_color="00B1B1B1" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<text style="SeachLabel" control_id="17607" autosize="0" x="591" y="84" width="52" text="상하행" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<combobox style="Default_com" control_id="17608" name="cboUP_DN_DV_CD2" description="상행하행구분코드" autosize="0" x="657" y="84" width="102" border_color_focus="00C7861A" button_backcolor="00F0F0F0" link_data="dsCondJobDt:UP_DN_DV_CD" max_length="1" meta_maxlength="1" editable="0" picklist="/CODE/UP_DN_DV_CD" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<text style="SeachLabel" control_id="270" autosize="0" x="587" y="50" width="104" text="열차종별" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" text_margin="3,0,0,0" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<combobox style="Default_com" control_id="280" name="cboSTLB_TRN_CLSF_CD2" description="열차종별코드" autosize="0" picklist_linkdata="dsTrnClsfCd:TRN_CLSF_CD:TRN_CLSF_CD_NM:" x="658" y="50" width="100" border_color_focus="00C7861A" button_backcolor="00FFFFFF" button_size="17" link_data="dsCondJobDt:STLB_TRN_CLSF_CD" max_length="2" meta_maxlength="2" editable="0" combobox_data="del=&apos;:&apos; pos=&apos;0&apos; style=&apos;1&apos; content=&apos;" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<pushbutton style="btninSeach" control_id="501" name="btnMrntRout2" description="주운행선/노선 조회버튼" x="533" y="87" on_mouseup="eventfunc:btnMrntRout_on_mouseup(objInst)" version="1.1"/>
+			<combobox style="Default_com" control_id="17627" name="cboMRNT2" description="주운행선" autosize="0" picklist_linkdata="dsMrntList:MRNT_CD:MRNT_NM:" x="337" y="84" width="74" border_color_focus="00C7861A" button_hidden="1" button_backcolor="00F0F0F0" button_size="17" link_data="dsCondJobDt:MRNT_CD" max_length="30" meta_maxlength="1" enable="0" editable="0" picklist_font="돋움,9,0,0,0" picklist_hiddenitem="1" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<text style="SeachLabel" control_id="1390" autosize="0" x="774" y="50" width="66" text="위험지수" border="1" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<numericex_field style="Default_no" control_id="17588" name="spinRISK_IDX" description="위험지수" autosize="0" x="839" y="50" width="94" border_color_focus="00C7861A" link_data="dsCondJobDt:RISK_IDX" max_length="5" meta_maxlength="200" pattern="ZZZ.99" pattern_preview="1" places="2" allow_minus="0" mousehover_forecolor="00FF0000"/>
+			<caption control_id="17815" x="936" y="51" width="24" height="25" fore_color="001E1E1E" font="돋움,9,0,0,0" text="이상" border_color="00B1B1B1"/>
+		</panel>
+		<panel control_id="366" name="pnlSearchJobDtBtn" description="작업일자별조회버튼패널" x="1036" y="0" width="174" height="127" back_color="00DDDDDD" border_color="00CBCBCB">
+			<pushbutton style="btnSearch" control_id="367" name="btnSearchJobDt" description="작업일자별조회버튼" x="30" y="48" border_color="00B1B1B1" on_mouseup="eventfunc:btnSearchJobDt_on_mouseup(objInst)" version="1.1"/>
+		</panel>
+		<panel control_id="312" name="pnlSearchRunDtBtn" description="운행일자별조회버튼패널" x="1036" y="0" width="174" height="92" back_color="00DDDDDD" border_color="00CBCBCB" hidden="1">
+			<pushbutton style="btnSearch" control_id="313" name="btnSearchRunDt" description="운행일자별조회버튼" x="30" y="31" border_color="00B1B1B1" on_mouseup="eventfunc:btnSearchRunDt_on_mouseup(objInst)" version="1.1"/>
+		</panel>
+		<hangul_field style="GridRow_Conunt" control_id="17805" name="fldQRY_CNT" autosize="0" x="1026" y="129" width="184" border_color="00B1B1B1" border_color_focus="00C7861A" apply_inputtypecolor="1" meta_maxlength="" text_margin="" input_type="2" hidden="1" mousehover_forecolor="00FF0000" default_value="총 0건" tabstop="0"/>
+		<pushbutton style="btnNavi" control_id="4230" name="btnAlcCnqeQry" description="할당결과조회버튼" x="315" y="622" width="90" border_color="00B1B1B1" text="할당결과조회" enable="0" on_mouseup="eventfunc:btnAlcCnqeQry_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnNavi" control_id="4250" name="btnDlyTrnDtlInfoSrch" description="일일열차상세정보조회버튼" x="0" y="622" width="90" border_color="00B1B1B1" text="일일열차&#x0D;&#x0A;상세정보조회" enable="0" version="1.1"/>
+		<pushbutton style="btnNavi" control_id="4270" name="btnTrnAnalSttChg" description="열차분석상태변경버튼" x="97" y="622" width="90" border_color="00B1B1B1" text="열차분석&#x0D;&#x0A;상태변경" enable="0" version="1.1"/>
+		<pushbutton style="btnContents" control_id="4290" name="btnExcel" description="엑셀버튼" x="0" y="586" width="66" text="엑셀" enable="0" on_mouseup="eventfunc:btnExcel_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnNavi" control_id="17606" name="btnTrnPrFcstAcvmAbrdPrnb" description="열차별예측/실적승차인원조회버튼" x="190" y="622" width="120" border_color="00B1B1B1" text="열차별 예측/실적&#x0D;&#x0A;승차인원 조회" enable="0" on_mouseup="eventfunc:btnTrnPrFcstAcvmAbrdPrnb_on_mouseup(objInst)" version="1.1"/>
+		<panel style="Seach" control_id="303" name="pnlSearchRunDt" description="운행일자별조회패널" x="0" y="0" width="1037" height="92" hidden="1">
+			<tab_order order_option="0" order_info="17612,17614,17630,17632,17622,3015,17812,17620,17625,17615"/>
+			<combobox style="Default_com" control_id="17630" name="cboMRNT" description="주운행선" autosize="0" picklist_linkdata="dsMrntList:MRNT_CD:MRNT_NM:" x="460" y="50" width="69" border_color_focus="00C7861A" button_hidden="1" button_backcolor="00F0F0F0" button_size="17" link_data="dsCondRunDt:MRNT_CD" max_length="30" meta_maxlength="1" enable="0" editable="0" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<caption control_id="350" x="482" y="0" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="15" border_color="00B1B1B1" hidden="1"/>
+			<caption control_id="351" x="482" y="78" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="15" border_color="00B1B1B1" hidden="1"/>
+			<caption control_id="352" x="482" y="39" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="10" border_color="00B1B1B1" hidden="1"/>
+			<caption control_id="353" x="1012" y="38" width="12" height="12" fore_color="000E0EFF" font="돋움,9,0,0,0" text="92" border_color="00B1B1B1" hidden="1"/>
+			<text style="SeachLabel" control_id="17611" autosize="0" x="18" y="50" width="66" text="열차종별" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<combobox style="Default_com" control_id="17612" name="cboSTLB_TRN_CLSF_CD" description="열차종별코드" autosize="0" picklist_linkdata="dsTrnClsfCd:TRN_CLSF_CD:TRN_CLSF_CD_NM:" x="74" y="50" width="70" border_color_focus="00C7861A" button_backcolor="00FFFFFF" button_size="17" link_data="dsCondRunDt:TRN_CLSF_CD" max_length="2" meta_maxlength="2" editable="0" combobox_data="del=&apos;:&apos; pos=&apos;0&apos; style=&apos;1&apos; content=&apos;" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<text style="Req_item" control_id="17613" autosize="0" x="154" y="50" width="88" height="25" fore_color="00333333" back_color="00DDDDDD" font="돋움,9,1,0,0" text="운행일자" border="1" border_color="00DDDDDD" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" version="1.1"/>
+			<numericex_field style="Default_no" control_id="17614" name="fldRUN_DT" description="운행일자" autosize="0" x="226" y="50" width="99" border_color_focus="00C7861A" link_data="dsCondRunDt:RUN_DT" max_length="8" meta_maxlength="8" pattern="9999.99.99" allow_minus="0" horz_align="2" text_margin="10,30,1,1" mousehover_forecolor="00FF0000" on_focusout="eventfunc:fldDate_on_focusout(objinst)"/>
+			<pushbutton style="btninCalendar" control_id="17615" name="btnCalendar" x="303" y="55" on_mouseup="eventfunc:btnCalendar_on_mouseup(objInst)" version="1.1"/>
+			<text style="TxtReadonly" control_id="17616" name="txtDay" description="운행일자요일" autosize="0" x="327" y="50" width="30" height="25" fore_color="00B1B1B1" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<text style="SeachLabel" control_id="17617" autosize="0" x="366" y="50" width="93" text="주운행선/노선" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<text style="SeachLabel" control_id="17621" autosize="0" x="667" y="50" width="52" text="상하행" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<combobox style="Default_com" control_id="17622" name="cboUP_DN_DV_CD" description="상행하행구분코드" autosize="0" x="710" y="50" width="60" border_color_focus="00C7861A" button_backcolor="00F0F0F0" link_data="dsCondRunDt:UP_DN_DV_CD" max_length="1" meta_maxlength="1" editable="0" picklist="/CODE/UP_DN_DV_CD" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<text style="SeachLabel" control_id="490" autosize="1" x="776" y="50" width="56" text="열차번호" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<normal_field control_id="3015" name="fldTRN_NO" description="열차번호내용" autosize="0" x="832" y="50" width="80" height="25" font="돋움,9,0,0,0" border_color="00B1B1B1" border_color_focus="00C7861A" link_data="dsCondRunDt:TRN_NO" max_length="500" meta_maxlength="500" pattern="ZZZZ9" text_margin="10,10,1,1" mousehover_forecolor="00FF0000" on_keydown="eventfunc:fldTRN_NO_on_keydown(objinst,keycode,bctrldown,bshiftdown,baltdown,bnumpadkey)"/>
+			<pushbutton style="btninSeach" control_id="17625" x="890" y="54" on_mousedown="eventfunc:trnNoBs_on_mousedown(objinst)" version="1.1"/>
+			<combobox style="Default_com" control_id="17632" name="cboROUT" description="노선" autosize="0" picklist_linkdata="dsRoutList:ROUT_CD:ROUT_NM:" x="532" y="50" width="126" border_color_focus="00C7861A" button_hidden="1" button_backcolor="00F0F0F0" button_size="17" link_data="dsCondRunDt:ROUT_CD" max_length="30" meta_maxlength="1" enable="0" editable="0" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+			<pushbutton style="btninSeach" control_id="17620" name="btnMrntRout" description="주운행선/노선 조회버튼" x="637" y="53" on_mouseup="eventfunc:btnMrntRout_on_mouseup(objinst)" version="1.1"/>
+			<text style="SeachLabel" control_id="17811" autosize="0" x="924" y="50" width="66" text="위험&#x0D;&#x0A;지수" border="1" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<numericex_field style="Default_no" control_id="17812" name="spinRISK_IDX2" description="위험지수" autosize="0" x="959" y="50" width="46" border_color_focus="00C7861A" link_data="dsCondJobDt:RISK_IDX" max_length="5" meta_maxlength="200" pattern="ZZZ.99" pattern_preview="1" places="2" allow_minus="1" apply_rightpattern="1" mousehover_forecolor="00FF0000" default_value="0.00"/>
+			<caption control_id="17814" x="1006" y="52" width="24" height="25" fore_color="001E1E1E" font="돋움,9,0,0,0" text="이상" border_color="00B1B1B1"/>
+		</panel>
+		<hangul_field style="GridRow_Conunt" control_id="17808" name="fldQRY_CNT2" autosize="0" x="1026" y="93" width="184" border_color="00B1B1B1" border_color_focus="00C7861A" apply_inputtypecolor="1" meta_maxlength="" text_margin="" input_type="2" hidden="1" mousehover_forecolor="00FF0000" default_value="총 0건" tabstop="0"/>
+		<text control_id="222" autosize="1" x="438" y="15" width="579" height="20" fore_color="000000FF" back_color="00DDDDDD" font="돋움,9,1,0,0" text="※ 예약발매실적 - 운행종료열차조회시 :  운행종료후최종실적, 예매중인열차 : 전일까지의 실적임" border_color="00B4B4B4" mousehover="1" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+		<radiobutton style="Seach_Radio" control_id="373" name="rdoJOB_DT_SRCH" description="작업일자별 조회" x="18" y="13" width="107" height="25" text="작업일자별 조회" on_click="eventfunc:rdo_on_click(objinst,bprevcheckstate,bcurcheckstate)"/>
+		<radiobutton style="Seach_Radio" control_id="374" name="rdoRUN_DT_SRCH" description="운행일자별 조회" x="132" y="13" width="107" height="25" text="운행일자별 조회" on_click="eventfunc:rdo_on_click(objinst,bprevcheckstate,bcurcheckstate)"/>
+	</map>
+</map_list>

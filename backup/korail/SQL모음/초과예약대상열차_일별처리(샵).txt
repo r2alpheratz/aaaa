@@ -1,0 +1,33 @@
+ SELECT  distinct E.YMGT_JOB_ID                              , /* 작업일시 */
+           LPAD(TO_NUMBER(SUBSTR( E.YMGT_JOB_ID,18,3)),3,' ') SEQ                   , /* 순번     */
+           E.RUN_DT                                         , /* 운행일자 */
+           LPAD( TO_NUMBER( E.TRN_NO ), 5, ' ' ) trn_no     , /* 열차번호 */
+           '할당완료'  ds_stt                               , /* 초과예약적용상태코드 */
+           E.RSV_SALE_TNSM_STT_CD          RSV_SALE_TNSM_STT_CD, /* 예발전송상태코드  NULL 일 경우 '미전송'이다.*/
+           C.EXCS_RSV_ALC_PRS_STT_CD       EXCS_RSV_ALC_PRS_STT_CD, /* 초과예약할당처리상태코드  NULL 일 경우 '즉시반영' 이다.*/
+           E.RSV_SALE_REFL_STT_CD          RSV_SALE_REFL_STT_CD, /* 예발반영상태코드 NULL 일 경우 '미반영이'다.*/
+           G.JOB_DTTM,
+           G.JOB_CLS_DTTM
+     from  TB_YYSD013 E,  /** 열차별 초과예약한도 **/
+           TB_YYBB004 C,  /** 열차별할당처리 **/
+           TB_YYDK301 F,  /** 일일열차정보 **/
+           TB_YYFB009 G   /** 열차별할당처리 **/
+     where SUBSTR(E.YMGT_JOB_ID,10,8) LIKE #JOB_DTTM# || '%'
+      AND  E.RUN_DT = #RUN_DT#
+      AND  E.TRN_NO = #TRN_NO#
+      AND  E.RUN_DT = C.RUN_DT(+)
+      AND  E.TRN_NO = C.TRN_NO(+)
+      AND ((DECODE(C.PSRM_CL_CD||C.BKCL_CD,'1F1',1,'1C1',2,'1R1',3,'1R2',4,'1R3',5,'2F1',6,'2C1',7,'2R1',8,'2R2',9,'2R3',10,0) 
+                         = ( select min(DECODE(PSRM_CL_CD||BKCL_CD,'1F1',1,'1C1',2,'1R1',3,'1R2',4,'1R3',5,'2F1',6,'2C1',7,'2R1',8,'2R2',9,'2R3',10,0))
+                               from TB_YYBB004
+                            where RUN_DT = C.RUN_DT
+                              and TRN_NO = C.TRN_NO
+                          )
+                AND C.PSRM_CL_CD IS NOT NULL
+               ) 
+            OR C.PSRM_CL_CD IS NULL
+          )
+      AND  E.RUN_DT = F.RUN_DT
+      AND  E.TRN_NO = F.TRN_NO
+      AND  E.YMGT_JOB_ID = G.YMGT_JOB_ID
+    ORDER BY JOB_DTTM         /* 작업시간 */

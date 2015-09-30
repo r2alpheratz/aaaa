@@ -1,0 +1,38 @@
+<FindBugsFilter>
+
+	<Match>
+      <Package name="~cosmos\.log.*" />
+	</Match>
+	<Match>
+      <Package name="~cosmos\.io.*" />
+	</Match>
+    <Match>
+      <Package name="~cosmos\.spring.*" />
+	</Match>
+	<Match>
+      <Package name="~cosmos\.velocity.*" />
+	</Match>
+	
+	<Match>
+       <Class name="com.korail.tz.sa.CmmXframeController" />       
+	</Match>
+	<Match>
+       <Class name="com.korail.tz.sa.ImageSVC" />       
+	</Match>
+	<Match>
+       <Class name="com.korail.tz.sa.SqlSvc" />       
+	</Match>
+	<Match>
+       <Class name="com.korail.tz.sa.XframeCommSVC" />       
+	</Match>
+	<Match>
+       <Class name="com.korail.tz.sa.XframeControllerUtils" />       
+	</Match>			
+	<Match>
+       <Class name="com.korail.tz.sa.XframeView" />       
+	</Match>				
+ 	<Match>
+      <Package name="~cosmos\.comm.*" />
+	</Match>
+	
+</FindBugsFilter>

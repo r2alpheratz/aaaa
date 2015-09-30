@@ -1,0 +1,30 @@
+<![CDATA[
+		SELECT /*+ com.korail.yz.ys.aa.YSAA001QMDAO.seletListBsTrnNoYSAA001 */
+			   DISTINCT TRN_NO 	/* 열차번호 */
+		  FROM TB_YYDK301 		/* 열차기본TBL */
+		 WHERE RUN_DT = #RUN_DT#
+		   AND (#TRN_CLSF_CD# 	IS NULL OR TRN_CLSF_CD 	= #TRN_CLSF_CD# ) 	/* 열차종별코드		*/
+		   AND (#ROUT_CD# 		IS NULL OR ROUT_CD 		= #ROUT_CD#		)	/* 노선코드 			*/
+		   AND (#UP_DN_DV_CD# 	IS NULL OR UP_DN_DV_CD 	= #UP_DN_DV_CD#	) 	/* 상행하행구분코드 	*/
+]]>
+<isNotEmpty property = "TRVL_USR_ID">
+
+		   AND ( TRN_CLSF_CD 			/* 열차종별코드 */
+			     , ROUT_CD 				/*노선코드*/
+				 , UP_DN_DV_CD 			/*상하행구분코드*/
+				 ,( SELECT SUBSTR(DPT_TM, 1, 2) /*출발시각*/
+			     	  FROM TB_YYDK302 /*열차운행내역TBL*/
+			   		 WHERE RUN_ORDR = 1 
+			      	   AND RUN_DT = TB_YYDK301.RUN_DT
+			      	   AND TRN_NO = TB_YYDK301.TRN_NO ))  IN ( SELECT TRN_CLSF_CD 	/*열차종별코드*/
+																	 ,ROUT_CD 		/*노선구분코드*/
+																	 ,UP_DN_DV_CD 	/*상하행구분코드*/
+																	 ,TMWD_DV_CD 	/*시간대구분코드*/ 
+																 FROM TB_YYFD008 	/*담당그룹별열차내역TBL*/
+																WHERE USR_GP_ID IN ( SELECT USR_GP_ID 	/*사용자그룹ID*/
+																					   FROM TB_YYFD007  /*담당그룹별사용자내역*/
+																					  WHERE USR_ID = #TRVL_USR_ID# ) /*사용자ID*/)
+</isNotEmpty>
+<![CDATA[
+		ORDER BY TRN_NO
+]]>

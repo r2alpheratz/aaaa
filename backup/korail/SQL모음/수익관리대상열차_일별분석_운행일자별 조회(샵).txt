@@ -1,0 +1,328 @@
+
+
+<운행일자별 조회>
+
+SELECT   '' STAT,
+         V.YMGT_JOB_ID,                                                                  /* 작업일시         */
+         SUBSTR(V.YMGT_JOB_ID, 10, 8) WRK_DT,
+         A.RUN_DT,                                                                      /* 운행일자         */
+         A.TRN_NO_VAL,
+         LPAD(TO_NUMBER(A.TRN_NO), 5, ' ') TRN_NO,                                      /* 열차번호         */
+         TRN_CLSF,
+         A.SHTM_EXCS_RSV_ALLW_FLG,                                                        /* 초과예약적용여부 */
+         A.RUN_DV_CD AS RUN_DV_CD,                           /* 운행구분코드     */
+         A.YMS_APL_FLG,                                                                      /* YMS적용여부 */
+         A.RUN_INFO,                                                                    /* 운행역시각       */
+         V.TRN_ANAL_DV_CD,
+         V.JOB_DTTM,
+         NVL(V.JOB_CLS_DTTM, '-') JOB_CLS_DTTM,
+         DPT_TM_VAL,
+         DECODE(V.FCST_DMD, NULL, '미실행', TO_CHAR(V.FCST_DMD, '9,999') || '명') FCST_DMD,
+         DECODE(V.REAL_SALE, NULL, '없음', TO_CHAR(V.REAL_SALE, '9,999') || '명') REAL_SALE,
+          V.SALE_GROUP1,
+         V.SALE_GROUP2,
+         V.FSCT_DMD_GROUP1,
+         V.FSCT_DMD_GROUP2 ,
+         V.AVG_ABRD_RT*100  AVG_ABRD_RT,
+         V.FCST_ABRD_RT*100 FCST_ABRD_RT,
+         ROUND(ABS(V.AVG_ABRD_RT - V.FCST_ABRD_RT) * V.AVG_ABRD_RT * 100 * (ABS(60 - (TO_DATE(A.RUN_DT) - TO_DATE(SUBSTR(YMGT_JOB_ID,10,8)))) /60),0)  RISK
+FROM     (SELECT N.RUN_DT,                                                              /* 운행일자         */
+                 N.TRN_NO,                                                              /* 열차번호         */
+                 N.TRN_NO TRN_NO_VAL,
+                 N.STLB_TRN_CLSF_CD AS TRN_CLSF,
+                 N.ROUT_CD,                                                             /* 노선코드         */
+                 N.UP_DN_DV_CD,                                                           /* 상하행구분코드   */
+                 N.STLB_TRN_CLSF_CD,                                                         /* 열차종별코드     */
+                 N.SHTM_EXCS_RSV_ALLW_FLG,                                                /* 초과예약적용여부 */
+                 N.RUN_DV_CD,                                                           /* 운행구분코드     */
+                 N.YMS_APL_FLG,                                                         /* YMS적용여부      */
+                 N.ORG_RS_STN_CD,                                                       /* 출발예발역코드   */
+                 N.TMN_RS_STN_CD,                                                       /* 도착예발역코드   */
+                 SUBSTR(B.DPT_TM, 1, 2) DPT_TM,                                                /* 출발시각  */
+                 B.DPT_TM DPT_TM_VAL,
+                 ( SELECT TRIM(b.KOR_STN_NM)
+                     FROM TB_YYDK001 a,
+                          TB_YYDK102 b
+                    WHERE a.RS_STN_CD = N.ORG_RS_STN_CD
+                    AND   a.STN_CD = b.STN_CD
+                    AND   TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN
+                          b.APL_ST_DT AND  b.APL_CLS_DT
+                 )   ||
+                 '-' ||
+                 ( SELECT TRIM(b.KOR_STN_NM)
+                     FROM TB_YYDK001 a,
+                          TB_YYDK102 b
+                    WHERE a.RS_STN_CD = N.TMN_RS_STN_CD
+                    AND   a.STN_CD = b.STN_CD
+                    AND   TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN
+                          b.APL_ST_DT AND  b.APL_CLS_DT
+                 )   ||
+                 '(' ||
+                 TO_CHAR(TO_DATE(B.DPT_TM, 'hh24miss'), 'hh24:mi') ||
+                 '-' ||
+                 TO_CHAR(TO_DATE(C.ARV_TM, 'hh24miss'), 'hh24:mi') ||
+                 ')' RUN_INFO
+          FROM   TB_YYDK301 N,                                                          /** 일일열차정보     **/
+                 TB_YYDK302 B,                                                          /** 일일열차운행시각 **/
+                 TB_YYDK302 C,                                                          /** 일일열차운행시각 **/
+                 TB_YYDK201 D/*,*/                                                          /** 노선             **/
+                 /*TB_YB200 E*/
+          WHERE  N.RUN_DT = B.RUN_DT(+)
+          AND    N.TRN_NO = B.TRN_NO(+)
+          AND    N.ORG_RS_STN_CD = B.STOP_RS_STN_CD(+)
+          AND    N.RUN_DT = C.RUN_DT(+)
+          AND    N.TRN_NO = C.TRN_NO(+)
+          AND    N.TMN_RS_STN_CD = C.STOP_RS_STN_CD(+)
+          AND    N.ROUT_CD = D.ROUT_CD(+)
+          /*AND    N.RUN_DT = E.RUN_DT(+)
+          AND    N.TRN_NO = E.TRN_NO(+)
+          AND    ( (DECODE(PSRM_CL_CD || BKCL_CD,
+                           '1F1', 1,
+                           '1C1', 2,
+                           '1R1', 3,
+                           '1R2', 4,
+                           '1R3', 5,
+                           '2F1', 6,
+                           '2C1', 7,
+                           '2R1', 8,
+                           '2R2', 9,
+                           '2R3', 10,
+                           0) = (SELECT MIN(DECODE(X.PSRM_CL_CD || X.BKCL_CD,
+                                                   '1F1', 1,
+                                                   '1C1', 2,
+                                                   '1R1', 3,
+                                                   '1R2', 4,
+                                                   '1R3', 5,
+                                                   '2F1', 6,
+                                                   '2C1', 7,
+                                                   '2R1', 8,
+                                                   '2R2', 9,
+                                                   '2R3', 10,
+                                                   0) )
+                                 FROM   TB_YB200 X,
+                                        TB_RI630 Y
+                                 WHERE  X.RUN_DT = E.RUN_DT
+                                 AND    X.TRN_NO = E.TRN_NO
+                                 AND    X.RUN_DT = Y.RUN_DT
+                                 AND    X.TRN_NO = Y.TRN_NO
+                                 AND    X.PSRM_CL_CD = Y.PSRM_CL_CD
+                                 AND    X.BKCL_CD = Y.BKCL_CD
+                                 AND    Y.BKCLS_USE_FLG = 'Y')
+                    AND PSRM_CL_CD IS NOT NULL)
+                  OR PSRM_CL_CD IS NULL)*/
+          AND    N.RUN_DT = #RUN_DT#
+          AND    N.TRN_NO LIKE #TRN_NO#
+          AND    N.STLB_TRN_CLSF_CD LIKE #TRN_CLSF#
+          AND    (#MRNT_CD# IS NULL OR D.MRNT_CD = #MRNT_CD#)
+          AND    D.MRNT_CD IN ('01','03','04')
+          AND    D.EFC_ST_DT <= #RUN_DT#
+          AND    D.EFC_ST_DT <= #RUN_DT#
+          AND    (#ROUT_CD# IS NULL OR N.ROUT_CD = #ROUT_CD#)
+          AND    (#UP_DN_DV_CD# = 'A' OR N.UP_DN_DV_CD = #UP_DN_DV_CD#)) A,
+         (SELECT A1.YMGT_JOB_ID YMGT_JOB_ID,                                          /* 수익관리작업ID       */
+                 A1.RUN_DT,                                                         /* 운행일자             */
+                 A1.TRN_NO,                                                         /* 열차번호             */
+                 A1.TRN_ANAL_DV_CD,
+                 A1.REAL_SALE,
+                 TO_NUMBER(SUBSTR(A1.GROUP_SALE, 1, 5) ) SALE_GROUP1,
+                 TO_NUMBER(SUBSTR(A1.GROUP_SALE, 6) ) SALE_GROUP2,
+                 A1.JOB_DTTM,
+                 A1.JOB_CLS_DTTM,
+                 B1.FCST_DMD,
+                 B1.FSCT_DMD_GROUP1,
+                 B1.FSCT_DMD_GROUP2,
+                 C1.AVG_ABRD_RT,
+                 C1.FCST_ABRD_RT
+          FROM   (SELECT X.YMGT_JOB_ID YMGT_JOB_ID,                                   /* 수익관리작업ID       */
+                         X.RUN_DT,                                                  /* 운행일자             */
+                         X.TRN_NO,                                                  /* 열차번호             */
+                         X.TRN_ANAL_DV_CD,
+                         (SELECT SUM(AA.RSV_SEAT_NUM + AA.SALE_SEAT_NUM - AA.RET_SEAT_NUM - AA.CNC_SEAT_NUM)
+                                                                                                    REAL_SALE
+                          FROM   TB_YYDS501 AA,
+                                 TB_YYDP503 N,
+                                 TB_YYDD505 M
+                          WHERE  N.RUN_DT = #RUN_DT#
+                          AND    N.TRN_NO LIKE #TRN_NO#
+                          AND    (#MRNT_CD# IS NULL OR N.MRNT_CD = #MRNT_CD#)
+                          AND    N.MRNT_CD IN ('01','03','04')
+                          AND    (#ROUT_CD# IS NULL OR N.ROUT_CD = #ROUT_CD#)
+                          AND    (#UP_DN_DV_CD# = 'A' OR N.UP_DN_DV_CD = #UP_DN_DV_CD#)
+                          AND    N.RUN_DT = AA.RUN_DT
+                          AND    N.TRN_NO = AA.TRN_NO
+                          AND    N.RUN_DT = M.RUN_DT
+                          AND    N.TRN_NO = M.TRN_NO
+                          AND    M.RUN_DT = AA.RUN_DT
+                          AND    M.TRN_NO = AA.TRN_NO
+                          AND    M.DPT_STN_CONS_ORDR = AA.DPT_STN_CONS_ORDR
+                          AND    M.ARV_STN_CONS_ORDR = AA.ARV_STN_CONS_ORDR
+                          AND    AA.RUN_DT = X.RUN_DT
+                          AND    AA.TRN_NO = X.TRN_NO) REAL_SALE,
+                         (SELECT LPAD(TO_CHAR(ROUND(SUM(DECODE(E.SEG_GP_NO,
+                                                               1, Z.RSV_SEAT_NUM +
+                                                                Z.SALE_SEAT_NUM -
+                                                                Z.RET_SEAT_NUM -
+                                                                Z.CNC_SEAT_NUM) ) /
+                                                    COUNT(DISTINCT Z.RUN_DT),
+                                                    0) ),
+                                      5, '0') ||
+                                 LPAD(TO_CHAR(ROUND(SUM(DECODE(E.SEG_GP_NO,
+                                                               2, Z.RSV_SEAT_NUM +
+                                                                Z.SALE_SEAT_NUM -
+                                                                Z.RET_SEAT_NUM -
+                                                                Z.CNC_SEAT_NUM) ) /
+                                                    COUNT(DISTINCT Z.RUN_DT),
+                                                    0) ),
+                                      5, '0')
+                          FROM   TB_YYDS501 Z,
+                                 TB_YYDP503 N,
+                                 TB_YYDD505 M,
+                                 TB_YYDK302 C,
+                                 TB_YYDK302 D,
+                                 TB_YYDK308 E
+                          WHERE  N.RUN_DT BETWEEN TO_CHAR(TO_DATE(X.RUN_DT, 'YYYYMMDD') - 30, 'YYYYMMDD')
+                                              AND TO_CHAR(TO_DATE(X.RUN_DT, 'YYYYMMDD') - 2, 'yyyymmdd')
+                          AND    TO_CHAR(TO_DATE(N.RUN_DT, 'YYYYMMDD'), 'D') =
+                                                                   TO_CHAR(TO_DATE(X.RUN_DT, 'YYYYMMDD'), 'D')
+                          AND    N.TRN_NO = X.TRN_NO
+                          AND    (#MRNT_CD# IS NULL OR N.MRNT_CD = #MRNT_CD#)
+                          AND    N.MRNT_CD IN ('01','03','04')
+                          AND    (#ROUT_CD# IS NULL OR N.ROUT_CD = #ROUT_CD#)
+                          AND    (#UP_DN_DV_CD# = 'A' OR N.UP_DN_DV_CD = #UP_DN_DV_CD#)
+                          AND    N.TRN_NO = X.TRN_NO
+                          AND    Z.RUN_DT = N.RUN_DT
+                          AND    Z.TRN_NO = N.TRN_NO
+                          AND    Z.RUN_DT = M.RUN_DT
+                          AND    Z.TRN_NO = M.TRN_NO
+                          AND    Z.DPT_STN_CONS_ORDR = M.DPT_STN_CONS_ORDR
+                          AND    Z.ARV_STN_CONS_ORDR = M.ARV_STN_CONS_ORDR
+                          AND    Z.RUN_DT = C.RUN_DT
+                          AND    Z.TRN_NO = C.TRN_NO
+                          AND    Z.DPT_STN_CONS_ORDR = C.STN_CONS_ORDR
+                          AND    Z.RUN_DT = D.RUN_DT
+                          AND    Z.TRN_NO = D.TRN_NO
+                          AND    Z.ARV_STN_CONS_ORDR = D.STN_CONS_ORDR
+                          AND    Z.RUN_DT = E.RUN_DT
+                          AND    Z.TRN_NO = E.TRN_NO
+                          AND    C.TRVL_ZONE_NO = DECODE(N.UP_DN_DV_CD, 'D', E.DPT_ZONE_NO, E.ARV_ZONE_NO)
+                          AND    D.TRVL_ZONE_NO = DECODE(N.UP_DN_DV_CD, 'D', E.ARV_ZONE_NO, E.DPT_ZONE_NO)
+                          AND    E.SEG_GP_NO IN(1, 2)
+                          AND    EXISTS(SELECT 'X'
+                                        FROM   TB_YYDK003 A
+                                        WHERE  A.BIZ_DD_STG_CD IN('1', '2', '3')
+                                        AND    A.RUN_DT = Z.RUN_DT) ) GROUP_SALE,
+                         D.JOB_DTTM,
+                         D.JOB_CLS_DTTM
+                  FROM   TB_YYFD011 X,
+                         TB_YYFB009 D,
+                         TB_YYDP503 Z
+                  WHERE  Z.RUN_DT = #RUN_DT#
+                  AND    Z.TRN_NO LIKE #TRN_NO#
+                  AND    (#MRNT_CD# IS NULL OR Z.MRNT_CD = #MRNT_CD#)
+                  AND    Z.MRNT_CD IN ('01','03','04')
+                  AND    (#ROUT_CD# IS NULL OR Z.ROUT_CD = #ROUT_CD#)
+                  AND    (#UP_DN_DV_CD# = 'A' OR Z.UP_DN_DV_CD = #UP_DN_DV_CD#)
+                  AND    Z.RUN_DT = X.RUN_DT
+                  AND    Z.TRN_NO = X.TRN_NO
+                  AND    X.YMGT_JOB_ID = D.YMGT_JOB_ID
+                  AND    (D.JOB_DTTM, X.RUN_DT, X.TRN_NO) IN(
+                            SELECT   MAX(S.JOB_DTTM),
+                                     T.RUN_DT,
+                                     T.TRN_NO
+                            FROM     TB_YYFD011 T,
+                                     TB_YYFB009 S,
+                                     TB_YYDP503 Y
+                            WHERE    Y.RUN_DT = #RUN_DT#
+                            AND      Y.TRN_NO LIKE #TRN_NO#
+                            AND      (#MRNT_CD# IS NULL OR Y.MRNT_CD = #MRNT_CD#)
+                            AND      Y.MRNT_CD IN ('01','03','04')
+                            AND      (#ROUT_CD# IS NULL OR Y.ROUT_CD = #ROUT_CD#)
+                            AND      (#UP_DN_DV_CD# = 'A' OR Y.UP_DN_DV_CD = #UP_DN_DV_CD#)
+                            AND      Y.RUN_DT = T.RUN_DT
+                            AND      Y.TRN_NO = T.TRN_NO
+                            AND      (T.NON_NML_TRN_FLG = 'Y'
+                                      OR T.NON_NML_TRN_FLG = 'N')
+                            AND      S.YMGT_JOB_ID = T.YMGT_JOB_ID
+                            GROUP BY T.RUN_DT,
+                                     T.TRN_NO) ) A1,
+                 (SELECT   A.RUN_DT,
+                           A.TRN_NO,
+                           A.YMGT_JOB_ID,
+                           SUM(A.USR_CTL_EXPN_DMD_NUM) FCST_DMD,
+                           SUM(DECODE(E.SEG_GP_NO, 1, A.USR_CTL_EXPN_DMD_NUM) ) FSCT_DMD_GROUP1,
+                           SUM(DECODE(E.SEG_GP_NO, 2, A.USR_CTL_EXPN_DMD_NUM) ) FSCT_DMD_GROUP2
+                  FROM     TB_YYFD410 A,
+                           TB_YYDK301 B,
+                           TB_YYDK302 C,
+                           TB_YYDK302 D,
+                           TB_YYDK308 E
+                  WHERE    A.RUN_DT = #RUN_DT#
+                  AND      A.TRN_NO LIKE #TRN_NO#
+                  AND      (#ROUT_CD# IS NULL OR B.ROUT_CD = #ROUT_CD#)
+                  AND      (#UP_DN_DV_CD# = 'A' OR B.UP_DN_DV_CD = #UP_DN_DV_CD#)
+                  AND      A.RUN_DT = B.RUN_DT
+                  AND      A.TRN_NO = B.TRN_NO
+                  AND      A.RUN_DT = C.RUN_DT
+                  AND      A.TRN_NO = C.TRN_NO
+                  AND      A.DPT_STN_CONS_ORDR = C.STN_CONS_ORDR
+                  AND      A.RUN_DT = D.RUN_DT
+                  AND      A.TRN_NO = D.TRN_NO
+                  AND      A.ARV_STN_CONS_ORDR = D.STN_CONS_ORDR
+                  AND      A.RUN_DT = E.RUN_DT
+                  AND      A.TRN_NO = E.TRN_NO
+                  AND      C.TRVL_ZONE_NO = DECODE(B.UP_DN_DV_CD, 'D', E.DPT_ZONE_NO, E.ARV_ZONE_NO)
+                  AND      D.TRVL_ZONE_NO = DECODE(B.UP_DN_DV_CD, 'D', E.ARV_ZONE_NO, E.DPT_ZONE_NO)
+                  GROUP BY A.RUN_DT,
+                           A.TRN_NO,
+                           A.YMGT_JOB_ID) B1,
+                 (SELECT A1.RUN_DT,
+                         A1.TRN_NO,
+                         CASE WHEN TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT, 1, 4)) <> 0 
+                              THEN NVL(AVG_ABRD_RT1 * TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT, 5, 4)) / TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT, 1, 4)), 0) +
+                                   NVL(AVG_ABRD_RT2 * TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT, 9, 4)) / TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT, 1, 4)), 0) 
+                              ELSE AVG_ABRD_RT1 + AVG_ABRD_RT2
+                         END  AVG_ABRD_RT,
+                    CASE WHEN A1.FCST_ABRD_PRNB <> 0
+                              THEN NVL(A1.ABRD_RT1 * A1.ABRD_PSNO1 / A1.FCST_ABRD_PRNB, 0) + 
+                                   NVL(A1.ABRD_RT2 * A1.ABRD_PSNO2 / A1.FCST_ABRD_PRNB, 0) 
+                  ELSE ABRD_RT1 + ABRD_RT2
+                  END  FCST_ABRD_RT
+                  FROM   (SELECT   A.RUN_DT,
+                                   A.TRN_NO,
+                                   NVL(SUM(DECODE(A.PSRM_CL_CD, '1', A.FCST_ABRD_RT)), 0) ABRD_RT1,
+                                   NVL(SUM(DECODE(A.PSRM_CL_CD, '2', A.FCST_ABRD_RT)), 0) ABRD_RT2,
+                                   NVL(SUM(DECODE(A.PSRM_CL_CD, '1', A.FCST_ABRD_PRNB)), 0) ABRD_PSNO1,
+                                   NVL(SUM(DECODE(A.PSRM_CL_CD, '2', A.FCST_ABRD_PRNB)), 0) ABRD_PSNO2,
+                                   SUM(A.FCST_ABRD_PRNB) FCST_ABRD_PRNB,
+                                   NVL(SUM(DECODE(A.PSRM_CL_CD, '1', A.AVG_ABRD_RT)), 0) AVG_ABRD_RT1,
+                                   NVL(SUM(DECODE(A.PSRM_CL_CD, '2', A.AVG_ABRD_RT)), 0) AVG_ABRD_RT2,
+                                   (SELECT LPAD(TO_CHAR(SUM(Z.SEAT_NUM) ), 4, '0') ||
+                                   LPAD(TO_CHAR(SUM(DECODE(Z.PSRM_CL_CD, '1', Z.SEAT_NUM) ) ), 4, '0') ||
+                                           LPAD(TO_CHAR(SUM(DECODE(Z.PSRM_CL_CD, '2', Z.SEAT_NUM) ) ), 4, '0')
+                                    FROM   TB_YYDS511 Z
+                                    WHERE  Z.RUN_DT = A.RUN_DT
+                                    AND    Z.TRN_NO = A.TRN_NO) SEAT_ALL_CNT
+                          FROM     TB_YYPD003 A,
+                                   TB_YYDP503 B
+                          WHERE    B.RUN_DT =#RUN_DT#
+                          AND      B.TRN_NO LIKE #TRN_NO#
+                          AND      (#MRNT_CD# IS NULL OR B.MRNT_CD = #MRNT_CD#)
+                          AND      B.MRNT_CD IN ('01','03','04')
+                          AND      (#ROUT_CD# IS NULL OR B.ROUT_CD = #ROUT_CD#)
+                          AND      (#UP_DN_DV_CD# = 'A' OR B.UP_DN_DV_CD = #UP_DN_DV_CD#)
+                          AND      A.RUN_DT = B.RUN_DT
+                          AND      A.TRN_NO = B.TRN_NO
+                          AND      A.BKCL_CD = 'F1'
+                          GROUP BY A.RUN_DT,
+                                   A.TRN_NO) A1) C1
+          WHERE  A1.YMGT_JOB_ID = B1.YMGT_JOB_ID
+          AND    A1.RUN_DT = B1.RUN_DT
+          AND    A1.TRN_NO = B1.TRN_NO
+          AND    A1.RUN_DT = C1.RUN_DT
+          AND    A1.TRN_NO = C1.TRN_NO) V
+WHERE    A.RUN_DT = V.RUN_DT
+AND      A.TRN_NO = V.TRN_NO
+AND      ROUND(ABS(V.AVG_ABRD_RT - V.FCST_ABRD_RT) * V.AVG_ABRD_RT * 100 * (ABS(60 - (TO_DATE(A.RUN_DT) - TO_DATE(SUBSTR(YMGT_JOB_ID,10,8)))) /60),0) >=  NVL(TO_NUMBER(#risk_idx#),0)
+ORDER BY RUN_DT,
+         TRN_NO,
+         YMS_APL_FLG DESC;

@@ -1,0 +1,309 @@
+SELECT  
+D.YMGT_JOB_ID,                                                                  /* 작업일시         */
+A.RUN_DT,                                                                      /* 운행일자         */
+A.TRN_NO TRN_NO_VAL,
+LPAD(TO_NUMBER(A.TRN_NO), 5, ' ') TRN_NO,                                      /* 열차번호         */
+A.STLB_TRN_CLSF_CD TRN_CLSF,
+A.SHTM_EXCS_RSV_ALLW_FLG,                                                        /* 초과예약적용여부 */
+A.RUN_DV_CD AS RUN_DV_CD,  /* 운행구분코드     */
+A.YMS_APL_FLG,                                                                      /* YMS적용여부 */
+D.TRN_ANAL_DV_CD,
+DECODE(D.FCST_DMD, NULL, '미실행', TO_CHAR(D.FCST_DMD, '9,999') || '명') FCST_DMD,
+DECODE(D.REAL_SALE, NULL, '없음', TO_CHAR(D.REAL_SALE, '9,999') || '명') REAL_SALE,
+D.JOB_DTTM,
+NVL(D.JOB_CLS_DTTM, '-') JOB_CLS_DTTM,
+DPT_TM_VAL,
+D.SALE_GROUP1,
+D.SALE_GROUP2,
+D.FSCT_DMD_GROUP1,
+D.FSCT_DMD_GROUP2 ,
+D.AVG_ABRD_RT*100  AVG_ABRD_RT,
+D.FCST_ABRD_RT*100 FCST_ABRD_RT,
+ROUND(ABS(D.AVG_ABRD_RT - D.FCST_ABRD_RT) * D.AVG_ABRD_RT * 100 * (ABS(60 - (TO_DATE(A.RUN_DT) - TO_DATE(SUBSTR(YMGT_JOB_ID,10,8)))) /60),0)  RISK,
+A.RUN_INFO
+FROM     (SELECT A.RUN_DT,                                                              /* 운행일자         */
+A.TRN_NO,                                                              /* 열차번호         */
+A.ROUT_CD,                                                             /* 노선코드         */
+A.UP_DN_DV_CD,                                                           /* 상하행구분코드   */
+A.STLB_TRN_CLSF_CD,                                                         /* 열차종별코드     */
+A.SHTM_EXCS_RSV_ALLW_FLG,                                                /* 초과예약적용여부 */
+A.RUN_DV_CD,                                                           /* 운행구분코드     */
+A.YMS_APL_FLG,                                                         /* YMS적용여부      */
+A.ORG_RS_STN_CD,                                                       /* 출발예발역코드   */
+A.TMN_RS_STN_CD,                                                       /* 도착예발역코드   */
+SUBSTR(B.DPT_TM, 1, 2) DPT_TM,                                                /* 출발시각  */
+B.DPT_TM DPT_TM_VAL,
+( SELECT TRIM(b.KOR_STN_NM)
+FROM TB_YYDK001 a,
+TB_YYDK102 b
+WHERE a.RS_STN_CD = A.ORG_RS_STN_CD
+AND   a.STN_CD = b.STN_CD
+AND   TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN
+b.APL_ST_DT AND  b.APL_CLS_DT
+)   ||
+'-' ||
+( SELECT TRIM(b.KOR_STN_NM)
+FROM TB_YYDK001 a,
+TB_YYDK102 b
+WHERE a.RS_STN_CD = A.TMN_RS_STN_CD
+AND   a.STN_CD = b.STN_CD
+AND   TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN
+b.APL_ST_DT AND  b.APL_CLS_DT
+)   ||
+'(' ||
+TO_CHAR(TO_DATE(B.DPT_TM, 'hh24miss'), 'hh24:mi') ||
+'-' ||
+TO_CHAR(TO_DATE(C.ARV_TM, 'hh24miss'), 'hh24:mi') ||
+')' RUN_INFO                                                       /* 출발도착역시각 */
+FROM   TB_YYDK301 A,                                                          /* 열차기본TBL */
+TB_YYDK302 B,                                                          /* 열차운행내역TBL */
+TB_YYDK302 C,                                                          /* 열차운행내역TBL */
+TB_YYDK201 D,                                                          /* 노선코드TBL */
+TB_YYBB004 E                                                           /* 열차별할당기본TBL */
+WHERE     A.RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+AND     (#MRNT_CD# IS NULL OR D.MRNT_CD = #MRNT_CD#)
+AND     D.MRNT_CD IN ('01','03','04')
+AND   ((D.EFC_ST_DT  <= #RUN_TRM_ST_DT#
+AND D.EFC_CLS_DT >= #RUN_TRM_CLS_DT#)        /*  시행시작일자  */
+OR(D.EFC_ST_DT  >= #RUN_TRM_ST_DT#
+AND D.EFC_CLS_DT <= #RUN_TRM_CLS_DT#))      /*  시행종료일자  */
+AND (#ROUT_CD# IS NULL OR  A.ROUT_CD = #ROUT_CD#)        /*  노선코드      */      
+AND    (#STLB_TRN_CLSF_CD# IS NULL OR A.STLB_TRN_CLSF_CD = #STLB_TRN_CLSF_CD#)  /* 열차종별코드 */
+AND    (#UP_DN_DV_CD# = 'A' OR A.UP_DN_DV_CD = #UP_DN_DV_CD#)
+AND    A.RUN_DT = B.RUN_DT(+)
+AND    A.TRN_NO = B.TRN_NO(+)
+AND    A.ORG_RS_STN_CD = B.STOP_RS_STN_CD(+)  /* 시발예발역코드 = 정차예발역코드 */
+AND    A.RUN_DT = C.RUN_DT(+)
+AND    A.TRN_NO = C.TRN_NO(+)
+AND    A.TMN_RS_STN_CD = C.STOP_RS_STN_CD(+)  /* 종착예발역코드 = 정차예발역코드 */
+AND    A.ROUT_CD = D.ROUT_CD(+)
+AND    A.RUN_DT = E.RUN_DT(+)
+AND    A.TRN_NO = E.TRN_NO(+)
+AND    ( (DECODE(PSRM_CL_CD || BKCL_CD,
+'1F1', 1,
+'1C1', 2,
+'1R1', 3,
+'1R2', 4,
+'1R3', 5,
+'2F1', 6,
+'2C1', 7,
+'2R1', 8,
+'2R2', 9,
+'2R3', 10,
+0) = (SELECT MIN(DECODE(X.PSRM_CL_CD || X.BKCL_CD,
+'1F1', 1,
+'1C1', 2,
+'1R1', 3,
+'1R2', 4,
+'1R3', 5,
+'2F1', 6,
+'2C1', 7,
+'2R1', 8,
+'2R2', 9,
+'2R3', 10,
+0) )
+FROM     TB_YYBB004 X, /* 열차별할당기본TBL */
+TB_YYDK309 Y  /* 부킹클래스적용내역TBL */
+WHERE     X.RUN_DT = E.RUN_DT
+AND     X.TRN_NO = E.TRN_NO
+AND     X.RUN_DT = Y.RUN_DT
+AND     X.TRN_NO = Y.TRN_NO
+AND     X.PSRM_CL_CD = Y.PSRM_CL_CD
+AND     X.BKCL_CD = Y.BKCL_CD
+AND     Y.BKCL_USE_FLG = 'Y')
+AND PSRM_CL_CD IS NOT NULL)
+OR PSRM_CL_CD IS NULL) ) A,
+(SELECT A1.YMGT_JOB_ID YMGT_JOB_ID,                                          /* 수익관리작업ID       */
+A1.RUN_DT,                                                         /* 운행일자             */
+A1.TRN_NO,                                                         /* 열차번호             */
+A1.TRN_ANAL_DV_CD,                                                 /* 열차분석구분코드 */
+A1.JOB_DTTM, /* 작업일시 */
+A1.JOB_CLS_DTTM, /* 작업종료일시 */
+B1.FCST_DMD,
+A1.REAL_SALE,
+TO_NUMBER(SUBSTR(A1.GROUP_SALE,1,5)) SALE_GROUP1,
+TO_NUMBER(SUBSTR(A1.GROUP_SALE,6)) SALE_GROUP2,
+B1.FSCT_DMD_GROUP1,
+B1.FSCT_DMD_GROUP2 ,
+C1.AVG_ABRD_RT,
+C1.FCST_ABRD_RT 
+FROM   (SELECT A.YMGT_JOB_ID YMGT_JOB_ID,                                   /* 수익관리작업ID       */
+A.RUN_DT,                                                  /* 운행일자             */
+A.TRN_NO,                                                  /* 열차번호             */
+A.TRN_ANAL_DV_CD, 
+(SELECT SUM(AA.RSV_SEAT_NUM + AA.SALE_SEAT_NUM - AA.RET_SEAT_NUM - AA.CNC_SEAT_NUM)
+FROM   TB_YYDS501 AA, /* 예약발매실적집계TBL */
+TB_YYDP503 N,  /* 열차특성상세TBL */
+TB_YYDD505 M   /* 열차구간내역TBL */
+WHERE  N.RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+AND    (#MRNT_CD# IS NULL OR N.MRNT_CD = #MRNT_CD#)
+AND    N.MRNT_CD IN ('01','03','04')
+AND    (#ROUT_CD# IS NULL OR N.ROUT_CD = #ROUT_CD#)
+AND    (#UP_DN_DV_CD# = 'A' OR N.UP_DN_DV_CD = #UP_DN_DV_CD#)
+AND    AA.RUN_DT = N.RUN_DT
+AND    AA.TRN_NO = N.TRN_NO
+AND    N.RUN_DT = M.RUN_DT
+AND    N.TRN_NO = M.TRN_NO
+AND    AA.RUN_DT = M.RUN_DT
+AND    AA.TRN_NO = M.TRN_NO
+AND    AA.DPT_STN_CONS_ORDR = M.DPT_STN_CONS_ORDR
+AND    AA.ARV_STN_CONS_ORDR = M.ARV_STN_CONS_ORDR
+AND    AA.RUN_DT = A.RUN_DT
+AND    AA.TRN_NO = A.TRN_NO) REAL_SALE,
+(SELECT LPAD(TO_CHAR(ROUND(SUM(DECODE(E.SEG_GP_NO,1, 
+Z.RSV_SEAT_NUM + Z.SALE_SEAT_NUM - Z.RET_SEAT_NUM - Z.CNC_SEAT_NUM) ) /
+COUNT(DISTINCT Z.RUN_DT),0) ),5, '0') ||
+LPAD(TO_CHAR(ROUND(SUM(DECODE(E.SEG_GP_NO,2, 
+Z.RSV_SEAT_NUM + Z.SALE_SEAT_NUM - Z.RET_SEAT_NUM - Z.CNC_SEAT_NUM) ) /
+COUNT(DISTINCT Z.RUN_DT),0) ),5, '0')
+FROM   TB_YYDS501 Z, /* 예약발매실적집계TBL */
+TB_YYDP503 N, /* 열차특성상세TBL */
+TB_YYDD505 M, /* 열차구간내역TBL */
+TB_YYDK302 C, /* 열차운행내역TBL */
+TB_YYDK302 D, /* 열차운행내역TBL */
+TB_YYDK308 E  /* 구역별구간그룹내역TBL */
+WHERE  N.RUN_DT BETWEEN TO_CHAR(TO_DATE(A.RUN_DT, 'YYYYMMDD') - 30, 'YYYYMMDD')
+AND TO_CHAR(TO_DATE(A.RUN_DT, 'YYYYMMDD') - 2, 'yyyymmdd')
+AND    TO_CHAR(TO_DATE(N.RUN_DT, 'YYYYMMDD'), 'D') =
+TO_CHAR(TO_DATE(A.RUN_DT, 'YYYYMMDD'), 'D')
+AND    N.TRN_NO = A.TRN_NO
+AND    (#MRNT_CD# IS NULL OR N.MRNT_CD = #MRNT_CD#)
+AND    N.MRNT_CD IN ('01','03','04')
+AND    (#ROUT_CD# IS NULL OR N.ROUT_CD = #ROUT_CD#)
+AND    (#UP_DN_DV_CD# = 'A' OR N.UP_DN_DV_CD = #UP_DN_DV_CD#)
+AND    Z.RUN_DT = N.RUN_DT
+AND    Z.TRN_NO = N.TRN_NO
+AND    Z.RUN_DT = M.RUN_DT
+AND    Z.TRN_NO = M.TRN_NO
+AND    Z.DPT_STN_CONS_ORDR = M.DPT_STN_CONS_ORDR
+AND    Z.ARV_STN_CONS_ORDR = M.ARV_STN_CONS_ORDR
+AND    Z.RUN_DT = C.RUN_DT
+AND    Z.TRN_NO = C.TRN_NO
+AND    Z.DPT_STN_CONS_ORDR = C.STN_CONS_ORDR
+AND    Z.RUN_DT = D.RUN_DT
+AND    Z.TRN_NO = D.TRN_NO
+AND    Z.ARV_STN_CONS_ORDR = D.STN_CONS_ORDR
+AND    Z.RUN_DT = E.RUN_DT
+AND    Z.TRN_NO = E.TRN_NO
+AND    C.TRVL_ZONE_NO = DECODE(N.UP_DN_DV_CD, 'D', E.DPT_ZONE_NO, E.ARV_ZONE_NO)  /* 여객구역번호 */
+AND    D.TRVL_ZONE_NO = DECODE(N.UP_DN_DV_CD, 'D', E.ARV_ZONE_NO, E.DPT_ZONE_NO)  /* 여객구역번호 */
+AND    E.SEG_GP_NO IN(1, 2)
+AND    EXISTS (SELECT 'X' 
+FROM TB_YYDK003 A /* 카렌다내역TBL */
+WHERE A.BIZ_DD_STG_CD IN ('1','2','3')
+AND   A.RUN_DT = Z.RUN_DT)) GROUP_SALE,
+D.JOB_DTTM,
+D.JOB_CLS_DTTM
+FROM   TB_YYFD011 A,                                                  /* 수익관리대상열차내역TBL */
+TB_YYFB009 D,                                                  /* 수익관리작업결과기본TBL */
+TB_YYDP503 Z                                                   /* 열차특성상세TBL */
+WHERE  Z.RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+AND    (#MRNT_CD# IS NULL OR Z.MRNT_CD = #MRNT_CD#)
+AND    Z.MRNT_CD IN ('01','03','04')
+AND    (#ROUT_CD# IS NULL OR Z.ROUT_CD = #ROUT_CD#)
+AND    (#UP_DN_DV_CD# = 'A' OR Z.UP_DN_DV_CD = #UP_DN_DV_CD#)
+AND    SUBSTR(A.REG_DTTM, 1, 8) = #JOB_DT#
+AND    Z.RUN_DT = A.RUN_DT
+AND    Z.TRN_NO = A.TRN_NO
+AND    A.YMGT_JOB_ID = D.YMGT_JOB_ID
+AND    (D.JOB_DTTM, A.RUN_DT, A.TRN_NO) IN(
+SELECT   MAX(S.JOB_DTTM),
+T.RUN_DT,
+T.TRN_NO
+FROM     TB_YYFD011 T,  /* 수익관리대상열차내역TBL */
+TB_YYFB009 S,  /* 수익관리작업결과기본TBL */
+TB_YYDP503 Y   /* 열차특성상세TBL */
+WHERE    Y.RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+AND      (#MRNT_CD# IS NULL OR Y.MRNT_CD = #MRNT_CD#) /* 주운행선코드 */
+AND      Y.MRNT_CD IN ('01','03','04')
+AND      (#ROUT_CD# IS NULL OR Y.ROUT_CD = #ROUT_CD#) /* 노선코드 */
+AND      (#UP_DN_DV_CD# = 'A' OR Y.UP_DN_DV_CD = #UP_DN_DV_CD#)  /* 상행하행구분코드 */
+AND      S.REG_DTTM LIKE #JOB_DT# || '%'
+AND      S.YMGT_JOB_ID = T.YMGT_JOB_ID
+AND      Y.RUN_DT = T.RUN_DT /* 운행일자 */
+AND      Y.TRN_NO = T.TRN_NO /* 열차번호 */
+AND      (T.NON_NML_TRN_FLG = 'Y' /* 비정상열차여부 */
+OR T.NON_NML_TRN_FLG = 'N') /* 비정상열차여부 */
+GROUP BY T.RUN_DT,
+T.TRN_NO) ) A1,
+(SELECT   A.RUN_DT,
+A.TRN_NO,
+A.YMGT_JOB_ID, /* 수익관리작업ID */
+SUM(A.USR_CTL_EXPN_DMD_NUM) FCST_DMD,
+SUM(DECODE(E.SEG_GP_NO, 1, A.USR_CTL_EXPN_DMD_NUM) ) FSCT_DMD_GROUP1,
+SUM(DECODE(E.SEG_GP_NO, 2, A.USR_CTL_EXPN_DMD_NUM) ) FSCT_DMD_GROUP2
+FROM     TB_YYFD410 A,  /* 최종탑승예측수요내역TBL */
+TB_YYDK301 B,  /* 열차기본TBL */
+TB_YYDK302 C,  /* 열차운행내역TBL */
+TB_YYDK302 D,  /* 열차운행내역TBL */
+TB_YYDK308 E   /* 구역별구간그룹내역TBL */
+WHERE    A.RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+AND      A.REG_DTTM LIKE #JOB_DT# || '%'
+AND      A.RUN_DT = B.RUN_DT
+AND      A.TRN_NO = B.TRN_NO
+AND      A.RUN_DT = C.RUN_DT
+AND      A.TRN_NO = C.TRN_NO
+AND      A.DPT_STN_CONS_ORDR = C.STN_CONS_ORDR  /* 출발역구성순서 = 역구성순서*/
+AND      A.RUN_DT = D.RUN_DT
+AND      A.TRN_NO = D.TRN_NO
+AND      A.ARV_STN_CONS_ORDR = D.STN_CONS_ORDR  /* 도착역구성순서 = 역구성순서*/
+AND      A.RUN_DT = E.RUN_DT
+AND      A.TRN_NO = E.TRN_NO
+AND      C.TRVL_ZONE_NO = DECODE(B.UP_DN_DV_CD, 'D', E.DPT_ZONE_NO, E.ARV_ZONE_NO)  /* 여객구역번호 */
+AND      D.TRVL_ZONE_NO = DECODE(B.UP_DN_DV_CD, 'D', E.ARV_ZONE_NO, E.DPT_ZONE_NO)  /* 여객구역번호 */
+GROUP BY A.RUN_DT,
+A.TRN_NO,
+A.YMGT_JOB_ID) B1,  /* 수익관리작업ID */
+(SELECT A1.RUN_DT,
+A1.TRN_NO,
+CASE WHEN TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT,1,4)) <> 0
+THEN NVL(AVG_ABRD_RT1 *(TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT,5,4)) / TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT,1,4))),0) +
+NVL(AVG_ABRD_RT2 *(TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT,9,4)) / TO_NUMBER(SUBSTR(A1.SEAT_ALL_CNT,1,4))),0)
+ELSE AVG_ABRD_RT1 + AVG_ABRD_RT2
+END AVG_ABRD_RT,
+CASE WHEN A1.FCST_ABRD_PRNB <> 0 
+THEN A1.ABRD_RT1 *(A1.ABRD_PRNB1 / A1.FCST_ABRD_PRNB) +
+A1.ABRD_RT2 *(A1.ABRD_PRNB2 / A1.FCST_ABRD_PRNB)
+ELSE ABRD_RT1 + ABRD_RT2
+END FCST_ABRD_RT
+FROM   (SELECT A.RUN_DT,
+A.TRN_NO,                                 
+NVL(SUM(DECODE(A.PSRM_CL_CD, '1', A.FCST_ABRD_RT)), 0) ABRD_RT1, /* 예측승차율 */
+NVL(SUM(DECODE(A.PSRM_CL_CD, '2', A.FCST_ABRD_RT)), 0) ABRD_RT2, /* 예측승차율 */
+NVL(SUM(DECODE(A.PSRM_CL_CD, '1', A.FCST_ABRD_PRNB)), 0) ABRD_PRNB1, /* 예측승차인원수 */
+NVL(SUM(DECODE(A.PSRM_CL_CD, '2', A.FCST_ABRD_PRNB)), 0) ABRD_PRNB2, /* 예측승차인원수 */
+SUM(A.FCST_ABRD_PRNB) FCST_ABRD_PRNB,  /* 예측승차인원수 */
+NVL(SUM(DECODE(A.PSRM_CL_CD, '1', A.AVG_ABRD_RT)), 0) AVG_ABRD_RT1,  /* 평균승차율 */
+NVL(SUM(DECODE(A.PSRM_CL_CD, '2', A.AVG_ABRD_RT)), 0) AVG_ABRD_RT2,  /* 평균승차율 */
+
+(SELECT LPAD(TO_CHAR(SUM(Z.SEAT_NUM)),4,'0') ||  /* 좌석수 */
+LPAD(TO_CHAR(SUM(DECODE(Z.PSRM_CL_CD,'1',Z.SEAT_NUM))),4,'0') || /* 객실등급코드 */
+LPAD(TO_CHAR(SUM(DECODE(Z.PSRM_CL_CD,'2',Z.SEAT_NUM))),4,'0')  /* 객실등급코드 */
+FROM TB_YYDS511 Z /* 열차별승차율집계TBL */
+WHERE  Z.RUN_DT = A.RUN_DT
+AND    Z.TRN_NO = A.TRN_NO) SEAT_ALL_CNT  /* 전체 좌석수 */
+
+FROM   TB_YYPD003 A,  /* 열차별부킹클래스통제내역TBL */
+TB_YYDP503 B   /* 열차특성상세TBL */
+WHERE  B.RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+AND    (#MRNT_CD# IS NULL OR B.MRNT_CD = #MRNT_CD#)  /* 주운행선코드 */
+AND    B.MRNT_CD IN ('01','03','04')
+AND    (#ROUT_CD# IS NULL OR B.ROUT_CD = #ROUT_CD#) /* 노선코드 */
+AND    (#UP_DN_DV_CD# = 'A' OR B.UP_DN_DV_CD = #UP_DN_DV_CD#) /* 상행하행구분코드 */
+AND    A.RUN_DT = B.RUN_DT
+AND    A.TRN_NO = B.TRN_NO
+AND    A.BKCL_CD = 'F1' /* 부킹클래스코드 */
+GROUP BY A.RUN_DT,
+A.TRN_NO) A1 ) C1
+WHERE  A1.YMGT_JOB_ID = B1.YMGT_JOB_ID  /* 수익관리작업ID */
+AND    A1.RUN_DT = B1.RUN_DT
+AND    A1.TRN_NO = B1.TRN_NO
+AND    A1.RUN_DT = C1.RUN_DT
+AND    A1.TRN_NO = C1.TRN_NO) D
+WHERE    A.RUN_DT = D.RUN_DT
+AND      A.TRN_NO = D.TRN_NO
+AND      ROUND(ABS(D.AVG_ABRD_RT - D.FCST_ABRD_RT) * D.AVG_ABRD_RT * 100,2) >= NVL(TO_NUMBER(#RISK_IDX#),0)
+ORDER BY RUN_DT,
+TRN_NO,
+YMS_APL_FLG DESC
+

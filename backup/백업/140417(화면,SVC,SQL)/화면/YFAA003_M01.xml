@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="이상원인 및 이상열차정보 관리" directory="/BIZ/YZ/YF/AA/" screenid="YFAA003_M01" width="1210" height="650" on_load="eventfunc:screen_on_load()" on_size="eventfunc:screen_on_size(window_width, window_height)" on_submitcomplete="eventfunc:screen_on_submitcomplete(mapid, result, recv_userheader, recv_code, recv_msg)" on_keydown="eventfunc:screen_on_keydown(keycode, bctrldown, bshiftdown, baltdown, bnumpadkey)"/>
+		<xlinkdataset id="dsCond" desc="검색조건" columns="RUN_TRM_ST_DT:&quot;운행기간시작일자&quot;:8:&quot;&quot;;RUN_TRM_CLS_DT:&quot;운행기간종료일자&quot;:8:&quot;&quot;;TRN_NO:&quot;열차번호&quot;:5:&quot;&quot;;ABV_TRN_SRT_CD:&quot;이상열차분류코드&quot;:2:&quot;&quot;"/>
+		<xlinkdataset id="dsAbvCausList" desc="이상원인목록" columns="ABV_TRN_SRT_CD:&quot;이상열차분류코드&quot;:20:&quot;&#x0A;&quot;;ABV_TRN_SRT_DSC_CONT:&quot;이상열차분류설명내용&quot;:100:&quot;&#x0A;&quot;;DMN_PRS_DV_CD:&quot;요청처리구분코드&quot;:1:&quot;&#x0A;&quot;"/>
+		<xlinkdataset id="dsAbvTrnList" desc="이상열차목록" columns="RUN_DT:&quot;운행일자&quot;:8:&quot;&quot;;TRN_NO:&quot;열차번호&quot;:20:&quot;&quot;;O_TRN_NO:&quot;원열차번호&quot;:5:&quot;&quot;;ABV_TRN_SRT_CD:&quot;이상열차분류코드&quot;:2:&quot;&quot;;ABV_OCUR_CAUS_CONT:&quot;이상발생원인내용&quot;:300:&quot;&quot;;REG_USR_ID:&quot;등록사용자ID&quot;:6:&quot;&quot;;REG_DTTM:&quot;등록일시&quot;:14:&quot;&quot;;CHG_USR_ID:&quot;변경사용자ID&quot;:6:&quot;&quot;;CHG_DTTM:&quot;변경일시&quot;:14:&quot;&quot;;DMN_PRS_DV_CD:&quot;요청처리구분코드&quot;:1:&quot;&quot;"/>
+		<xlinkdataset id="dsMessage" desc="메시지" columns="MSG_CONT:&quot;&quot;::&quot;&quot;"/>
+		<xlinktranmap id="/yz/yf/aa/selectListAbvCaus.do" url="/yz/yf/aa/selectListAbvCaus.do" comment="이상원인목록 조회">
+			<xtds id="dsCond" in_op="ALL" out_op="" info="RUN_TRM_ST_DT:1:;RUN_TRM_CLS_DT:1:;TRN_NO:1:;ABV_TRN_SRT_CD::"/>
+			<xtds id="dsAbvCausList" in_op="" out_op="UPDATE" info="ABV_TRN_SRT_CD::1;ABV_TRN_SRT_DSC_CONT::1;DMN_PRS_DV_CD::"/>
+			<xtds id="dsAbvTrnList" in_op="" out_op="" info="RUN_DT::;TRN_NO::;O_TRN_NO::;ABV_TRN_SRT_CD::;ABV_OCUR_CAUS_CONT::;REG_USR_ID::;REG_DTTM::;CHG_USR_ID::;CHG_DTTM::;DMN_PRS_DV_CD::"/>
+			<xtds id="dsMessage" in_op="" out_op="DELETE" info="MSG_CONT::1"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/yf/aa/selectListAbvTrn.do" url="/yz/yf/aa/selectListAbvTrn.do" comment="이상열차목록 조회">
+			<xtds id="dsCond" in_op="ALL" out_op="" info="RUN_TRM_ST_DT:1:;RUN_TRM_CLS_DT:1:;TRN_NO:1:;ABV_TRN_SRT_CD:1:"/>
+			<xtds id="dsAbvCausList" in_op="" out_op="" info="ABV_TRN_SRT_CD::;ABV_TRN_SRT_DSC_CONT::;DMN_PRS_DV_CD::"/>
+			<xtds id="dsAbvTrnList" in_op="" out_op="UPDATE" info="RUN_DT::1;TRN_NO::1;O_TRN_NO::1;ABV_TRN_SRT_CD::1;ABV_OCUR_CAUS_CONT::1;REG_USR_ID::1;REG_DTTM::1;CHG_USR_ID::1;CHG_DTTM::1;DMN_PRS_DV_CD::"/>
+			<xtds id="dsMessage" in_op="" out_op="DELETE" info="MSG_CONT::1"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/yf/aa/updateAbvCausList.do" url="/yz/yf/aa/updateAbvCausList.do" comment="이상원인목록 등록/수정/삭제">
+			<xtds id="dsCond" in_op="" out_op="" info="RUN_TRM_ST_DT::;RUN_TRM_CLS_DT::;TRN_NO::;ABV_TRN_SRT_CD::"/>
+			<xtds id="dsAbvCausList" in_op="UPDATE" out_op="" info="ABV_TRN_SRT_CD:1:;ABV_TRN_SRT_DSC_CONT:1:;DMN_PRS_DV_CD:1:"/>
+			<xtds id="dsAbvTrnList" in_op="" out_op="" info="RUN_DT:0:;TRN_NO:0:;O_TRN_NO:0:;ABV_TRN_SRT_CD:0:;ABV_OCUR_CAUS_CONT:0:;REG_USR_ID:0:;REG_DTTM:0:;CHG_USR_ID:0:;CHG_DTTM:0:;DMN_PRS_DV_CD:0:"/>
+			<xtds id="dsMessage" in_op="" out_op="DELETE" info="MSG_CONT::1"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/yf/aa/deleteAbvTrn.do" url="/yz/yf/aa/deleteAbvTrn.do" comment="이상열차정보 삭제">
+			<xtds id="dsCond" in_op="" out_op="" info="RUN_TRM_ST_DT::;RUN_TRM_CLS_DT::;TRN_NO::;ABV_TRN_SRT_CD::"/>
+			<xtds id="dsAbvCausList" in_op="" out_op="" info="ABV_TRN_SRT_CD::;ABV_TRN_SRT_DSC_CONT::;DMN_PRS_DV_CD::"/>
+			<xtds id="dsAbvTrnList" in_op="CHECK" out_op="" info="RUN_DT:1:;TRN_NO:1:;O_TRN_NO:1:;ABV_TRN_SRT_CD:1:;ABV_OCUR_CAUS_CONT:1:;REG_USR_ID:1:;REG_DTTM:1:;CHG_USR_ID:1:;CHG_DTTM:1:;DMN_PRS_DV_CD:1:"/>
+			<xtds id="dsMessage" in_op="" out_op="DELETE" info="MSG_CONT::1"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/yf/aa/updateAbvTrnList.do" url="/yz/yf/aa/updateAbvTrnList.do" comment="이상열차정보 수정">
+			<xtds id="dsCond" in_op="" out_op="" info="RUN_TRM_ST_DT::;RUN_TRM_CLS_DT::;TRN_NO::;ABV_TRN_SRT_CD::"/>
+			<xtds id="dsAbvCausList" in_op="" out_op="" info="ABV_TRN_SRT_CD::;ABV_TRN_SRT_DSC_CONT::0;DMN_PRS_DV_CD::"/>
+			<xtds id="dsAbvTrnList" in_op="UPDATE" out_op="" info="RUN_DT:1:;TRN_NO:1:;O_TRN_NO:1:;ABV_TRN_SRT_CD:1:;ABV_OCUR_CAUS_CONT:1:;REG_USR_ID:1:;REG_DTTM:1:;CHG_USR_ID:1:;CHG_DTTM:1:;DMN_PRS_DV_CD:1:"/>
+			<xtds id="dsMessage" in_op="" out_op="DELETE" info="MSG_CONT::1"/>
+		</xlinktranmap>
+		<tab_order order_option="0" order_info="17806,740,741,240,17805,1090,1368,17721,1450,1430,17724,17725,500,17732,17730,17727,17731,1470"/>
+		<text control_id="12" autosize="1" x="0" y="0" width="963" height="34" fore_color="000000FF" font="돋움,9,1,0,0" text="※ 본 화면은 이상원인으로 장기패턴 생성시 고려되지 않아야 할 열차를 등록 및 조회하는 화면으로서 이상열차로 등록되면 장기패턴 생성 시 해당열차가 제외된다." border_color="00B4B4B4" mousehover="1" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+		<text control_id="160" autosize="3" x="0" y="35" width="89" height="13" fore_color="00333333" font="돋움,10,1,0,0" text="이상원인 목록" border_color="00B4B4B4" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<grid style="GridRed" control_id="240" name="grdAbvCausList" description="이상발생원인목록" x="0" y="66" width="358" height="510" header_vertcount="0" link_data="dsAbvCausList" horzscrollbar_style="0" samplerows="22" tabstop="0" on_itemeditcomplete="eventfunc:grdAbvCausList_on_itemeditcomplete(objInst, nRow, nColumn, strPrevItemText)" on_itemclick="eventfunc:grdAbvCausList_on_itemclick(objInst, nClickRow, nClickColumn)" version="1.2">
+			<column>
+				<header title="이상원인코드" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="ABV_TRN_SRT_CD" description="이상열차분류코드" width="100" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsAbvCausList:ABV_TRN_SRT_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="2" meta_maxlength="2" resizable="0" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="이상원인설명" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="ABV_TRN_SRT_DSC_CONT" description="이상열차분류설명내용" width="238" forecolor="00444444" backcolor="00F8F8F8" data_type="2" link_data="dsAbvCausList:ABV_TRN_SRT_DSC_CONT" combobox_buttonsize="15" combobox_buttonimage="" max_length="200" meta_maxlength="300" resizable="0" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header meta_id="DMN_PRS_DV_CD" title="처리구분" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="DMN_PRS_DV_CD" description="요청처리구분코드" width="54" forecolor="00444444" backcolor="00F8F8F8" hidden="1" link_data="dsAbvCausList:DMN_PRS_DV_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<headermegeinfo info=""/>
+		</grid>
+		<pushbutton style="btnConfirmRed" control_id="500" name="btnSave" description="이상원인목록 저장" x="306" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="저장" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnSave_on_mouseup(objInst)" version="1.1"/>
+		<panel control_id="740" x="370" y="65" width="670" height="51" back_color="00DDDDDD" border_color="00CBCBCB">
+			<tab_order order_option="0" order_info="324,322,17733,130,323"/>
+			<text style="SeachLabel" control_id="890" autosize="0" x="383" y="13" width="89" text="열차번호" border="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+			<numericex_field control_id="17733" name="fldTRN_NO" description="열차번호" autosize="0" x="445" y="12" width="120" height="25" font="돋움,9,0,0,0" border_color="00B1B1B1" border_color_focus="00C7861A" link_data="dsCond:TRN_NO" max_length="5" meta_maxlength="5" allow_minus="1" text_margin="10,10,1,1" mousehover_forecolor="00FF0000" on_keydown="eventfunc:fldTRN_NO_on_keydown(objinst,keycode,bctrldown,bshiftdown,baltdown,bnumpadkey)"/>
+			<pushbutton style="btninSeach" control_id="130" name="btnSearchTrnNo" x="541" y="16" on_mousedown="eventfunc:trnNoBs_on_mousedown(objinst)" version="1.1"/>
+			<text style="Req_item" control_id="800" autosize="0" x="24" y="9" width="88" height="31" back_color="00DDDDDD" font="돋움,9,1,0,0" text="운행기간" border="1" border_color="00DDDDDD" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC" mousehover_color="00000000" version="1.1"/>
+			<normal_field style="Calendar_input" control_id="324" name="fldRUN_TRM_ST_DT" description="운행기간시작일자" x="100" y="12" width="79" link_data="dsCond:RUN_TRM_ST_DT" meta_maxlength="8" text_margin="5,5,1,1" mousehover_forecolor="00FF0000" on_focusout="eventfunc:fldDate_on_focusout(objinst)"/>
+			<text style="TxtReadonly" control_id="17603" name="txtFromDay" description="운행기간요일From" autosize="0" x="182" y="12" width="30" height="25" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+			<caption control_id="325" x="221" y="12" width="9" height="25" font="돋움,9,0,0,0" text="~" border_color="00B1B1B1"/>
+			<normal_field style="Calendar_input" control_id="322" name="fldRUN_TRM_CLS_DT" description="운행기간종료일자" x="235" y="12" width="99" link_data="dsCond:RUN_TRM_CLS_DT" meta_maxlength="8" mousehover_forecolor="00FF0000" on_focusout="eventfunc:fldDate_on_focusout(objinst)"/>
+			<pushbutton style="btninCalendar" control_id="323" name="btnPeriodCalendar" x="311" y="18" width="20" on_mouseup="eventfunc:btnPeriodCalendar_on_mouseup(objinst)" version="1.1"/>
+			<text style="TxtReadonly" control_id="17604" name="txtToDay" description="운행기간요일To" autosize="0" x="338" y="12" width="30" height="25" text="" border="1" border_color="00B1B1B1" horz_align="1" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		</panel>
+		<panel control_id="741" name="pnlSearch" x="1040" y="65" width="170" height="51" back_color="00DDDDDD" border_color="00CBCBCB">
+			<pushbutton control_id="742" name="btnSearch" x="30" y="12" width="110" height="27" fore_color="00FFFFFF" back_color="00DDDDDD" font="돋움,9,1,0,0" border="0" border_color="00B1B1B1" text="조회" drawfocusrect="0" image_normal="&quot;/IMG/common/btn/btn_Search_Button.png&quot;,37,75" image_fillstyle="1" on_mouseup="eventfunc:btnSearch_on_mouseup(objInst)" version="1.1"/>
+		</panel>
+		<text control_id="671" autosize="3" x="370" y="35" width="117" height="13" fore_color="00333333" font="돋움,10,1,0,0" text="이상열차 조건검색" border_color="00B4B4B4" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<grid style="GridRed" control_id="1090" name="grdAbvTrnList" description="이상열차목록" x="371" y="156" width="839" height="421" header_vertcount="0" link_data="dsAbvTrnList" samplerows="20" multi_select="1" multi_selectrow="1" multi_checkrow="1" on_itemeditcomplete="eventfunc:grdAbvTrnList_on_itemeditcomplete(objInst, nRow, nColumn, strPrevItemText)" version="1.2">
+			<column>
+				<header title="운행일자" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="RUN_DT" description="운행일자" width="148" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsAbvTrnList:RUN_DT" combobox_buttonsize="15" combobox_buttonimage="" max_length="8" meta_maxlength="8" pattern="YYYY.MM.DD" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="열차번호" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="TRN_NO" description="열차번호" width="162" forecolor="00444444" backcolor="00F8F8F8" text_horzalign="1" link_data="dsAbvTrnList:TRN_NO" combobox_buttonsize="15" combobox_buttonimage="" max_length="5" meta_maxlength="5" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="이상발생원인" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="ABV_OCUR_CAUS_CONT" description="이상발생원인내용" width="509" forecolor="00444444" backcolor="00F8F8F8" data_type="2" link_data="dsAbvTrnList:ABV_OCUR_CAUS_CONT" combobox_buttonsize="15" combobox_buttonimage="" max_length="200" meta_maxlength="300" picklist_selstyle="2" picklist_viewstyle="2" show_tooltip="1"/>
+			</column>
+			<column>
+				<header meta_id="DMN_PRS_DV_CD" title="처리구분" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="DMN_PRS_DV_CD" description="요청처리구분코드" width="205" forecolor="00444444" backcolor="00F8F8F8" hidden="1" link_data="dsAbvTrnList:DMN_PRS_DV_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<headermegeinfo info=""/>
+		</grid>
+		<text control_id="1091" autosize="3" x="370" y="126" width="89" height="13" fore_color="00333333" font="돋움,10,1,0,0" text="이상열차 목록" border_color="00B4B4B4" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<pushbutton style="btnContents" control_id="1430" name="btnChart" x="432" y="582" width="78" gradient_effect="1" gradient_endcolor="00F0F0F0" text="차트조회" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnChart_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnContents" control_id="1450" name="btnExcel" x="372" y="582" width="54" gradient_effect="1" gradient_endcolor="00F0F0F0" text="엑셀" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnExcel_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirmRed" control_id="1470" name="btnSave2" description="이상열차정보 저장" x="1156" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="저장" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnSave2_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnContents" control_id="1368" name="btnAdd" description="이상원인목록 행추가" x="0" y="582" width="68" text="행추가" on_mouseup="eventfunc:btnAdd_on_mouseup(objinst)" version="1.1"/>
+		<pushbutton style="btnContents" control_id="17721" name="btnDel" description="이상원인목록 행삭제" x="72" y="582" width="68" text="행삭제" on_mouseup="eventfunc:btnDel_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirm" control_id="17724" name="btnUpdate" description="이상원인목록 수정" x="190" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="수정" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnUpdate_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirm" control_id="17725" name="btnCancel" description="이상원인목록 수정취소" x="248" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="취소" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnCancel_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirm" control_id="17727" name="btnCancel2" description="이상열차정보 수정취소" x="1039" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="취소" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnCancel2_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirm" control_id="17730" name="btnUpdate2" description="이상열차정보 수정" x="981" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="수정" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnUpdate2_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirm" control_id="17731" name="btnDelete" description="이상열차정보 삭제" x="1098" y="618" width="54" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="삭제" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnDelete_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnConfirm" control_id="17732" name="btnInsert" description="이상열차등록" x="870" y="618" width="107" border_color="00B1B1B1" gradient_effect="1" gradient_endcolor="00F0F0F0" text="이상열차등록" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnInsert_on_mouseup(objInst)" version="1.1"/>
+		<hangul_field control_id="17805" name="fldQRY_CNT2" autosize="0" x="1026" y="131" width="184" height="25" fore_color="00FF460E" font="돋움,9,0,0,0" border="0" border_color="00B1B1B1" border_color_focus="00C7861A" meta_maxlength="" horz_align="1" text_margin="" input_type="2" hidden="1" mousehover_forecolor="00FF0000" tabstop="0"/>
+		<hangul_field control_id="17806" name="fldQRY_CNT" autosize="0" x="174" y="41" width="184" height="25" fore_color="00FF460E" font="돋움,9,0,0,0" border="0" border_color="00B1B1B1" border_color_focus="00C7861A" meta_maxlength="" horz_align="1" text_margin="" input_type="2" hidden="1" mousehover_forecolor="00FF0000" tabstop="0"/>
+	</map>
+</map_list>

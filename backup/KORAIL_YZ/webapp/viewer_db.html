@@ -1,0 +1,49 @@
+<HTML>
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=euc-kr">
+<TITLE>xadmin</TITLE>
+</head>
+
+<script language="JavaScript1.2">
+
+var clocktext;
+var pagetitle = document.title;
+
+onLoad();
+
+function onLoad(){
+	today = new Date();
+	year = today.getYear();
+	month = today.getMonth()+1;
+	date = today.getDate();
+	var clocktext = " - " + year + "년 " + month + "월 " + date + "일 "; // �ð� ��� �κ�
+	document.title = pagetitle + clocktext;
+}
+</script>
+
+<SCRIPT LANGUAGE=javascript FOR=XFrameViewer EVENT="PrimoRTLoaded()">
+	/*
+	XFrameViewer.SetSharedData("JSONTRAN_XADMIN_IP_ADDR", "10.141.25.13");
+	XFrameViewer.SetSharedData("JSONTRAN_XADMIN_PORT_NO", "8083");
+	XFrameViewer.SetSharedData("JSONTRAN_XADMIN_TASKGATE_URL", "xadmin/TaskGate");
+	XFrameViewer.SetSharedData("JSONTRAN_XADMIN_FILEGATE_URL", "xadmin/FileGate");
+	XFrameViewer.SetSharedData("JSONTRAN_XADMIN_WEB_PORT_NO", "80");
+	*/
+</SCRIPT>
+
+<SCRIPT LANGUAGE=javascript FOR=XFrameViewer EVENT="xframeviewerevent(eventName, eventInfo)">
+	alert(eventName + ", " + eventInfo);
+</SCRIPT>
+
+<!--
+<body scroll="no" bgcolor="white" text="black" link="blue" vlink="purple" alink="red" style="border:0;margin:0;">
+-->
+<body scroll="no" bgcolor="white" text="black" link="blue" vlink="purple" alink="red" style="border:0;margin:0;">
+	<div id="Layer0">
+		<script ID="XFrameViewer" src="viewer_db.js"></script>
+	</div>
+</BODY>
+</HTML>

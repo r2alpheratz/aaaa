@@ -1,0 +1,18 @@
+SELECT DISTINCT 
+0 stat,
+LPAD(LTRIM(trn_no,0), 5, ' ') as trn_no
+FROM TB_RD215 /*일일열차정보 TBL*/
+WHERE run_dt between :as_run_dt_st AND :as_run_dt_cls
+AND   trn_no not in ( SELECT trn_no FROM TB_YF570 /*이상열차정보 TBL*/
+                      WHERE  run_dt between :as_run_dt_st AND :as_run_dt_cls 
+                      AND    abv_trn_srt_cd = :as_abv_trn_srt_cd)
+AND   trn_no like :as_trn_no
+=====================================
+
+SELECT DISTINCT LPAD(LTRIM(TRN_NO, 0), 5, ' ') AS TRN_NO
+  FROM TB_YYDK301 /* 열차기본TBL */
+ WHERE RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT#
+   AND TRN_NO NOT IN ( SELECT TRN_NO FROM TB_YYFD015 /* 이상열차내역TBL */
+   											WHERE RUN_DT BETWEEN #RUN_TRM_ST_DT# AND #RUN_TRM_CLS_DT# 
+   											  AND ABV_TRN_SRT_CD = #ABV_TRN_SRT_CD# )
+   AND (#TRN_NO# IS NULL OR TRN_NO = LPAD( #TRN_NO#, 5, '0') )

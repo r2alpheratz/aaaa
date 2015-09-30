@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="DSP별 비정상판단비율 조회" directory="/BIZ/YZ/YF/AA/" screenid="YFAA002_M01" width="1210" height="650" vertscrollbar_style="0" on_load="eventfunc:screen_on_load()" on_size="eventfunc:screen_on_size(window_width, window_height)" on_submitcomplete="eventfunc:screen_on_submitcomplete(mapid, result, recv_userheader, recv_code, recv_msg)"/>
+		<xlinkdataset id="dsList" desc="DSP별 비정상판단비율 목록" columns="DASP_DV_NO:&quot;&quot;:2:&quot;&quot;;DASP_DV_STDR_PCT:&quot;&quot;:8:&quot;&quot;;URG_ULMT_EXCS_PCT:&quot;&quot;:8:&quot;&quot;;URG_LLMT_UNDR_PCT:&quot;&quot;:8:&quot;&quot;;CARE_ULMT_EXCS_PCT:&quot;&quot;:8:&quot;&quot;;CARE_LLMT_UNDR_PCT:&quot;&quot;:8:&quot;&quot;;CMNS_ULMT_EXCS_PCT:&quot;&quot;:8:&quot;&quot;;CMNS_LLMT_UNDR_PCT:&quot;&quot;:8:&quot;&quot;;DMN_PRS_DV_CD:&quot;&quot;:1:&quot;&quot;"/>
+		<xlinkdataset id="dsCond" desc="검색조건" columns="LUMP_APL_TGT:&quot;비정상 열차 판단 기준 (긴급, 주의, 보통)&quot;::&quot;&quot;;LUMP_APL_TGT_DV:&quot;상한/하한비율 구분&quot;::&quot;&quot;;LUMP_APL_VAL_INP:&quot;비정상 열차판단비율 수정 입력값&quot;::&quot;&quot;;LUMP_APL_VAL_INP_CORR:&quot;비정상 열차판단비율 수정 입력값의 대응값&quot;::&quot;&quot;"/>
+		<xlinkdataset id="dsLumpAplTgt" desc="일괄적용대상" columns="CD:&quot;코드&quot;::&quot;URG&#x0A;CARE&#x0A;CMNS&#x0A;&quot;;NM:&quot;코드명&quot;::&quot;긴급&#x0A;주의&#x0A;보통&#x0A;&quot;"/>
+		<xlinkdataset id="dsLumpAplTgtDv" desc="일괄적용대상구분" columns="CD:&quot;코드&quot;::&quot;EXCS&#x0A;UNDR&#x0A;&quot;;NM:&quot;코드명&quot;::&quot;상한&#x0A;하한&#x0A;&quot;"/>
+		<xlinktranmap id="/yz/yf/aa/selectListNonNmlPct.do" url="/yz/yf/aa/selectListNonNmlPct.do" comment="DSP별로 기준값과 긴급, 주의, 보통별 비정상 열차 판단 비율 조회">
+			<xtds id="dsList" in_op="" out_op="UPDATE" info="DASP_DV_NO::1;DASP_DV_STDR_PCT::1;URG_ULMT_EXCS_PCT::1;URG_LLMT_UNDR_PCT::1;CARE_ULMT_EXCS_PCT::1;CARE_LLMT_UNDR_PCT::1;CMNS_ULMT_EXCS_PCT::1;CMNS_LLMT_UNDR_PCT::1;DMN_PRS_DV_CD::1"/>
+			<xtds id="dsCond" in_op="" out_op="" info="LUMP_APL_TGT:0:;LUMP_APL_TGT_DV:0:;LUMP_APL_VAL_INP:0:;LUMP_APL_VAL_INP_CORR::"/>
+		</xlinktranmap>
+		<xlinktranmap id="/yz/yf/aa/updateNonNmlPct.do" url="/yz/yf/aa/updateNonNmlPct.do" comment="DSP별 비정상판단비율을 각기 일괄로 수정">
+			<xtds id="dsList" in_op="UPDATE" out_op="" info="DASP_DV_NO:1:;DASP_DV_STDR_PCT:1:;URG_ULMT_EXCS_PCT:1:;URG_LLMT_UNDR_PCT:1:;CARE_ULMT_EXCS_PCT:1:;CARE_LLMT_UNDR_PCT:1:;CMNS_ULMT_EXCS_PCT:1:;CMNS_LLMT_UNDR_PCT:1:;DMN_PRS_DV_CD:1:"/>
+			<xtds id="dsCond" in_op="" out_op="" info="LUMP_APL_TGT:0:0;LUMP_APL_TGT_DV:0:;LUMP_APL_VAL_INP:0:;LUMP_APL_VAL_INP_CORR:0:"/>
+			<xtds id="dsLumpAplTgt" in_op="" out_op="" info="CD:0:;NM:0:"/>
+		</xlinktranmap>
+		<tab_order order_option="0" order_info="160,310,1094,390,1090,1095,1040"/>
+		<pushbutton style="btnConfirmRed" control_id="1040" name="btnSave" x="1144" y="612" width="66" border_color="00B1B1B1" text="저장" enable="0" on_mouseup="eventfunc:btnSave_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnNavi" control_id="1090" name="btnPopup" description="비정상판단비율을 chart 형식으로 popup" x="0" y="612" width="80" border_color="00B1B1B1" text="차트조회" on_mouseup="eventfunc:btnPopup_on_mouseup(objInst)" version="1.1"/>
+		<grid style="Grid01" control_id="390" name="grdList" x="0" y="42" width="1210" height="558" header_horzcount="2" link_data="dsList" samplerows="26" on_itemeditcomplete="eventfunc:grdList_on_itemeditcomplete(objInst, nRow, nColumn, strPrevItemText)" version="1.2">
+			<column>
+				<header title="DSP구분" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="DSP구분" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="DASP_DV_NO" description="DSP구분번호" width="220" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" link_data="dsList:DASP_DV_NO" combobox_buttonsize="15" combobox_buttonimage="" max_length="2" meta_maxlength="3" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="기준" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="기준" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="DASP_DV_STDR_PCT" description="DSP구분기준비율" width="220" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" link_data="dsList:DASP_DV_STDR_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="10" meta_maxlength="10" apply_rightpattern="1" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="긴급" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="상한비율" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="URG_ULMT_EXCS_PCT" description="상한비율" width="125" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" data_type="0" link_data="dsList:URG_ULMT_EXCS_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="3" meta_maxlength="8" pattern="9.99" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="긴급" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="하한비율" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="URG_LLMT_UNDR_PCT" description="하한비율" width="125" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" data_type="0" link_data="dsList:URG_LLMT_UNDR_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="3" meta_maxlength="8" pattern="9.99" apply_rightpattern="1" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="주의" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="상한비율" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="CARE_ULMT_EXCS_PCT" description="상한비율" width="125" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" data_type="0" link_data="dsList:CARE_ULMT_EXCS_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="3" meta_maxlength="8" pattern="9.99" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="주의" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="하한비율" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="CARE_LLMT_UNDR_PCT" description="하한비율" width="125" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" data_type="0" link_data="dsList:CARE_LLMT_UNDR_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="3" meta_maxlength="8" pattern="9.99" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="보통" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="상한비율" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="CMNS_ULMT_EXCS_PCT" description="상한비율" width="125" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" data_type="0" link_data="dsList:CMNS_ULMT_EXCS_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="3" meta_maxlength="8" pattern="9.99" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="보통" forecolor="00333333" gradient_effect="0" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="하한비율" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="CMNS_LLMT_UNDR_PCT" description="하한비율" width="125" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" data_type="0" link_data="dsList:CMNS_LLMT_UNDR_PCT" combobox_buttonsize="15" combobox_buttonimage="" max_length="3" meta_maxlength="8" pattern="9.99" places="2" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<column>
+				<header title="처리구분" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<header title="처리구분" forecolor="00333333" gradient_effect="1" gradient_startcolor="00E8E8E8" gradient_endcolor="00DCDCDC"/>
+				<data name="DMN_PRS_DV_CD" description="요청처리구분코드" width="0" forecolor="00444444" backcolor="00F3F3F3" text_horzalign="1" hidden="1" link_data="dsList:DMN_PRS_DV_CD" combobox_buttonsize="15" combobox_buttonimage="" max_length="1" meta_maxlength="1" picklist_selstyle="2" picklist_viewstyle="2"/>
+			</column>
+			<headermegeinfo info="0,0,1,0:0,1,1,1:0,2,0,3:0,4,0,5:0,6,0,7:0,8,1,8:"/>
+		</grid>
+		<panel control_id="160" x="0" y="0" width="1210" height="31" border="0" border_color="00B0B0B0">
+			<tab_order order_option="0" order_info="171"/>
+			<panel control_id="171" x="121" y="0" width="283" height="31" border_color="00B1B1B1">
+				<tab_order order_option="0" order_info="180,1091,1092"/>
+				<combobox style="Default_com" control_id="180" name="cboLUMP_APL_TGT" description="일괄적용대상" autosize="0" picklist_linkdata="dsLumpAplTgt:CD:NM:" x="2" y="2" width="80" border_color_focus="00C7861A" button_backcolor="00FFFFFF" button_size="17" link_data="dsCond:LUMP_APL_TGT" max_length="1" meta_maxlength="2" editable="0" combobox_data="del=&apos;:&apos; pos=&apos;0&apos; style=&apos;1&apos; content=&apos;" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+				<combobox control_id="1091" name="cboLUMP_APL_TGT_DV" description="일괄적용대상 구분" autosize="0" picklist_linkdata="dsLumpAplTgtDv:CD:NM:" x="90" y="2" width="80" height="25" font="돋움,9,0,0,0" border_color="00B1B1B1" border_color_focus="00C7861A" button_backcolor="00F0F0F0" button_size="17" button_image="" link_data="dsCond:LUMP_APL_TGT_PLUS" max_length="1" meta_maxlength="" editable="0" picklist_font="돋움,9,0,0,0" picklist_selstyle="2" picklist_viewstyle="2" version="1.1"/>
+				<numericex_field control_id="1092" name="fldLUMP_APL_VAL_INP" description="일괄적용값입력" autosize="0" x="179" y="2" width="100" height="25" font="돋움,9,0,0,0" border_color="00B1B1B1" border_color_focus="00C7861A" link_data="dsCond:LUMP_APL_VAL_INP" max_length="3" meta_maxlength="" pattern="9.99" places="2" allow_minus="1" text_margin="10,10,1,1" mousehover_forecolor="00FF0000" on_keydown="eventfunc:fldLUMP_APL_VAL_INP_on_keydown(objInst, keycode, bctrldown, bshiftdown, baltdown, bnumpadkey)"/>
+			</panel>
+			<text style="TableLabel" control_id="170" autosize="0" x="0" y="0" width="122" height="31" back_color="00DDDDDD" text="일괄적용대상" mousehover_color="00000000" mousehover_font="돋움,9,1,0,0" mousehover_forecolor="00000000" mousehover_backcolor="00EFEFEF" version="1.1"/>
+		</panel>
+		<pushbutton style="btnConfirm" control_id="1095" name="btnUpdate" x="1074" y="612" width="66" border_color="00B1B1B1" text="수정" on_mouseup="eventfunc:btnUpdate_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnContents" control_id="1094" name="btnCancel" x="480" y="1" width="54" height="30" gradient_effect="1" gradient_endcolor="00F0F0F0" text="취소" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnCancel_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton style="btnContents" control_id="310" name="btnLUMP_APL" x="415" y="1" width="54" height="30" gradient_effect="1" gradient_endcolor="00F0F0F0" text="적용" image_fillstyle="1" enable="0" on_mouseup="eventfunc:btnLUMP_APL_on_mouseup(objInst)" version="1.1"/>
+	</map>
+</map_list>

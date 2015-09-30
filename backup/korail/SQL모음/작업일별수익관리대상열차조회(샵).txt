@@ -1,0 +1,163 @@
+SELECT A.RUN_DT,                                            /* 운행일자         */
+       LPAD (TO_NUMBER (A.TRN_NO), 5, ' ') TRN_NO,          /* 열차번호         */
+       A.ROUT_CD,                                           /* 노선코드         */
+       A.UP_DN_DV_CD,                                          /* 상하행구분코드   */
+       A.STLB_TRN_CLSF_CD,                                    /* 열차종별코드     */
+       A.RUN_DV_CD AS RUN_DV_CD,                                    /*운행구분코드*/
+       A.YMS_APL_FLG,                                       /* YMS적용여부      */
+       A.SHTM_EXCS_RSV_ALLW_FLG,
+          (SELECT TRIM (Y.KOR_STN_NM) AS KOR_STN_NM                   /*한글역명*/
+             FROM TB_YYDK001 X                                       /*예발역코드*/
+                              , TB_YYDK102 Y                         /*역코드이력*/
+            WHERE     X.RS_STN_CD = A.ORG_RS_STN_CD
+                  AND X.STN_CD = Y.STN_CD
+                  AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN Y.APL_ST_DT
+                                                        AND Y.APL_CLS_DT)
+       || '-'
+       || (SELECT TRIM (Y.KOR_STN_NM) AS KOR_STN_NM
+             FROM TB_YYDK001 X, TB_YYDK102 Y
+            WHERE     X.RS_STN_CD = A.TMN_RS_STN_CD
+                  AND X.STN_CD = Y.STN_CD
+                  AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN Y.APL_ST_DT
+                                                        AND Y.APL_CLS_DT)
+       ||'('
+       || TO_CHAR (TO_DATE (B.DPT_TM, 'hh24miss'), 'hh24:mi')
+       ||                                                           /* 출발시각 */
+         '-'
+       || TO_CHAR (TO_DATE (C.ARV_TM, 'hh24miss'), 'hh24:mi')
+       ||                                                           /* 도착시각 */
+         ')'
+          RUN_INFO                                               /* 출발도착역시각 */
+          ,NVL (E.ALC_PRS_STT_CD, 1) AS ALC_PRS_STT_CD                /* 할당처리상태코드  */
+          ,NVL (E.EXCS_RSV_ALC_PRS_STT_CD, 1) AS EXCS_RSV_ALC_PRS_STT_CD, /*  초과예약할당처리상태코드  */
+       F.DPT_BF_DT_NUM                                               /* 출발전일수 */
+       ,F.YDCP_SQNO                                               /* DCP구분번호 */
+       ,G.DAY_DV_CD AS DAY_DV_CD
+       ,F.ORDY_LRG_CRG_DV_CD AS ORDY_LRG_CRG_DV_CD
+       ,D.MRNT_CD                                           /** 주운행선코드 **/
+  FROM (SELECT A.*,
+                 B.DAY_DV_CD                                   /* 요일구분코드 */
+          FROM TB_YYDK301 A                                      /* 열차기본TBL */
+                           , TB_YYDK002 B                       /* 카렌다내역TBL */
+         WHERE     (#UP_DN_DV_CD# = 'A' OR A.UP_DN_DV_CD = #UP_DN_DV_CD#)              /* 상행하행구분코드 */
+               AND (#ROUT_CD# IS NULL OR A.ROUT_CD = #ROUT_CD#)                          /* 노선코드 */
+               AND A.STLB_TRN_CLSF_CD = '00'                  /* 열차종별 - KTX */
+               AND A.RUN_DT BETWEEN #RUN_DT_FROM# AND #RUN_DT_TO#     /* 운행일자 */
+               AND (A.YMS_APL_FLG = 'Y'                          /* YMS적용여부 */
+                                       OR A.SHTM_EXCS_RSV_ALLW_FLG = 'Y') /* 단기초과예약허용여부 */
+               AND TO_DATE (A.RUN_DT, 'YYYYMMDD') > TO_DATE (#JOB_DT#, 'YYYYMMDD')
+               AND A.RUN_DT = B.RUN_DT) A,
+       TB_YYDK302 B,                                         /* 열차운행내역TBL   */
+       TB_YYDK302 C,                                         /* 열차운행내역TBL   */
+       TB_YYDK201 D,                                       /* 노선코드TBL       */
+       TB_YYBB004 E,                                          /* 열차별할당기본TBL */
+       (SELECT *
+          FROM TB_YYBB001                                  /* DCP적용기본TBL    */
+         WHERE     (#MRNT_CD# IS NULL OR MRNT_CD = #MRNT_CD#)                          /* 주운행선코드 */
+               AND MRNT_CD IN ('01', '03', '04')                  /* 주운행선코드 */
+               AND (#UP_DN_DV_CD# = 'A' OR UP_DN_DV_CD = #UP_DN_DV_CD#)                /* 상행하행구분코드 */
+               AND TRN_CLSF_CD = '00'                    /* 열차종별 - KTX */
+               AND ORDY_LRG_CRG_DV_CD =
+                      (SELECT CASE 'ORDY_LRG_CRG_DV_CD'        /* 평시대수송구분코드 */
+                                 WHEN (SELECT 'ORDY_LRG_CRG_DV_CD' /* 평시대수송구분코드 */
+                                         FROM TB_YYDK002        /* 카렌다내역TBL */
+                                        WHERE     ROWNUM = 1
+                                              AND RUN_DT = #JOB_DT#  /* 운행일자 */
+                                              AND HLDY_BF_AFT_DV_CD
+                                                     IS NOT NULL) /* 휴일이전이후구분코드 */
+                                 THEN '05'
+                                 WHEN (SELECT 'ORDY_LRG_CRG_DV_CD' /* 평시대수송구분코드 */
+                                         FROM TB_YYDK003        /* 카렌다내역TBL */
+                                        WHERE     ROWNUM = 1
+                                              AND RUN_DT = #JOB_DT#  /* 운행일자 */
+                                              AND BIZ_DD_STG_CD = '6' /* 영업일단계코드 */
+                                              AND LRG_CRG_DV_CD = '03') /* 대수송구분코드 */
+                                 THEN '03'
+                                 WHEN (SELECT 'ORDY_LRG_CRG_DV_CD' /* 평시대수송구분코드 */
+                                         FROM TB_YYDK003        /* 카렌다내역TBL */
+                                        WHERE     ROWNUM = 1
+                                              AND RUN_DT = #JOB_DT#  /* 운행일자 */
+                                              AND BIZ_DD_STG_CD = '6' /* 영업일단계코드 */
+                                              AND LRG_CRG_DV_CD = '04') /* 대수송구분코드 */
+                                 THEN '04'
+                                 ELSE
+                                    '00'
+                              END CASE
+                         FROM DUAL
+                        WHERE ROWNUM = 1)) F,     /** DCP 기본               **/
+       (SELECT DAY_DV_CD                                          /* 요일구분코드 */
+          FROM TB_YYDK002                                       /* 카렌다내역TBL */
+         WHERE RUN_DT = #JOB_DT#
+         ) G                  /** 캘린더                **/
+ WHERE     A.RUN_DT = B.RUN_DT                                      /* 운행일자 */
+       AND A.TRN_NO = B.TRN_NO                                      /* 열차번호 */
+       AND A.ORG_RS_STN_CD = B.STOP_RS_STN_CD          /* 시발예발역코드 = 정차예발역코드 */
+       AND A.RUN_DT = C.RUN_DT                                      /* 운행일자 */
+       AND A.TRN_NO = C.TRN_NO                                      /* 열차번호 */
+       AND A.TMN_RS_STN_CD = C.STOP_RS_STN_CD          /* 시발예발역코드 = 정차예발역코드 */
+       AND A.ROUT_CD = D.ROUT_CD                                    /* 노선코드 */
+       AND ((D.EFC_ST_DT <= #RUN_DT_FROM#                      /* 시행시작일자 */
+             AND D.EFC_CLS_DT >= #RUN_DT_TO#) /* 시행종료일자 */
+            OR(D.EFC_ST_DT >= #RUN_DT_FROM#              /* 시행시작일자 */
+                    AND D.EFC_CLS_DT <= #RUN_DT_TO#))               /* 시행종료일자 */
+               AND A.RUN_DT = E.RUN_DT(+)
+               AND A.TRN_NO = E.TRN_NO(+)
+               AND (   (    DECODE (PSRM_CL_CD || BKCL_CD, /* 객실등급코드 || 부킹클래스코드 */
+                                    '1F1', 1,
+                                    '1C1', 2,
+                                    '1R1', 3,
+                                    '1R2', 4,
+                                    '1R3', 5,
+                                    '2F1', 6,
+                                    '2C1', 7,
+                                    '2R1', 8,
+                                    '2R2', 9,
+                                    '2R3', 10,
+                                    0) =
+                               (SELECT MIN (
+                                          DECODE (PSRM_CL_CD || BKCL_CD, /* 객실등급코드 || 부킹클래스코드 */
+                                                  '1F1', 1,
+                                                  '1C1', 2,
+                                                  '1R1', 3,
+                                                  '1R2', 4,
+                                                  '1R3', 5,
+                                                  '2F1', 6,
+                                                  '2C1', 7,
+                                                  '2R1', 8,
+                                                  '2R2', 9,
+                                                  '2R3', 10,
+                                                  0))
+                                  FROM TB_YYBB004             /* 열차별할당기본TBL */
+                                 WHERE     RUN_DT = E.RUN_DT        /* 운행일자 */
+                                       AND TRN_NO = E.TRN_NO)       /* 열차번호 */
+                        AND PSRM_CL_CD IS NOT NULL)               /* 객실등급코드 */
+                    OR PSRM_CL_CD IS NULL)                        /* 객실등급코드 */
+               AND A.DAY_DV_CD = F.DAY_DV_CD(+)                   /* 요일구분코드 */
+               AND D.MRNT_CD = F.MRNT_CD                          /* 주운행선코드 */
+               AND A.UP_DN_DV_CD = F.UP_DN_DV_CD                /* 상행하행구분코드 */
+               AND TO_DATE (A.RUN_DT, 'YYYYMMDD') BETWEEN TO_DATE (
+                                                             F.APL_ST_DT,
+                                                             'YYYYMMDD') /* 적용시작일자 */
+                                                      AND TO_DATE (
+                                                             F.APL_ST_DT,
+                                                             'YYYYMMDD') /* 적용시작일자 */
+               AND F.DPT_BF_DT_NUM =
+                      TO_NUMBER (
+                           TO_DATE (A.RUN_DT, 'YYYYMMDD')
+                         - TO_DATE (#JOB_DT#, 'YYYYMMDD'))        /* 출발이전일자수 */
+               AND A.TRN_NO NOT IN
+                      (SELECT TRN_NO
+                         FROM TB_YYBB002                    /* DCP예외열차기본TBL */
+                        WHERE     TO_DATE (A.RUN_DT, 'YYYYMMDD') BETWEEN TO_DATE (
+                                                                            APL_ST_DT,
+                                                                            'YYYYMMDD') /* 적용시작일자 */
+                                                                     AND TO_DATE (
+                                                                            APL_ST_DT,
+                                                                            'YYYYMMDD') /* 적용시작일자 */
+                              AND DPT_BF_DT_NUM =
+                                     TO_NUMBER (
+                                          TO_DATE (A.RUN_DT, 'YYYYMMDD')
+                                        - TO_DATE (#JOB_DT#, 'YYYYMMDD'))
+                                        ) /* 출발이전일자수 */
+                        ORDER BY RUN_DT,
+                                 TRN_NO

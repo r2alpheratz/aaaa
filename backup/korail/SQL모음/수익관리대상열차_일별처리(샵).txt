@@ -1,0 +1,46 @@
+SELECT   A.YMGT_JOB_ID                                                                     , /* 수익관리작업 ID */
+          LPAD( TO_NUMBER(SUBSTR( A.YMGT_JOB_ID,18,3)),3,' ') SEQ                                                   , /* 순번 */
+           A.RUN_DT                                                                         , /* 운행일자 */
+          LPAD( TO_NUMBER( A.TRN_NO ), 5, ' ' )                                      TRN_NO, /* 열차번호 */
+           A.FCST_PRS_STT_CD        AS FCST_PRS_STT_CD , /* 예측진행상태코드   NULL일 경우 '미실행'*/
+           A.OTMZ_PRS_STT_CD        AS OTMZ_PRS_STT_CD, /* 최적화진행상태코드   NULL일 경우 '미실행'*/
+           A.RSV_SALE_TNSM_STT_CD   AS RSV_SALE_TNSM_STT_CD  , /* 예발전송상태코드   NULL일 경우 '미전송'*/
+           A.ALC_PRS_STT_CD         AS ALC_PRS_STT_CD   , /* 수익관리할당처리상태코드   NULL일 경우 1 */
+           A.RSV_SALE_REFL_STT_CD   AS RSV_SALE_REFL_STT_CD  ,  /* 예발반영상태코드   NULL일 경우 '미반영'*/
+           A.JOB_DTTM,
+           A.JOB_CLS_DTTM
+  FROM   ( SELECT
+                   A.YMGT_JOB_ID           , /* 수익관리작업ID       */
+                   A.RUN_DT               , /* 운행일자             */
+                   A.TRN_NO               , /* 열차번호             */
+                   A.FCST_PRS_STT_CD      , /* 예측진행상태코드     */
+                   A.OTMZ_PRS_STT_CD     , /* 최적화진행상태코드   */
+                   A.ITDC_SUPT_STT_CD            , /* 의사결정지원상태코드 */
+                   A.NON_NML_TRN_FLG       , /* 비정상열차여부       */
+                   A.RSV_SALE_TNSM_STT_CD      , /* 예발전송상태코드     */
+                   A.RSV_SALE_TNSM_DTTM  , /* 예약발매전송일시     */
+                   A.RSV_SALE_REFL_STT_CD        , /* 예발반영상태코드     */
+                   C.ALC_PRS_STT_CD   , /* 수익관리할당처리상태코드 */
+                   B.JOB_DTTM             , /* 작업시작일자         */
+                   B.JOB_CLS_DTTM           /* 작업종료일자         */
+            FROM   TB_YYFD011 A, /** 수익관리대상열차 **/
+                   TB_YYFB009 B, /** 수익관리작업결과 **/
+                   TB_YYBB004 C  /** 열차별할당처리 **/
+            WHERE  B.JOB_DTTM LIKE #JOB_DTTM# || '%'
+            AND    A.RUN_DT = #RUN_DT#
+            AND    A.TRN_NO = #TRN_NO#
+         AND    A.RUN_DT = C.RUN_DT(+)
+         AND    A.TRN_NO = C.TRN_NO(+)
+            AND   ((DECODE(PSRM_CL_CD||BKCL_CD,'1F1',1,'1C1',2,'1R1',3,'1R2',4,'1R3',5,'2F1',6,'2C1',7,'2R1',8,'2R2',9,'2R3',10,0) 
+                         = ( SELECT min(DECODE(PSRM_CL_CD||BKCL_CD,'1F1',1,'1C1',2,'1R1',3,'1R2',4,'1R3',5,'2F1',6,'2C1',7,'2R1',8,'2R2',9,'2R3',10,0))
+                               FROM TB_YYBB004 D
+                              WHERE D.RUN_DT = C.RUN_DT
+                                AND D.TRN_NO = C.TRN_NO
+                          )
+                   AND PSRM_CL_CD IS NOT NULL
+                   ) 
+                   OR PSRM_CL_CD IS NULL
+                   )
+            AND    A.YMGT_JOB_ID = B.YMGT_JOB_ID    
+           ) A
+    order by SEQ ;

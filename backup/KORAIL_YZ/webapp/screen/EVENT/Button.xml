@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="버튼 이벤트" directory="/EVENT/" screenid="Button"/>
+		<tab_order order_option="0" order_info="9,10,11"/>
+		<pushbutton control_id="9" name="btnFunc3" x="348" y="6" width="114" height="20" text="펑션 키 버튼(F3)" hot_key="3" on_mouseup="eventfunc:btnFunc3_on_mouseup(objInst)" version="1.1"/>
+		<hangul_field control_id="10" x="18" y="12" width="184" height="16" mousehover_forecolor="00FF0000"/>
+		<hangul_field control_id="11" x="18" y="36" width="184" height="16" mousehover_forecolor="00FF0000"/>
+	</map>
+</map_list>

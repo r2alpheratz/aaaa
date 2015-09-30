@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<map_list>
+	<map>
+		<screen version="2.0" scriptcode="java" title="SimpleFrame" directory="/FRAME/" screenid="SimpleFrame" width="860" height="600" on_load="eventfunc:screen_on_load()"/>
+		<tab_order order_option="0" order_info="4,7,9,10,5,6,0"/>
+		<tab control_id="0" name="tabScreen" x="6" y="36" width="846" height="558" tabitem_position="1" tabitem_backcolor="00D2D2D2" on_itemdestroy="eventfunc:tabScreen_on_itemdestroy(objInst, itemindex)" on_itemchange="eventfunc:tabScreen_on_itemchange(objInst, itemindex)">
+		</tab>
+		<text control_id="2" x="264" y="6" width="48" height="20" text="화면 URL" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<normal_field control_id="4" name="fldScreenUrl" autosize="0" x="324" y="6" width="174" height="20" max_length="100" mousehover_forecolor="00FF0000" on_keydown="eventfunc:fldScreenUrl_on_keydown(objInst, keycode, bctrldown, bshiftdown, baltdown, bnumpadkey)"/>
+		<pushbutton control_id="5" name="btnReloadScreen" x="732" y="6" width="54" height="20" text="Reload" on_mouseup="eventfunc:btnReloadScreen_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton control_id="6" name="btnCloseScreen" x="804" y="6" width="48" height="20" text="닫기" on_mouseup="eventfunc:btnCloseScreen_on_mouseup(objInst)" version="1.1"/>
+		<pushbutton control_id="7" name="btnOpenScreen" x="516" y="6" width="48" height="20" text="열기" on_mouseup="eventfunc:btnOpenScreen_on_mouseup(objinst)" version="1.1"/>
+		<text control_id="8" name="txtScreenTitle" x="12" y="12" width="66" height="12" mousehover_color="00FF0000" mousehover_forecolor="00FF0000" version="1.1"/>
+		<combobox control_id="9" name="cboAlignType" x="594" y="6" width="69" height="20" button_backcolor="00F0F0F0" editable="0" default_value="0" combobox_data="del=&apos;:&apos; pos=&apos;0&apos; style=&apos;1&apos; content=&apos;0:기본&#x0D;&#x0A;1:수직&#x0D;&#x0A;2:수평&#x0D;&#x0A;3:계단식&apos;" picklist_selstyle="1" version="1.1"/>
+		<pushbutton control_id="10" name="btnAlign" x="678" y="6" width="36" height="20" text="정렬" on_mouseup="eventfunc:btnAlign_on_mouseup(objInst)" version="1.1"/>
+	</map>
+</map_list>
